@@ -2611,3 +2611,125 @@ END OF FILE
     }
 
 }
+
+/******************************************************************************
+ * MOBILE MENU
+ ******************************************************************************/
+
+.mobile-menu-btn {
+    display: none;
+
+    width: 44px;
+    height: 44px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #F3E8FF;
+    color: var(--primary);
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(17, 24, 39, .45);
+
+    z-index: 998;
+
+    backdrop-filter: blur(2px);
+}
+
+
+/******************************************************************************
+ * MOBILE SIDEBAR
+ ******************************************************************************/
+
+@media (max-width: 992px) {
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .sidebar-overlay.show {
+        display: block;
+    }
+
+    .sidebar {
+        width: 280px;
+        left: -290px;
+        transition: left .3s ease;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .header {
+        position: relative;
+
+        flex-direction: row;
+        align-items: center;
+
+        gap: 12px;
+    }
+
+    .header>div:first-of-type {
+        flex: 1;
+        min-width: 0;
+    }
+
+}
+
+
+/******************************************************************************
+ * MOBILE
+ ******************************************************************************/
+
+@media (max-width: 768px) {
+
+    .header {
+        padding: 14px;
+    }
+
+    .mobile-menu-btn {
+        width: 42px;
+        height: 42px;
+
+        font-size: 18px;
+    }
+
+}
+
+
+/******************************************************************************
+ * SMALL PHONE
+ ******************************************************************************/
+
+@media (max-width: 576px) {
+
+    .header {
+        align-items: flex-start;
+    }
+
+    .mobile-menu-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+}
