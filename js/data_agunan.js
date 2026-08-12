@@ -764,55 +764,104 @@ const DATA_AGUNAN = {
 
     },
 
-    /**************************************************************************
-     * DELETE DATA
-     **************************************************************************/
-    async delete(no_agunan) {
+    /******************************************************************************
+ * DELETE DATA
+ ******************************************************************************/
 
-        if (!confirm("Yakin ingin menghapus data ini ?")) {
+async delete(no_agunan) {
+
+    if (
+        !confirm(
+            "Yakin ingin menghapus data ini ?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        this.showLoading();
+
+
+        /*
+         * DELETE KE BACKEND
+         */
+
+        const result =
+            await API.deleteAgunan(
+                no_agunan
+            );
+
+
+        /*
+         * REQUEST TERKIRIM
+         */
+
+        if (
+            result &&
+            result.success === true
+        ) {
+
+            /*
+             * Tampilkan sukses
+             */
+
+            alert(
+                "Data berhasil dihapus."
+            );
+
+
+            /*
+             * JANGAN reload loadData()
+             *
+             * Karena GET getAgunan() bisa terkena
+             * redirect / 404 setelah POST.
+             *
+             * Untuk sementara kita refresh halaman
+             * secara penuh agar data terbaru tampil.
+             */
+
+            window.location.reload();
 
             return;
 
         }
 
-        try {
 
-            this.showLoading();
+        /*
+         * GAGAL
+         */
 
-            const result =
-                await API.deleteAgunan(no_agunan);
+        alert(
+            result?.message ||
+            "Gagal menghapus data."
+        );
 
-            if (result.success) {
+    }
+    catch (err) {
 
-                alert("Data berhasil dihapus.");
+        console.error(
+            "DELETE ERROR:",
+            err
+        );
 
-                await this.loadData();
 
-            }
+        alert(
+            err.message ||
+            "Gagal menghapus data."
+        );
 
-            else {
+    }
+    finally {
 
-                alert(result.message);
+        this.hideLoading();
 
-            }
+    }
 
-        }
-
-        catch (err) {
-
-            console.error(err);
-
-            alert(err.message);
-
-        }
-
-        finally {
-
-            this.hideLoading();
-
-        }
-
-    },
+},
 
     /**************************************************************************
      * REGISTER MODAL
