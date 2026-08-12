@@ -23,7 +23,8 @@ const ROLES = {
             "monitoring",
             "laporan",
             "user_management",
-            "pengaturan"
+            "pengaturan",
+            "input"
 
         ],
 
