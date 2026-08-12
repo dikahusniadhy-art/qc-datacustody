@@ -1,0 +1,391 @@
+<script src="../js/auth.js"></script>
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Enterprise App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="../foto/krom1.png">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- menambahkan foto BAVI -->
+            <!-- <img src="foto/bavi.png" alt="Logo/Foto"
+                style="position: absolute; top: 20px; right: 20px; width: 300px; height: auto; border-radius: 8px;"> -->
+            <center>
+                <h1>INPUT AGUNAN JAMINAN CUSTODY</h1>
+            </center>
+            <center>
+                <p>PIC : ANDI BAVI WIBOWO</p>
+            </center>
+        </div>
+
+        <div class="card">
+            <h2>Form Input</h2>
+            <form id="formData">
+
+                <div class="form-group">
+                    <label for="kode_cabang">KODE CABANG PEMILIK</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <select id="kode_cabang" name="kode_cabang">
+                        <option value="">-- Pilih Cabang --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="JAKARTA">JAKARTA</option>
+                        <option value="BANDUNG">BANDUNG</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cif_debitur">NO PEMILIK (CIF NASABAH)</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="cif_debitur" name="cif_debitur">
+                </div>
+
+                <div class="form-group">
+                    <label for="nama_pemilik_agunan">NAMA PEMILIK AGUNAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="nama_pemilik_agunan" name="nama_pemilik_agunan">
+                </div>
+
+                <div class="form-group">
+                    <label for="no_agunan">NO AGUNAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="no_agunan" name="no_agunan">
+                </div>
+
+                <div class="form-group">
+                    <label for="no_rek_fasilitas">NO REKENING FASILITAS</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="no_rek_fasilitas" name="no_rek_fasilitas">
+                </div>
+
+                <div class="form-group">
+                    <label for="kode_status_agunan">STATUS AGUNAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <select id="kode_status_agunan" name="kode_status_agunan">
+                        <option value="">-- Pilih Status Agunan --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="EDIT">EDIT</option>
+                        <option value="BARU">BARU</option>
+                        <option value="HAPUS">HAPUS</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="kode_jenis_agunan">JENIS AGUNAN</label>
+                    <select id="kode_jenis_agunan" name="kode_jenis_agunan">
+                        <option value="">-- Pilih Jenis Agunan --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="F0401">F0401 - Sertifikat Bank Indonesia (SBI)</option>
+                        <option value="F0402">F0402 - Sertifikat Bank Indonesia Syariah (SBIS)</option>
+                        <option value="F0403">F0403 - Sertifikat Deposito Bank Indonesia (SDBI)</option>
+                        <option value="F0404">F0404 - Surat Berharga Bank Indonesia (SBBI) dalam Valuta Asing</option>
+                        <option value="F040501">F040501 - Surat Perbendaharaan Negara (SPN)</option>
+                        <option value="F040502">F040502 - Surat Perbendaharaan Negara Syariah</option>
+                        <option value="F041401">F041401 - Reksadana</option>
+                        <option value="F041402">F041402 - Sertifikat Reksadana Syariah</option>
+                        <option value="F041403">F041403 - Reksadana Dana Pendapatan Tetap</option>
+                        <option value="F04150102">F04150102 - Obligasi Negara (ON)</option>
+                        <option value="F04150103">F04150103 - Obligasi Ritel Indonesia (ORI)</option>
+                        <option value="F04150106">F04150106 - Obligasi Daerah</option>
+                        <option value="F04150201">F04150201 - Sukuk Bank Indonesia</option>
+                        <option value="F04150203">F04150203 - Sukuk Negara</option>
+                        <option value="F04150204">F04150204 - Sukuk Ritel</option>
+                        <option value="F04150205">F04150205 - Ijarah Fixed Rate</option>
+                        <option value="F04150208">F04150208 - Sukuk Valas Bank Indonesia (SUVBI)</option>
+                        <option value="F04150299">F04150299 - Sukuk Lainnya</option>
+                        <option value="F0418">F0418 - Resi Gudang</option>
+                        <option value="F0419">F0419 - Saham</option>
+                        <option value="F0420">F0420 - Asuransi Kredit/Pembiayaan</option>
+                        <option value="F0499">F0499 - Surat Berharga Lainnya</option>
+                        <option value="F0422">F0422 - Sekuritas Rupiah Bank Indonesia (SRBI)</option>
+                        <option value="F0423">F0423 - Sekuritas Valas Bank Indonesia (SVBI)</option>
+                        <option value="F09">F09 - Giro</option>
+                        <option value="F10">F10 - Tabungan</option>
+                        <option value="F11">F11 - Deposito</option>
+                        <option value="F15">F15 - Setoran Jaminan</option>
+                        <option value="F16">F16 - Invoice</option>
+                        <option value="F2001">F2001 - Emas dan mata uang emas</option>
+                        <option value="F2099">F2099 - Aset Keuangan Lainnya</option>
+                        <option value="F4101">F4101 - L/C</option>
+                        <option value="F4102">F4102 - SKBDN</option>
+                        <option value="F42">F42 - Garansi</option>
+                        <option value="F4205">F4205 - Standby L/C</option>
+                        <option value="AN020101">AN020101 - Tanah</option>
+                        <option value="AN02010201">AN02010201 - Gedung/Ruang kantor</option>
+                        <option value="AN02010202">AN02010202 - Gudang</option>
+                        <option value="AN02010203">AN02010203 - Rumah Toko/Rumah Kantor</option>
+                        <option value="AN02010204">AN02010204 - Hotel</option>
+                        <option value="AN02010299">AN02010299 - Properti Komersial Lainnya</option>
+                        <option value="AN02010301">AN02010301 - Rumah</option>
+                        <option value="AN02010302">AN02010302 - Apartemen/Rumah Susun</option>
+                        <option value="AN020202">AN020202 - Mesin</option>
+                        <option value="AN020203">AN020203 - Kendaraan</option>
+                        <option value="AN020299">AN020299 - Aset Tetap dan Inventaris Lainnya</option>
+                        <option value="AN0205">AN0205 - Pesawat Udara</option>
+                        <option value="AN0206">AN0206 - Kapal Laut/Transportasi Air</option>
+                        <option value="AN0299">AN0299 - Aset non Keuangan Lainnya</option>
+                        <option value="AN999901">AN999901 - Persediaan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="jenis_pengikatan">JENIS PENGIKATAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <select id="jenis_pengikatan" name="jenis_pengikatan">
+                        <option value="">-- Pilih Jenis Pengikatan --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="HAK TANGGUNGAN">Hak Tanggungan</option>
+                        <option value="GADAI">Gadai</option>
+                        <option value="FIDUSIA">Fidusia</option>
+                        <option value="SKMHT">Surat Kuasa Membebankan Hak Tanggungan (SKMHT)</option>
+                        <option value="CESSIE">Cessie</option>
+                        <option value="BELUM DIIKAT">Belum di ikat</option>
+                        <option value="LAINNYA">Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_pengikatan">TANGGAL PENGIKATAN</label>
+                    <input type="date" id="tanggal_pengikatan" name="tanggal_pengikatan">
+                </div>
+
+                <div class="form-group">
+                    <label for="bukti_kepemilikan">BUKTI KEPEMILIKAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="bukti_kepemilikan" name="bukti_kepemilikan">
+                </div>
+
+                <div class="form-group">
+                    <label for="alamat_agunan">ALAMAT AGUNAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="alamat_agunan" name="alamat_agunan">
+                </div>
+
+                <div class="form-group">
+                    <label for="rt/rw">RT/RW</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="rt/rw" name="rt/rw">
+                </div>
+
+                <div class="form-group">
+                    <label for="kelurahan">KELURAHAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="kelurahan" name="kelurahan">
+                </div>
+
+                <div class="form-group">
+                    <label for="kecamatan">KECAMATAN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="kecamatan" name="kecamatan">
+                </div>
+
+                <div class="form-group">
+                    <label for="kota/kabupaten">KOTA/KABUPATEN</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="kota/kabupaten" name="kota/kabupaten">
+                </div>
+
+                <div class="form-group">
+                    <label for="provinsi">PROVINSI</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="provinsi" name="provinsi">
+                </div>
+
+                <div class="form-group">
+                    <label for="kodepos">KODEPOS</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <input type="text" id="kodepos" name="kodepos">
+                </div>
+
+                <div class="form-group">
+                    <label for="nilai_njop">NILAI NJOP</label>
+                    <input type="text" id="nilai_njop" name="nilai_njop">
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_penilaian_agunan">TANGGAL PENILAIAN AGUNAN</label>
+                    <input type="date" id="tanggal_penilaian_agunan" name="tanggal_penilaian_agunan">
+                </div>
+
+                <div class="form-group">
+                    <label for="status_paripasu">STATUS PARIPASU</label> <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <select id="status_paripasu" name="status_paripasu">
+                        <option value="">-- Pilih Status Paripasu --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="Agunan Paripasu">Agunan Paripasu</option>
+                        <option value="Bukan Agunan Paripasu">Bukan Agunan Paripasu</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="joint_account">AGUNAN KREDIT JOINT ACCOUNT</label>
+                    <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <select id="joint_account" name="joint_account">
+                        <option value="">-- Pilih --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="Y">JOINT ACCOUNT</option>
+                        <option value="T">TIDAK JOINT ACCOUNT</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="agunan_asuransi">AGUNAN ASURANSI</label>
+                    <!--WAJIB DI ISI/TIDAK BOLEH KOSONG -->
+                    <select id="agunan_asuransi" name="agunan_asuransi">
+                        <option value="">-- Pilih --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="Y">ASURANSI</option>
+                        <option value="T">TIDAK ASURANSI</option>
+                    </select>
+                </div>
+
+                <!-- -------------------------------------------------------------------------------------------- -->
+                <!-- TAMBAHAN LIST BAVI YANG LAMA -->
+                <!-- -------------------------------------------------------------------------------------------- -->
+
+
+                <div class="form-group">
+                    <label for="status_document">STATUS DOKUMEN</label>
+                    <select id="status_document" name="status_document">
+                        <option value="">-- Pilih Status Dokumen --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="ADA">ADA</option>
+                        <option value="COVERNOTE NOTARIS">COVERNOTE NOTARIS</option>
+                        <option value="TIDAK ADA">TIDAK ADA</option>
+                        <option value="COVERNOTE PPJ">COVERNOTE PPJ</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="lokasi_document">LOKASI DOKUMEN</label>
+                    <select id="lokasi_document" name="lokasi_document">
+                        <option value="">-- Pilih Lokasi Dokumen --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="ADA">DOKUMEN DALAM PENGURUSAN NOTARIS</option>
+                        <option value="COVERNOTE NOTARIS">DOKUMEN DALAM PROSES ASURANSI</option>
+                        <option value="TIDAK ADA">DOKUMEN EXPIRED</option>
+                        <option value="COVERNOTE PPJ">DOKUMEN TIDAK ADA</option>
+                        <option value="COVERNOTE PPJ">DOKUMEN SUDAH ADA DI CUSTODY</option>
+                        <option value="COVERNOTE PPJ">BELUM DILAKUKAN AJB</option>
+                        <option value="COVERNOTE PPJ">BELUM HT KROM</option>
+                        <option value="COVERNOTE PPJ">BELUM BALIK NAMA</option>
+                        <option value="COVERNOTE PPJ">PELUNASAN</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="document_description">DOKUMEN DESCRIPTION</label>
+                    <select id="document_description" name="document_description">
+                        <option value="">-- Pilih Data --</option>
+                        <option value="BELUM DIKETAHUI">BELUM DIKETAHUI</option>
+                        <option value="ADA">ADDENDUM/PERUBAHAN PERJANJIAN KREDIT</option>
+                        <option value="COVERNOTE NOTARIS">AKTA CERAI</option>
+                        <option value="TIDAK ADA">AKTA CESSIE</option>
+                        <option value="COVERNOTE PPJ">AKTA FIDUSIA</option>
+                        <option value="COVERNOTE PPJ">AKTA GADAI</option>
+                        <option value="COVERNOTE PPJ">AKTA JUAL BELI</option>
+                        <option value="COVERNOTE PPJ">AKTA KUASA</option>
+                        <option value="COVERNOTE PPJ">AKTA KUASA JUAL</option>
+                        <option value="COVERNOTE PPJ">AKTA PEMBERIAN HAK TANGGUNGAN (APHT)</option>
+                        <option value="COVERNOTE PPJ">AKTA PEMBERIAN JAMINAN & KUASA</option>
+                        <option value="COVERNOTE PPJ">AKTA PENGAKUAN HUTANG</option>
+                        <option value="COVERNOTE PPJ">AKTA PENGIKATAN JAMINAN</option>
+                        <option value="COVERNOTE PPJ">AKTA PERNYATAAN</option>
+                        <option value="COVERNOTE PPJ">AKTA PERSONAL GUARANTEE</option>
+                        <option value="COVERNOTE PPJ">AKTA WARIS</option>
+                        <option value="COVERNOTE PPJ">APLIKASI PEMANFAATAN PRODUK</option>
+                        <option value="COVERNOTE PPJ">APPROVAL MEMORANDUM</option>
+                        <option value="COVERNOTE PPJ">BERITA ACARA</option>
+                        <option value="COVERNOTE PPJ">BI CHECKING</option>
+                        <option value="COVERNOTE PPJ">BPHTB</option>
+                        <option value="COVERNOTE PPJ">CALL MEMO</option>
+                        <option value="COVERNOTE PPJ">CEK/GIRO</option>
+                        <option value="COVERNOTE PPJ">COMPLIANCE REVIEW</option>
+                        <option value="COVERNOTE PPJ">COVER NOTE</option>
+                        <option value="COVERNOTE PPJ">CREDIT REVIEW</option>
+                        <option value="COVERNOTE PPJ">DHN (DAFTAR HITAM NASABAH)</option>
+                        <option value="COVERNOTE PPJ">DOKUMEN CHECKLIST</option>
+                        <option value="COVERNOTE PPJ">FORMULIR PERMOHONAN KREDIT</option>
+                        <option value="COVERNOTE PPJ">FOTO USAHA</option>
+                        <option value="COVERNOTE PPJ">IDENTITAS KTP/PASSPORT/SIM/KITAS </option>
+                        <option value="COVERNOTE PPJ">IJIN MENDIRIKAN BANGUNAN (IMB)</option>
+                        <option value="COVERNOTE PPJ">IPEDA /PBB</option>
+                        <option value="COVERNOTE PPJ">JADWAL/SCHEDULE ANGSURAN KREDIT</option>
+                        <option value="COVERNOTE PPJ">KANTOR JASA PENILAI PUBLIK (KJPP)</option>
+                        <option value="COVERNOTE PPJ">KARTU KELUARGA</option>
+                        <option value="COVERNOTE PPJ">KONTRAK PENJUALAN</option>
+                        <option value="COVERNOTE PPJ">LAPORAN KEUANGAN NASABAH</option>
+                        <option value="COVERNOTE PPJ">LAPORAN KUNJUNGAN DEBITOR</option>
+                        <option value="COVERNOTE PPJ">LAPORAN PENILAIAN AGUNAN</option>
+                        <option value="COVERNOTE PPJ">LETTER OF OFFER</option>
+                        <option value="COVERNOTE PPJ">LFK</option>
+                        <option value="COVERNOTE PPJ">MEMO INTERNAL</option>
+                        <option value="COVERNOTE PPJ">MEMO PERPANJANGAN SEMENTARA (PPJS)</option>
+                        <option value="COVERNOTE PPJ">NIB</option>
+                        <option value="COVERNOTE PPJ">NPWP</option>
+                        <option value="COVERNOTE PPJ">OFFERING LETTER</option>
+                        <option value="COVERNOTE PPJ">OPINI COMPLIANCE</option>
+                        <option value="COVERNOTE PPJ">OPINI KREDIT REVIEWER</option>
+                        <option value="COVERNOTE PPJ">OPINI LEGAL</option>
+                        <option value="COVERNOTE PPJ">OPINI SKMR</option>
+                        <option value="COVERNOTE PPJ">PAJAK BUMI DAN BANGUNAN (PBB)</option>
+                        <option value="COVERNOTE PPJ">PERJANJIAN KREDIT</option>
+                        <option value="COVERNOTE PPJ">PERJANJIAN KREDIT NOTARIS</option>
+                        <option value="COVERNOTE PPJ">PERJANJIAN PEMBERIAN JAMINAN DAN KUASA (PPJK)</option>
+                        <option value="COVERNOTE PPJ">PERJANJIAN PENGIKATAN JUAL BELI</option>
+                        <option value="COVERNOTE PPJ">PERJANJIAN SEWA MENYEWA</option>
+                        <option value="COVERNOTE PPJ">POLIS ASURANSI JIWA</option>
+                        <option value="COVERNOTE PPJ">POLIS ASURANSI KEBAKARAN</option>
+                        <option value="COVERNOTE PPJ">REKENING KORAN/TABUNGAN</option>
+                        <option value="COVERNOTE PPJ">SERTIFIKAT FIDUSIA</option>
+                        <option value="COVERNOTE PPJ">SERTIFIKAT HAK GUNA BANGUNAN</option>
+                        <option value="COVERNOTE PPJ">SERTIFIKAT HAK MILIK</option>
+                        <option value="COVERNOTE PPJ">SERTIFIKAT HAK MILIK ATAS SATUAN RUMAH SUSUN</option>
+                        <option value="COVERNOTE PPJ">SERTIFIKAT HAK TANGGUNGAN</option>
+                        <option value="COVERNOTE PPJ">SITE PLAN</option>
+                        <option value="COVERNOTE PPJ">SPPFK</option>
+                        <option value="COVERNOTE PPJ">STANDING INSTRUCTION</option>
+                        <option value="COVERNOTE PPJ">SURAT AKSEP/ PROMISSORY NOTE</option>
+                        <option value="COVERNOTE PPJ">SURAT IZIN USAHA PERDAGANGAN (SIUP)</option>
+                        <option value="COVERNOTE PPJ">SURAT KETERANGAN </option>
+                        <option value="COVERNOTE PPJ">SURAT KETERANGAN BEDA NAMA</option>
+                        <option value="COVERNOTE PPJ">SURAT KETERANGAN BEKERJA</option>
+                        <option value="COVERNOTE PPJ">SURAT KETERANGAN DOMISILI</option>
+                        <option value="COVERNOTE PPJ">SURAT KETERANGAN USAHA (SKU)</option>
+                        <option value="COVERNOTE PPJ">SURAT KUASA</option>
+                        <option value="COVERNOTE PPJ">SURAT KUASA MEMBEBANKAN HAK TANGGUNGAN (SKMHT)</option>
+                        <option value="COVERNOTE PPJ">SURAT KUASA PENDEBETAN REKENING</option>
+                        <option value="COVERNOTE PPJ">SURAT NIKAH</option>
+                        <option value="COVERNOTE PPJ">SURAT PEMBERITAHUAN PAJAK TERUTANG (SPPT)</option>
+                        <option value="COVERNOTE PPJ">SURAT PERINTAH TRANSFER</option>
+                        <option value="COVERNOTE PPJ">SURAT PERJANJIAN JUAL BELI</option>
+                        <option value="COVERNOTE PPJ">SURAT PERNYATAAN</option>
+                        <option value="COVERNOTE PPJ">SURAT PERNYATAAN BELUM MENIKAH</option>
+                        <option value="COVERNOTE PPJ">SURAT PERNYATAAN DAN KUASA</option>
+                        <option value="COVERNOTE PPJ">SURAT PERSETUJUAN</option>
+                        <option value="COVERNOTE PPJ">TANDA TERIMA JAMINAN</option>
+                        <option value="COVERNOTE PPJ">TRADE CHECKING LIST</option>
+                        <option value="COVERNOTE PPJ">SERTIFIKAT FIDUSIA</option>
+                        <option value="COVERNOTE PPJ">AKTA KEMATIAN</option>
+                        <option value="COVERNOTE PPJ">AKTA CORPORATE GARANTY</option>
+                        <option value="COVERNOTE PPJ">BPKB</option>
+                        <option value="COVERNOTE PPJ">AMANDEMEN PERJANJIAN KREDIT</option>
+                        <option value="COVERNOTE PPJ">TAGIHAN PIUTANG</option>
+                        <option value="COVERNOTE PPJ">CASSIE PIUTANG</option>
+                        <option value="COVERNOTE PPJ">SURAT PEMBERI JAMINAN PRIBADI</option>
+                        <option value="COVERNOTE PPJ">MEMO ANALISA YURIDIS (MAY)</option>
+                        <option value="COVERNOTE PPJ">Lainnya yang belum didefinisikan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="digital_file_link">DIGITAL FILE LINK</label>
+                    <input type="text" id="digital_file_link" name="digital_file_link">
+                </div>
+
+                <!-- -------------------------------------------------------------------------------------------- -->
+                <!-- -------------------------------------------------------------------------------------------- -->
+
+                <div class="button-group">
+                    <button type="button" id="btnSimpan">Simpan Data</button>
+                    <button type="button" id="btnReset">Reset</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

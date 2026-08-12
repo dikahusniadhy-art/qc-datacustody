@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONITORING DATA AGUNAN</title>
+
+    <!-- GLOBAL STYLE -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="../foto/krom1.png">
+
+    <!-- MONITORING -->
+    <link rel="stylesheet" href="../css/monitoring.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- ========================================================= -->
+    <!-- PAGE CONTAINER -->
+    <!-- ========================================================= -->
+    <div class="page-container">
+
+        <!-- ========================================================= -->
+        <!-- HEADER -->
+        <!-- ========================================================= -->
+        <header class="page-header">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Monitoring Data Agunan</h1>
+                    <p>Enterprise Custody Monitoring System</p>
+                    <span id="lastUpdate">Last Update : -</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="monitor-date">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span id="todayDate">-</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ========================================================= -->
+        <!-- SUMMARY -->
+        <!-- ========================================================= -->
+        <section class="summary-grid">
+            <!-- PROGRESS -->
+            <div class="summary-card progress-summary">
+                <div class="summary-header">
+                    <h3>Progress Kelengkapan Dokumen</h3>
+                    <span>Overall</span>
+                </div>
+                <div class="progress-circle">
+                    <h1 id="progressPercent">0%</h1>
+                </div>
+                <div class="progress-bar-big">
+                    <div id="progressValue" class="progress-value"></div>
+                </div>
+                <div class="progress-footer">
+                    Target Operasional
+                    <strong>100%</strong>
+                </div>
+            </div>
+
+            <!-- PRIORITY -->
+            <div class="summary-card priority-summary">
+                <div class="summary-header">
+                    <h3>Prioritas Hari Ini</h3>
+                </div>
+                <div class="priority-list">
+                    <div class="priority-item high">
+                        <div>🔴 Expired</div>
+                        <strong id="totalExpired">0</strong>
+                    </div>
+                    <div class="priority-item medium">
+                        <div>🟡 Akan Expired</div>
+                        <strong id="totalSoon">0</strong>
+                    </div>
+                    <div class="priority-item pending">
+                        <div>🟣 Belum Lengkap</div>
+                        <strong id="totalBL">0</strong>
+                    </div>
+                    <div class="priority-item success">
+                        <div>🟢 Lengkap</div>
+                        <strong id="totalLengkap">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- KPI -->
+        <!-- ========================================================= -->
+        <section class="kpi-grid">
+            <div class="kpi-card total">
+                <div class="kpi-icon">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <div class="kpi-content">
+                    <span>Total Agunan</span>
+                    <h2 id="kpiTotal">0</h2>
+                    <small>Total Dokumen Custody</small>
+                </div>
+            </div>
+
+            <div class="kpi-card success">
+                <div class="kpi-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="kpi-content">
+                    <span>Dokumen Lengkap</span>
+                    <h2 id="kpiLengkap">0</h2>
+                    <small>Status Aman</small>
+                </div>
+            </div>
+
+            <div class="kpi-card pending">
+                <div class="kpi-icon">
+                    <i class="fa-solid fa-file-circle-exclamation"></i>
+                </div>
+                <div class="kpi-content">
+                    <span>Belum Lengkap</span>
+                    <h2 id="kpiBelum">0</h2>
+                    <small>Perlu Dilengkapi</small>
+                </div>
+            </div>
+
+            <div class="kpi-card warning">
+                <div class="kpi-icon">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="kpi-content">
+                    <span>Akan Expired</span>
+                    <h2 id="kpiSoon">0</h2>
+                    <small>≤ 30 Hari</small>
+                </div>
+            </div>
+
+            <div class="kpi-card danger">
+                <div class="kpi-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="kpi-content">
+                    <span>Sudah Expired</span>
+                    <h2 id="kpiExpired">0</h2>
+                    <small>Perlu Tindakan</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TOOLBAR -->
+        <!-- ========================================================= -->
+        <section class="toolbar-card">
+            <div class="toolbar-left">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="txtSearch" placeholder="Cari No Agunan, CIF atau Nama Debitur">
+                </div>
+                <select id="filterDokumen">
+                    <option value="">Semua Jenis Dokumen</option>
+                    <option value="DOKUMEN">DOKUMEN</option>
+                    <option value="PENGIKATAN">PENGIKATAN</option>
+                    <option value="JAMINAN">JAMINAN</option>
+                </select>
+                <select id="filterCabang">
+                    <option value="">Semua Cabang</option>
+                </select>
+                <select id="filterStatus">
+                    <option value="">Semua Status</option>
+                    <option value="A">AKTIF</option>
+                    <option value="BL">BELUM LENGKAP</option>
+                    <option value="E">EXPIRED</option>
+                    <!-- DISESUAIKAN DENGAN CODE.GS -->
+                    <option value="D">NON AKTIF</option>
+                </select>
+            </div>
+            <div class="toolbar-right">
+                <span class="toolbar-total">
+                    Total :
+                    <strong id="toolbarTotal">0</strong>
+                    Data
+                </span>
+                <button id="btnBack" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Dashboard
+                </button>
+                <button id="btnRefresh" class="btn btn-light">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    Refresh
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TABLE -->
+        <!-- ========================================================= -->
+        <section class="table-card">
+            <div class="table-header">
+                <div>
+                    <h3>
+                        <i class="fa-solid fa-chart-line"></i>
+                        Monitoring Operasional Custody
+                    </h3>
+                    <small>Monitoring Status Dokumen Agunan</small>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="tblMonitoring">
+                    <thead>
+                        <tr>
+                            <th width="60">No</th>
+                            <th>Jenis Dokumen</th>
+                            <th>No Agunan</th>
+                            <th>CIF</th>
+                            <th>Nama Debitur</th>
+                            <th>Cabang</th>
+                            <th>Status</th>
+                            <th>Tanggal Expired</th>
+                            <th>Sisa Hari</th>
+                            <th>Priority</th>
+                            <th width="170">Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Generate Javascript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- PAGINATION -->
+        <!-- ========================================================= -->
+        <section class="pagination">
+            <button id="btnPrev" class="btn-page">
+                <i class="fa-solid fa-angle-left"></i>
+            </button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button id="btnNext" class="btn-page">
+                <i class="fa-solid fa-angle-right"></i>
+            </button>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- FOOTER -->
+        <!-- ========================================================= -->
+        <footer class="footer">
+            <strong>MONITORING DATA AGUNAN CUSTODY</strong><br>
+            <span id="appVersion"></span><br>
+            © 2026 PT KROM BANK INDONESIA Tbk
+        </footer>
+
+        <!-- ========================================================= -->
+        <!-- LOADING -->
+        <!-- ========================================================= -->
+        <div id="loading" class="loading-overlay">
+            <div class="loading-box">
+                <div class="spinner"></div>
+                <p>Memuat Data Monitoring...</p>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- JAVASCRIPT -->
+        <!-- ========================================================= -->
+        <script src="../js/config.js"></script>
+        <script src="../js/api.js"></script>
+        <script src="../js/helper.js"></script>
+        <script src="../js/monitoring.js"></script>
+    </div>
+</body>
+
+</html>

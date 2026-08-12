@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DATA AGUNAN CUSTODY</title>
+
+    <!-- CSS GLOBAL -->
+    <link rel="icon" href="../foto/krom1.png">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- CSS KHUSUS DATA AGUNAN -->
+    <link rel="stylesheet" href="../css/data_agunan.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- ========================================================= -->
+    <!-- HEADER -->
+    <!-- ========================================================= -->
+
+    <!-- ========================================================= -->
+    <!-- HEADER -->
+    <!-- ========================================================= -->
+
+    <header class="page-header">
+
+        <div class="header-left">
+
+            <div class="header-icon">
+
+                <i class="fa-solid fa-table-list"></i>
+
+            </div>
+
+            <div class="header-info">
+
+                <h1>DATA AGUNAN CUSTODY</h1>
+
+                <p>Enterprise Custody Management System</p>
+
+                <span id="lastUpdate">
+
+                    Last Update : -
+
+                </span>
+
+            </div>
+
+        </div>
+
+        </div>
+
+    </header>
+
+    <!-- ========================================================= -->
+    <!-- KPI -->
+    <!-- ========================================================= -->
+
+    <section class="kpi-grid">
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon total">
+
+                    <i class="fa-solid fa-folder-open"></i>
+
+                </div>
+
+            </div>
+
+            <span>Total Agunan</span>
+
+            <h2 id="kpiTotal">0</h2>
+
+            <small>Total Data Agunan</small>
+
+        </div>
+
+        <div class="kpi-card success">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon success">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+            </div>
+
+            <span>Aktif</span>
+
+            <h2 id="kpiAktif">0</h2>
+
+            <small>Status Aktif</small>
+
+        </div>
+
+        <div class="kpi-card warning">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon warning">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                </div>
+
+            </div>
+
+            <span>Expired</span>
+
+            <h2 id="kpiExpired">0</h2>
+
+            <small>Segera Diperpanjang</small>
+
+        </div>
+
+        <div class="kpi-card danger">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon danger">
+
+                    <i class="fa-solid fa-ban"></i>
+
+                </div>
+
+            </div>
+
+            <span>Non Aktif</span>
+
+            <h2 id="kpiNonAktif">0</h2>
+
+            <small>Tidak Aktif</small>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- FILTER -->
+    <!-- ========================================================= -->
+
+    <section class="filter-card">
+
+        <div class="filter-row">
+
+            <!-- SEARCH -->
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text" id="txtSearch" placeholder="Cari No Agunan, CIF, Nama Debitur ...">
+
+            </div>
+
+            <!-- STATUS -->
+            <select id="filterStatus">
+
+                <option value="">Semua Status</option>
+                <option value="AKTIF">Aktif</option>
+                <option value="EXPIRED">Expired</option>
+                <option value="NONAKTIF">Non Aktif</option>
+                <option value="BELUM LENGKAP">Belum Lengkap</option>
+
+            </select>
+
+            <!-- JENIS -->
+            <select id="filterJenis">
+
+                <option value="">Semua Jenis</option>
+
+            </select>
+
+            <!-- CABANG -->
+            <select id="filterCabang">
+
+                <option value="">Semua Cabang</option>
+
+            </select>
+
+            <!-- TOOLBAR -->
+            <div class="toolbar-action">
+
+                <button id="btnBack" class="btn btn-secondary">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Kembali
+
+                </button>
+
+                <span class="toolbar-total">
+
+                    Total :
+                    <strong id="toolbarTotal">0</strong>
+                    Data
+
+                </span>
+
+                <button id="btnRefresh" class="btn btn-light">
+
+                    <i class="fa-solid fa-rotate-right"></i>
+
+                    Refresh
+
+                </button>
+
+                <button id="btnTambah" class="btn btn-primary">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Tambah
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- DATA TABLE -->
+    <!-- ========================================================= -->
+
+    <section class="table-card">
+
+        <div class="table-container">
+
+            <table id="tblAgunan">
+
+                <thead>
+
+                    <tr>
+
+                        <th>No</th>
+                        <th>Jenis Dokumen</th>
+                        <th>Cabang</th>
+                        <th>No Agunan</th>
+                        <th>CIF</th>
+                        <th>Nama Debitur</th>
+                        <th>Jenis Agunan</th>
+                        <th>Status</th>
+                        <th>Tgl Expired</th>
+                        <th width="140">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <!-- Generate Javascript -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- PAGINATION -->
+    <!-- ========================================================= -->
+
+    <section class="pagination">
+
+        <button id="btnPrev" class="btn-page">
+
+            <i class="fa-solid fa-angle-left"></i>
+
+        </button>
+
+        <span id="pageInfo">
+
+            Page 1 of 1
+
+        </span>
+
+        <button id="btnNext" class="btn-page">
+
+            <i class="fa-solid fa-angle-right"></i>
+
+        </button>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- FOOTER -->
+    <!-- ========================================================= -->
+
+    <footer class="footer">
+        <br>
+
+        <span id="appVersion"></span>
+
+        <br>
+
+        © 2026 PT KROM BANK INDONESIA - OPERASIONAL
+
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- VIEW DETAIL MODAL -->
+    <!-- ========================================================= -->
+
+    <div class="modal" id="viewModal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>
+
+                    Detail Agunan
+
+                </h2>
+
+                <button id="btnCloseModal">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================================================= -->
+
+    <script src="../js/config.js?v=3.0.1"></script>
+    <script src="../js/api.js?v=3.0.1"></script>
+    <script src="../js/auth.js?v=3.0.1"></script>
+    <script src="../js/roles.js?v=3.0.1"></script>
+    <script src="../js/data_agunan.js?v=3.0.1"></script>
+
+</body>
+
+</html>

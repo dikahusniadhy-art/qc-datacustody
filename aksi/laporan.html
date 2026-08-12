@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Laporan Data Agunan
+
+    </title>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="icon" href="../foto/krom1.png">
+
+    <link rel="stylesheet" href="../css/laporan.css">
+
+    <!-- FONT AWESOME -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <!-- ===================================================== -->
+        <!-- SIDEBAR -->
+        <!-- ===================================================== -->
+
+        <aside class="sidebar">
+
+            <div class="brand">
+
+                <img src="../foto/bavi.png" alt="KROM">
+
+                <h2>
+
+                    DATA AGUNAN
+
+                </h2>
+
+            </div>
+
+            <ul class="menu">
+
+                <li>
+
+                    <a href="../dashboard.html">
+
+                        <i class="fa-solid fa-house"></i>
+
+                        Dashboard
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="input.html">
+
+                        <i class="fa-solid fa-file-circle-plus"></i>
+
+                        Input Agunan
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="data_agunan.html">
+
+                        <i class="fa-solid fa-folder-open"></i>
+
+                        Data Agunan
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="monitoring.html">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        Monitoring
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="laporan.html" class="active">
+
+                        <i class="fa-solid fa-file-lines"></i>
+
+                        Laporan
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="user.html">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        User
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="pengaturan.html">
+
+                        <i class="fa-solid fa-gears"></i>
+
+                        Pengaturan
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- ===================================================== -->
+        <!-- CONTENT -->
+        <!-- ===================================================== -->
+
+        <main class="content">
+
+            <!-- HEADER -->
+
+            <div class="header">
+
+                <div>
+
+                    <h1>
+
+                        Enterprise Reporting Center
+
+                    </h1>
+
+                    <p>
+
+                        Operations Division
+
+                    </p>
+
+                </div>
+
+                <div class="user">
+
+                    <div class="avatar">
+
+                        A
+
+                    </div>
+
+                    <div>
+
+                        <div id="username">
+
+                            Administrator
+
+                        </div>
+
+                        <small>
+
+                            Enterprise User
+
+                        </small>
+
+                    </div>
+
+                    <button class="logout" id="btnLogout">
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- PAGE TITLE -->
+            <!-- ===================================================== -->
+
+            <section class="report-header">
+
+                <div>
+
+                    <span class="report-tag">
+
+                        ENTERPRISE REPORTING
+
+                    </span>
+
+                    <h2>
+
+                        Bavi Custody Reporting Dashboard
+
+                        <div class="report-info">
+
+                            <span>
+
+                                <i class="fa-solid fa-clock"></i>
+
+                                Last Update :
+
+                                <strong id="lastUpdate">
+
+                                    -
+
+                                </strong>
+
+                            </span>
+
+                        </div>
+
+                    </h2>
+
+                    <p>
+
+                        Generate, Preview, Export dan Monitoring
+                        seluruh laporan Data Agunan Custody.
+
+                    </p>
+
+                </div>
+
+                <div class="report-header-icon">
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                </div>
+
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- KPI REPORT -->
+            <!-- ===================================================== -->
+
+            <section class="cards report-kpi">
+
+                <div class="card primary">
+
+                    <div>
+
+                        <div>Total Data</div>
+
+                        <h2 id="kpiTotal">0</h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-database"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="card success">
+
+                    <div>
+
+                        <div>Dokumen Aktif</div>
+
+                        <h2 id="kpiAktif">0</h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="card warning">
+
+                    <div>
+
+                        <div>Expired</div>
+
+                        <h2 id="kpiExpired">0</h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="card danger">
+
+                    <div>
+
+                        <div>Belum Lengkap</div>
+
+                        <h2 id="kpiBL">0</h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-file-circle-xmark"></i>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- FILTER -->
+            <!-- ===================================================== -->
+
+            <section class="section report-filter">
+
+                <h3>
+
+                    <i class="fa-solid fa-filter"></i>
+
+                    Filter Laporan
+
+                </h3>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Periode Awal
+
+                        </label>
+
+                        <input type="date" id="tanggalAwal" class="form-control">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Periode Akhir
+
+                        </label>
+
+                        <input type="date" id="tanggalAkhir" class="form-control">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Cabang
+
+                        </label>
+
+                        <select id="filterCabang" class="form-control">
+
+                            <option value="">
+
+                                Semua Cabang
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Status
+
+                        </label>
+
+                        <select id="filterStatus" class="form-control">
+
+                            <option value="">
+
+                                Semua Status
+
+                            </option>
+
+                            <option value="A">
+
+                                Aktif
+
+                            </option>
+
+                            <option value="BL">
+
+                                Belum Lengkap
+
+                            </option>
+
+                            <option value="E">
+
+                                Expired
+
+                            </option>
+
+                            <option value="D">
+
+                                Non Aktif
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="search-box mt-20">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" id="txtKeyword" placeholder="Cari Nomor Agunan, CIF, Nama Debitur ...">
+
+                </div>
+
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- TOOLBAR -->
+            <!-- ===================================================== -->
+
+            <section class="section">
+
+                <div class="button-group">
+
+                    <button id="btnPreview" class="btn btn-primary">
+
+                        <i class="fa-solid fa-eye"></i>
+
+                        Preview
+
+                    </button>
+
+                    <button id="btnRefresh" class="btn btn-success">
+
+                        <i class="fa-solid fa-rotate-right"></i>
+
+                        Refresh
+
+                    </button>
+
+                    <button id="btnExcel" class="btn">
+
+                        <i class="fa-solid fa-file-excel"></i>
+
+                        Export Excel
+
+                    </button>
+
+                    <button id="btnPDF" class="btn">
+
+                        <i class="fa-solid fa-file-pdf"></i>
+
+                        Export PDF
+
+                    </button>
+
+                    <button id="btnPrint" class="btn">
+
+                        <i class="fa-solid fa-print"></i>
+
+                        Print
+
+                    </button>
+
+                </div>
+
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- REPORT SUMMARY -->
+            <!-- ===================================================== -->
+
+            <section class="report-summary">
+
+                <div class="summary-card">
+
+                    <span>
+
+                        Data Ditampilkan
+
+                    </span>
+
+                    <h3 id="summaryTotal">
+
+                        0
+
+                    </h3>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span>
+
+                        Dokumen Aktif
+
+                    </span>
+
+                    <h3 id="summaryAktif">
+
+                        0
+
+                    </h3>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span>
+
+                        Expired
+
+                    </span>
+
+                    <h3 id="summaryExpired">
+
+                        0
+
+                    </h3>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span>
+
+                        Belum Lengkap
+
+                    </span>
+
+                    <h3 id="summaryBL">
+
+                        0
+
+                    </h3>
+
+                </div>
+
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- REPORT TABLE -->
+            <!-- ===================================================== -->
+
+            <section class="section report-table">
+
+                <div class="table-header">
+
+                    <div>
+
+                        <h3>
+
+                            Operational Report
+
+                        </h3>
+
+                        <small>
+
+                            Enterprise Custody Management System
+
+                        </small>
+
+                    </div>
+
+                    <span class="table-total">
+
+                        Total :
+
+                        <strong id="toolbarTotal">
+
+                            0
+
+                        </strong>
+
+                        Data
+
+                    </span>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table id="tblReport">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>No</th>
+
+                                <th>No Agunan</th>
+
+                                <th>CIF</th>
+
+                                <th>Nama Debitur</th>
+
+                                <th>Cabang</th>
+
+                                <th>Jenis Agunan</th>
+
+                                <th>Status</th>
+
+                                <th>Tanggal Expired</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td colspan="8" class="empty-data">
+
+                                    Belum ada data.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- PAGINATION -->
+            <!-- ===================================================== -->
+
+            <section class="pagination-area">
+
+                <button id="btnPrev" class="btn">
+
+                    <i class="fa-solid fa-angle-left"></i>
+
+                    Previous
+
+                </button>
+
+                <span id="pageInfo">
+
+                    Page 1 of 1
+
+                </span>
+
+                <button id="btnNext" class="btn">
+
+                    Next
+
+                    <i class="fa-solid fa-angle-right"></i>
+
+                </button>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="js/roles.js"></script>
+    <script src="../js/helper.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="../js/laporan.js"></script>
+
+</body>
+
+</html>
