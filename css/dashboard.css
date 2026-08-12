@@ -1456,42 +1456,6 @@ RESPONSIVE
 
 }
 
-@media(max-width:992px) {
-
-    .sidebar {
-
-        left: -280px;
-
-    }
-
-    .sidebar.show {
-
-        left: 0;
-
-    }
-
-    .content {
-
-        margin-left: 0;
-
-    }
-
-    .cards {
-
-        grid-template-columns: repeat(2, 1fr);
-
-    }
-
-    .header {
-
-        flex-direction: column;
-
-        gap: 20px;
-
-    }
-
-}
-
 @media(max-width:768px) {
 
     .cards {
