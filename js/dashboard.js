@@ -146,90 +146,148 @@ async init() {
 
     },
 
-    /**************************************************************************
-    * LOAD DASHBOARD
-    **************************************************************************/
-    async loadDashboard(showLoading = true) {
+    /******************************************************************************
+ * LOAD DASHBOARD - OPTIMIZED
+ ******************************************************************************/
 
-        try {
+async loadDashboard(
+    showLoading = false
+) {
 
-            if (showLoading) {
-                Helper.showLoading("Memuat Dashboard...");
-            }
+    try {
 
-            const result =
-                await API.getDashboard();
+        /*
+         * Optional loading untuk manual refresh.
+         *
+         * Initial load tidak menggunakan
+         * fullscreen loading.
+         */
 
-            console.log(
-                "===== DASHBOARD API ====="
+        if (showLoading) {
+
+            Helper.showLoading(
+                "Memuat Dashboard..."
             );
 
-            console.log(result);
+        }
 
-            console.log(
-                "DATA DASHBOARD:",
-                result.data
+
+        /*
+         * API CALL
+         */
+
+        const result =
+            await API.getDashboard();
+
+
+        /*
+         * VALIDASI
+         */
+
+        if (
+            !result ||
+            result.success !== true
+        ) {
+
+            throw new Error(
+                result?.message ||
+                "Gagal mengambil data dashboard."
             );
 
-            console.log(
-                "TOTAL AGUNAN:",
-                result.data?.totalAgunan
-            );
+        }
 
-            if (showLoading) {
-                Helper.hideLoading();
-            }
 
-            if (!result || result.success !== true) {
+        /*
+         * SIMPAN DATA
+         */
 
-                Helper.error(
-                    result?.message ||
-                    "Gagal mengambil data dashboard."
+        this.dashboardData =
+            result.data || {};
+
+
+        /*
+         * RENDER YANG PALING PENTING
+         *
+         * Jalankan terlebih dahulu supaya
+         * KPI langsung muncul.
+         */
+
+        this.loadKPI();
+
+        this.loadProgress();
+
+        this.loadExpired();
+
+        this.loadActivityLog();
+
+
+        /*
+         * RENDER NON-CRITICAL
+         *
+         * Berikan browser kesempatan melakukan
+         * paint sebelum chart dan data tambahan.
+         */
+
+        requestAnimationFrame(
+            () => {
+
+                this.loadLatest();
+
+                this.loadLoginHistory();
+
+                this.loadApproval();
+
+                /*
+                 * Chart dibuat terakhir karena
+                 * Chart.js relatif lebih berat.
+                 */
+
+                requestAnimationFrame(
+                    () => {
+
+                        this.loadChart();
+
+                    }
                 );
 
-                return;
             }
+        );
 
-            this.dashboardData =
-                result.data || {};
 
-            this.loadKPI();
+        /*
+         * HIDE LOADING
+         */
 
-            this.loadProgress();
+        if (showLoading) {
 
-            this.loadChart();
-
-            this.loadLatest();
-
-            this.loadExpired();
-
-            this.loadLoginHistory();
-
-            this.loadActivityLog();
-
-            this.loadApproval();
+            Helper.hideLoading();
 
         }
 
-        catch (err) {
+    }
+    catch (err) {
 
-            if (showLoading) {
-                Helper.hideLoading();
-            }
+        if (showLoading) {
 
-            console.error(
-                "DASHBOARD ERROR:",
-                err
-            );
-
-            Helper.error(
-                err.message ||
-                "Gagal memuat dashboard."
-            );
+            Helper.hideLoading();
 
         }
 
-    },
+
+        console.error(
+            "DASHBOARD ERROR:",
+            err
+        );
+
+
+        Helper.error(
+            err.message ||
+            "Gagal memuat dashboard."
+        );
+
+    }
+
+},
 
     /**************************************************************************
      * LOAD KPI
