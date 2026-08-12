@@ -2697,3 +2697,177 @@ END OF FILE
     }
 
 }
+
+/******************************************************************************
+ * MOBILE HEADER FIX
+ ******************************************************************************/
+
+@media (max-width: 992px) {
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+
+        width: 100%;
+        min-width: 0;
+    }
+
+
+    /* AREA JUDUL */
+
+    .header > div:first-of-type {
+
+        flex: 1 1 auto;
+
+        width: auto !important;
+
+        min-width: 0;
+
+        overflow: hidden;
+    }
+
+
+    .header > div:first-of-type h1 {
+
+        width: 100%;
+
+        margin: 0;
+
+        font-size: 20px;
+
+        line-height: 1.2;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+
+
+    .header > div:first-of-type p {
+
+        margin: 4px 0 0;
+
+        font-size: 12px;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+
+
+    /* USER AREA */
+
+    .header .user {
+
+        width: auto !important;
+
+        flex: 0 0 auto;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        flex-wrap: nowrap;
+    }
+
+
+    /* USERNAME AREA */
+
+    .header .user > div:nth-child(2) {
+
+        min-width: 0;
+
+        max-width: 110px;
+    }
+
+
+    #username {
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+
+
+    /* LOGOUT */
+
+    .header .logout {
+
+        flex: 0 0 auto;
+
+        white-space: nowrap;
+    }
+
+}
+
+
+/******************************************************************************
+ * SMALL PHONE
+ ******************************************************************************/
+
+@media (max-width: 576px) {
+
+    .header {
+
+        gap: 8px;
+
+        padding: 12px;
+    }
+
+
+    .mobile-menu-btn {
+
+        width: 40px;
+
+        height: 40px;
+
+        flex: 0 0 40px;
+    }
+
+
+    .header > div:first-of-type h1 {
+
+        font-size: 17px;
+    }
+
+
+    .header > div:first-of-type p {
+
+        font-size: 11px;
+    }
+
+
+    .header .user > div:nth-child(2) {
+
+        max-width: 80px;
+    }
+
+
+    .header .avatar {
+
+        width: 40px;
+
+        height: 40px;
+
+        font-size: 16px;
+    }
+
+
+    .header .logout {
+
+        padding: 8px 10px;
+
+        font-size: 11px;
+    }
+
+}
