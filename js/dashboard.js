@@ -146,7 +146,7 @@ async init() {
 
     },
 
-    /******************************************************************************
+/******************************************************************************
  * LOAD DASHBOARD - OPTIMIZED
  ******************************************************************************/
 
@@ -157,9 +157,12 @@ async loadDashboard(
     try {
 
         /*
-         * Optional loading untuk manual refresh.
+         * FULLSCREEN LOADING
          *
-         * Initial load tidak menggunakan
+         * Hanya digunakan saat tombol
+         * refresh manual ditekan.
+         *
+         * Initial load tidak memakai
          * fullscreen loading.
          */
 
@@ -173,7 +176,7 @@ async loadDashboard(
 
 
         /*
-         * API CALL
+         * REQUEST API
          */
 
         const result =
@@ -181,7 +184,7 @@ async loadDashboard(
 
 
         /*
-         * VALIDASI
+         * VALIDASI RESPONSE
          */
 
         if (
@@ -206,10 +209,10 @@ async loadDashboard(
 
 
         /*
-         * RENDER YANG PALING PENTING
-         *
-         * Jalankan terlebih dahulu supaya
-         * KPI langsung muncul.
+         * =========================================================
+         * PRIORITAS 1
+         * Render komponen yang paling penting terlebih dahulu.
+         * =========================================================
          */
 
         this.loadKPI();
@@ -222,10 +225,10 @@ async loadDashboard(
 
 
         /*
-         * RENDER NON-CRITICAL
-         *
-         * Berikan browser kesempatan melakukan
-         * paint sebelum chart dan data tambahan.
+         * =========================================================
+         * PRIORITAS 2
+         * Berikan browser kesempatan melakukan paint.
+         * =========================================================
          */
 
         requestAnimationFrame(
@@ -237,9 +240,15 @@ async loadDashboard(
 
                 this.loadApproval();
 
+
                 /*
-                 * Chart dibuat terakhir karena
-                 * Chart.js relatif lebih berat.
+                 * =====================================================
+                 * PRIORITAS 3
+                 * Chart dibuat paling akhir.
+                 *
+                 * Chart.js relatif lebih berat dibandingkan
+                 * manipulasi DOM biasa.
+                 * =====================================================
                  */
 
                 requestAnimationFrame(
@@ -255,7 +264,9 @@ async loadDashboard(
 
 
         /*
-         * HIDE LOADING
+         * HILANGKAN LOADING
+         *
+         * Hanya jika memang refresh manual.
          */
 
         if (showLoading) {
