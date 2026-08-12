@@ -492,135 +492,223 @@ async loadDashboard(
 
     },
 
-    /**************************************************************************
-     * LOAD DATA AGUNAN TERBARU
-     **************************************************************************/
-    loadLatest() {
+    /******************************************************************************
+ * LOAD DATA AGUNAN TERBARU
+ ******************************************************************************/
 
-        const tbody = document.getElementById("tblLatest");
+loadLatest() {
 
-        if (!tbody) return;
+    const tbody =
+        document.getElementById(
+            "tblLatest"
+        );
 
-        tbody.innerHTML = "";
+    if (!tbody) {
+        return;
+    }
 
-        const data = this.dashboardData.latestAgunan || [];
 
-        if (data.length === 0) {
+    const data =
+        this.dashboardData.latestAgunan ||
+        [];
 
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align:center">
-                        Belum ada data
-                    </td>
-                </tr>
-            `;
 
-            return;
+    if (
+        data.length === 0
+    ) {
 
-        }
-
-        data.forEach((item, index) => {
-
-            tbody.innerHTML += `
-
-                <tr>
-
-                    <td>${index + 1}</td>
-
-                    <td>${item.no_agunan || "-"}</td>
-                    <td>${item.jenis_dokumen || "-"}</td>
-                    <td>${item.cif_debitur || "-"}</td>
-                    <td>${item.nama_pemilik_agunan || "-"}</td>
-                    <td>${item.status || "-"}</td>
-                    <td>${item.tanggal_expired_appraisal || "-"}</td>
-
-                </tr>
-
-            `;
-
-        });
-
-    },
-
-    /**************************************************************************
-    * LOAD DOKUMEN EXPIRED
-    **************************************************************************/
-    loadExpired() {
-
-        const tbody = document.getElementById("tblExpired");
-
-        if (!tbody) return;
-
-        tbody.innerHTML = "";
-
-        const data = this.dashboardData.expiredDocument || [];
-
-        if (data.length === 0) {
-
-            tbody.innerHTML = `
+        tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align:center">
+                <td
+                    colspan="7"
+                    style="text-align:center"
+                >
+                    Belum ada data
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    const html =
+        data.map(
+            (
+                item,
+                index
+            ) => `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        ${item.no_agunan || "-"}
+                    </td>
+
+                    <td>
+                        ${item.jenis_dokumen || "-"}
+                    </td>
+
+                    <td>
+                        ${item.cif_debitur || "-"}
+                    </td>
+
+                    <td>
+                        ${item.nama_pemilik_agunan || "-"}
+                    </td>
+
+                    <td>
+                        ${item.status || "-"}
+                    </td>
+
+                    <td>
+                        ${item.tanggal_expired_appraisal || "-"}
+                    </td>
+
+                </tr>
+
+            `
+        )
+        .join("");
+
+
+    tbody.innerHTML =
+        html;
+
+},
+
+    /******************************************************************************
+ * LOAD DOKUMEN EXPIRED
+ ******************************************************************************/
+
+loadExpired() {
+
+    const tbody =
+        document.getElementById(
+            "tblExpired"
+        );
+
+    if (!tbody) {
+        return;
+    }
+
+
+    const data =
+        this.dashboardData.expiredDocument ||
+        [];
+
+
+    if (data.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td
+                    colspan="8"
+                    style="text-align:center"
+                >
                     Tidak ada dokumen yang akan expired
                 </td>
             </tr>
         `;
 
-            return;
+        return;
 
-        }
+    }
 
-        data.forEach((item, index) => {
 
-            let badge = "success";
-            let statusHari = item.sisa_hari;
+    const html =
+        data.map(
+            (
+                item,
+                index
+            ) => {
 
-            if (item.sisa_hari <= 0) {
+                let badge =
+                    "success";
 
-                badge = "danger";
-                statusHari = "Expired";
+                let statusHari =
+                    item.sisa_hari;
 
-            } else if (item.sisa_hari <= 7) {
 
-                badge = "warning";
+                if (
+                    item.sisa_hari <= 0
+                ) {
+
+                    badge =
+                        "danger";
+
+                    statusHari =
+                        "Expired";
+
+                }
+
+                else if (
+                    item.sisa_hari <= 7
+                ) {
+
+                    badge =
+                        "warning";
+
+                }
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${index + 1}
+                        </td>
+
+                        <td>
+                            ${item.no_agunan || "-"}
+                        </td>
+
+                        <td>
+                            ${item.jenis_dokumen || "-"}
+                        </td>
+
+                        <td>
+                            ${item.cif_debitur || "-"}
+                        </td>
+
+                        <td>
+                            ${item.nama_pemilik_agunan || "-"}
+                        </td>
+
+                        <td>
+                            ${item.status_agunan || "-"}
+                        </td>
+
+                        <td>
+                            ${item.tanggal_expired_appraisal || "-"}
+                        </td>
+
+                        <td>
+                            <span
+                                class="badge ${badge}">
+                                ${statusHari}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                `;
 
             }
-
-            tbody.innerHTML += `
-
-            <tr>
-
-                <td>${index + 1}</td>
-
-                <td>${item.no_agunan || "-"}</td>
-
-                <td>${item.jenis_dokumen || "-"}</td>
-
-                <td>${item.cif_debitur || "-"}</td>
-
-                <td>${item.nama_pemilik_agunan || "-"}</td>
-
-                <td>${item.status_agunan || "-"}</td>
-
-                <td>${item.tanggal_expired_appraisal || "-"}</td>
+        )
+        .join("");
 
 
-                <td>
+    tbody.innerHTML =
+        html;
 
-                    <span class="badge ${badge}">
-
-                        ${statusHari}
-
-                    </span>
-
-                </td>
-
-            </tr>
-
-        `;
-
-        });
-
-    },
+},
 
     /**************************************************************************
      * LOAD LOGIN HISTORY
