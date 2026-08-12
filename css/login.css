@@ -1,0 +1,1140 @@
+/******************************************************************************
+ *
+ * DATA AGUNAN CUSTODY
+ * FILE      : login.css
+ * VERSION   : 2.0 FINAL
+ * AUTHOR    : Dika Andrian Husniadhy
+ *
+ ******************************************************************************/
+
+/******************************************************************************
+ * RESET
+ ******************************************************************************/
+
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+html {
+
+    width: 100%;
+
+    height: 100%;
+
+}
+
+body {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+    margin: 0;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+
+        radial-gradient(circle at top left,
+
+            rgba(196, 113, 237, .40),
+
+            transparent 40%),
+
+        radial-gradient(circle at bottom right,
+
+            rgba(106, 0, 184, .30),
+
+            transparent 45%),
+
+        linear-gradient(135deg,
+
+            #4C1D95,
+
+            #6A00B8,
+
+            #8B2BE2,
+
+            #C471ED);
+
+}
+
+/******************************************************************************
+ * ROOT COLOR
+ ******************************************************************************/
+
+:root {
+
+    --primary: #8B2BE2;
+
+    --primary-dark: #6A00B8;
+
+    --primary-light: #C471ED;
+
+    --secondary: #A855F7;
+
+    --success: #10B981;
+
+    --warning: #F59E0B;
+
+    --danger: #EF4444;
+
+    --white: #FFFFFF;
+
+    --black: #111827;
+
+    --text: #374151;
+
+    --text-light: #6B7280;
+
+    --border: #E5E7EB;
+
+    --shadow:
+
+        0 25px 60px rgba(0, 0, 0, .18);
+
+}
+
+/******************************************************************************
+ * BACKGROUND EFFECT
+ ******************************************************************************/
+
+body::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 600px;
+
+    height: 600px;
+
+    left: -220px;
+
+    top: -220px;
+
+    border-radius: 50%;
+
+    background:
+
+        rgba(255, 255, 255, .08);
+
+    animation:
+
+        floatingOne 14s ease-in-out infinite;
+
+}
+
+body::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 480px;
+
+    height: 480px;
+
+    right: -160px;
+
+    bottom: -160px;
+
+    border-radius: 50%;
+
+    background:
+
+        rgba(255, 255, 255, .06);
+
+    animation:
+
+        floatingTwo 16s ease-in-out infinite;
+
+}
+
+/******************************************************************************
+ * DECORATION
+ ******************************************************************************/
+
+.bg-circle {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    opacity: .12;
+
+    filter: blur(2px);
+
+}
+
+.bg-circle.one {
+
+    width: 170px;
+
+    height: 170px;
+
+    right: 12%;
+
+    top: 14%;
+
+    background: #FFFFFF;
+
+}
+
+.bg-circle.two {
+
+    width: 120px;
+
+    height: 120px;
+
+    left: 10%;
+
+    bottom: 16%;
+
+    background: #FFFFFF;
+
+}
+
+.bg-circle.three {
+
+    width: 80px;
+
+    height: 80px;
+
+    left: 28%;
+
+    top: 52%;
+
+    background: #FFFFFF;
+
+}
+
+/******************************************************************************
+ * ANIMATION
+ ******************************************************************************/
+
+@keyframes floatingOne {
+
+    0% {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+
+            translateY(30px);
+
+    }
+
+    100% {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+}
+
+@keyframes floatingTwo {
+
+    0% {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+
+            translateY(-25px);
+
+    }
+
+    100% {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+}
+
+@keyframes fadeUp {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+
+            translateY(25px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+
+            translateY(0);
+
+    }
+
+}
+
+/******************************************************************************
+ * LOGIN CARD
+ ******************************************************************************/
+
+.login-box {
+
+    position: relative;
+
+    z-index: 10;
+
+    width: 420px;
+
+    max-width: 100%;
+
+    padding: 18px 22px 20px;
+
+    border-radius: 22px;
+
+    background: rgba(255, 255, 255, .96);
+
+    backdrop-filter: blur(14px);
+
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255, 255, 255, .55);
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, .15),
+        0 10px 25px rgba(106, 0, 184, .10);
+
+    overflow: hidden;
+
+    animation: fadeUp .45s ease;
+
+    transform: translateY(-20px);
+
+}
+
+/******************************************************************************
+ * CARD EFFECT
+ ******************************************************************************/
+
+.login-box::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 140px;
+
+    height: 140px;
+
+    top: -70px;
+
+    right: -70px;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(circle,
+
+            rgba(196, 113, 237, .10),
+
+            transparent 70%);
+
+}
+
+.login-box::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+
+    height: 120px;
+
+    left: -60px;
+
+    bottom: -60px;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(circle,
+
+            rgba(139, 43, 226, .08),
+
+            transparent 70%);
+
+}
+
+/******************************************************************************
+ * LOGO
+ ******************************************************************************/
+
+.logo {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    width: 100%;
+
+    margin-bottom: 18px;
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+/******************************************************************************
+ * LOGO IMAGE
+ ******************************************************************************/
+
+.logo img {
+
+    width: 75px;
+
+    height: 75px;
+
+    object-fit: contain;
+
+    display: block;
+
+    user-select: none;
+
+    transition: all .35s ease;
+
+    filter:
+
+        drop-shadow(0 10px 18px rgba(0, 0, 0, .12));
+
+    animation:
+
+        logoFloat 4s ease-in-out infinite;
+
+}
+
+/******************************************************************************
+ * LOGO HOVER
+ ******************************************************************************/
+
+.logo img:hover {
+
+    transform:
+
+        translateY(-5px) scale(1.08) rotate(-3deg);
+
+    filter:
+
+        drop-shadow(0 18px 30px rgba(106, 0, 184, .25));
+
+}
+
+/******************************************************************************
+ * GLOW EFFECT
+ ******************************************************************************/
+
+.logo::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+
+    height: 120px;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(circle,
+
+            rgba(139, 43, 226, .18),
+
+            transparent 70%);
+
+    filter: blur(18px);
+
+    z-index: -1;
+
+    animation:
+
+        glowPulse 4s ease-in-out infinite;
+
+}
+
+/******************************************************************************
+ * LOGO FLOAT
+ ******************************************************************************/
+
+@keyframes logoFloat {
+
+    0% {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+
+            translateY(-6px);
+
+    }
+
+    100% {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+}
+
+/******************************************************************************
+ * GLOW ANIMATION
+ ******************************************************************************/
+
+@keyframes glowPulse {
+
+    0% {
+
+        transform:
+
+            scale(.95);
+
+        opacity: .45;
+
+    }
+
+    50% {
+
+        transform:
+
+            scale(1.08);
+
+        opacity: .75;
+
+    }
+
+    100% {
+
+        transform:
+
+            scale(.95);
+
+        opacity: .45;
+
+    }
+
+}
+
+/******************************************************************************
+ * TITLE
+ ******************************************************************************/
+
+h1 {
+
+    text-align: center;
+
+    color: var(--primary);
+
+    font-size: 20px;
+
+    font-weight: 800;
+
+    line-height: 28px;
+
+    letter-spacing: .5px;
+
+    margin-bottom: 4px;
+
+}
+
+/******************************************************************************
+ * SUBTITLE
+ ******************************************************************************/
+
+.subtitle {
+
+    text-align: center;
+
+    color: var(--text-light);
+
+    font-size: 13px;
+
+    line-height: 22px;
+
+    margin-bottom: 12px;
+
+}
+
+/******************************************************************************
+ * DIVIDER
+ ******************************************************************************/
+
+.divider {
+
+    width: 60px;
+
+    height: 4px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 999px;
+
+    background:
+
+        linear-gradient(90deg,
+
+            var(--primary-light),
+
+            var(--primary),
+
+            var(--primary-dark));
+
+}
+
+/******************************************************************************
+ * VERSION
+ ******************************************************************************/
+
+.version {
+
+    position: absolute;
+
+    top: 15px;
+
+    right: 15px;
+
+    padding: 5px 10px;
+
+    border-radius: 30px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: .8px;
+
+    color: #FFFFFF;
+
+    background:
+
+        linear-gradient(135deg,
+
+            var(--primary),
+
+            var(--primary-dark));
+
+    box-shadow:
+
+        0 5px 15px rgba(106, 0, 184, .25);
+
+}
+
+/******************************************************************************
+ * FORM
+ ******************************************************************************/
+
+form {
+
+    width: 100%;
+
+}
+
+.form-group {
+
+    margin-bottom: 12px;
+
+}
+
+label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: var(--text);
+
+}
+
+/******************************************************************************
+ * INPUT BOX
+ ******************************************************************************/
+
+.input-box {
+
+    position: relative;
+
+}
+
+.input-box>i {
+
+    position: absolute;
+
+    left: 16px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #9CA3AF;
+
+    font-size: 16px;
+
+    transition: .25s;
+
+}
+
+/******************************************************************************
+ * INPUT
+ ******************************************************************************/
+
+.input-box input {
+
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 50px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    background: #FFFFFF;
+
+    color: var(--text);
+
+    font-size: 14px;
+
+    transition: .25s;
+
+}
+
+.input-box input::placeholder {
+
+    color: #9CA3AF;
+
+}
+
+.input-box input:hover {
+
+    border-color: #D8B4FE;
+
+}
+
+.input-box input:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+
+    box-shadow:
+
+        0 0 0 4px rgba(139, 43, 226, .10);
+
+}
+
+.input-box:focus-within>i {
+
+    color: var(--primary);
+
+}
+
+/******************************************************************************
+ * SHOW PASSWORD
+ ******************************************************************************/
+
+.toggle {
+
+    position: absolute;
+
+    right: 16px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #9CA3AF;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+.toggle:hover {
+
+    color: var(--primary);
+
+}
+
+/******************************************************************************
+ * BUTTON
+ ******************************************************************************/
+
+button {
+
+    position: relative;
+
+    overflow: hidden;
+
+    width: 100%;
+
+    height: 48px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    color: #FFFFFF;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    background:
+
+        linear-gradient(135deg,
+
+            var(--primary),
+
+            var(--primary-dark));
+
+    box-shadow:
+
+        0 12px 28px rgba(106, 0, 184, .25);
+
+    transition: .30s;
+
+}
+
+button::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: -120%;
+
+    top: 0;
+
+    width: 60%;
+
+    height: 100%;
+
+    background:
+
+        linear-gradient(90deg,
+
+            transparent,
+
+            rgba(255, 255, 255, .35),
+
+            transparent);
+
+    transform: skewX(-25deg);
+
+}
+
+button:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+
+        0 18px 35px rgba(106, 0, 184, .30);
+
+}
+
+button:hover::before {
+
+    left: 150%;
+
+    transition: .7s;
+
+}
+
+button:active {
+
+    transform: scale(.98);
+
+}
+
+button:disabled {
+
+    opacity: .7;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+
+}
+
+.back-home {
+
+    margin-top: 15px;
+
+    text-align: center;
+
+}
+
+#btnBeranda {
+
+    background: transparent;
+
+    border: none;
+
+    color: #163D7D;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+#btnBeranda:hover {
+
+    color: #2563EB;
+
+    text-decoration: underline;
+
+}
+
+/******************************************************************************
+ * LOADING
+ ******************************************************************************/
+
+.loading {
+
+    display: none;
+
+    margin-top: 15px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    color: var(--primary);
+
+}
+
+.loading i {
+
+    margin-right: 6px;
+
+}
+
+/******************************************************************************
+ * FOOTER
+ ******************************************************************************/
+
+.footer {
+
+    margin-top: 12px;
+
+    text-align: center;
+
+    color: var(--text-light);
+
+    font-size: 11px;
+
+    line-height: 18px;
+
+}
+
+.footer strong {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 13px;
+
+    color: var(--primary);
+
+}
+
+/******************************************************************************
+ * HOVER EFFECT
+ ******************************************************************************/
+
+.login-box {
+
+    animation:
+
+        floatingCard 5s ease-in-out infinite;
+
+}
+
+@keyframes floatingCard {
+
+    0% {
+
+        transform: translateY(0);
+
+    }
+
+    50% {
+
+        transform: translateY(-8px);
+
+    }
+
+    100% {
+
+        transform: translateY(0);
+
+    }
+
+}
+
+.login-box:hover {
+
+    animation-play-state: paused;
+
+    transform:
+
+        translateY(-10px) scale(1.02);
+
+}
+
+/******************************************************************************
+ * TEXT SELECTION
+ ******************************************************************************/
+
+::selection {
+
+    background: var(--primary);
+
+    color: #FFFFFF;
+
+}
+
+/******************************************************************************
+ * RESPONSIVE
+ ******************************************************************************/
+
+@media(max-width:768px) {
+
+    .login-box {
+
+        width: 100%;
+
+        padding: 28px;
+
+    }
+
+    h1 {
+
+        font-size: 22px;
+
+    }
+
+    .subtitle {
+
+        font-size: 13px;
+
+    }
+
+}
+
+@media(max-width:480px) {
+
+    body {
+
+        padding: 15px;
+
+    }
+
+    .login-box {
+
+        padding: 24px;
+
+    }
+
+    .logo img {
+
+        width: 80px;
+
+    }
+
+}
+
+/******************************************************************************
+ * TRANSITION
+ ******************************************************************************/
+
+* {
+
+    transition:
+
+        background .25s,
+
+        color .25s,
+
+        border-color .25s,
+
+        box-shadow .25s;
+
+}

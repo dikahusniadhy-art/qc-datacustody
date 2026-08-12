@@ -1,0 +1,435 @@
+/******************************************************************************
+*
+* style.css
+* DATA AGUNAN CUSTODY
+* VERSION 2.0 FINAL
+* Common CSS
+*
+******************************************************************************/
+
+:root {
+    --primary: #9400D3;
+    --primary-dark: #7B1FA2;
+    --primary-light: #B84DFF;
+    --success: #16A34A;
+    --warning: #F59E0B;
+    --danger: #DC2626;
+    --info: #2563EB;
+
+    --gray900: #111827;
+    --gray800: #1F2937;
+    --gray700: #374151;
+    --gray600: #4B5563;
+    --gray500: #6B7280;
+    --gray400: #9CA3AF;
+
+    --bg: #F4F5FB;
+    --card: #FFFFFF;
+    --text: #374151;
+    --text-light: #6B7280;
+    --border: #E5E7EB;
+
+    --radius: 16px;
+    --shadow: 0 8px 24px rgba(0, 0, 0, .08);
+    --shadow-lg: 0 18px 45px rgba(0, 0, 0, .12);
+
+    --transition: .25s ease;
+}
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+ul {
+    list-style: none;
+}
+
+/* LAYOUT */
+.container {
+    width: 95%;
+    max-width: 1600px;
+    margin: 25px auto;
+}
+
+.content {
+    padding: 25px;
+}
+
+/* TYPOGRAPHY */
+h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+p {
+    color: var(--text-light);
+}
+
+small {
+    color: var(--text-light);
+}
+
+/* CARD */
+.card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+}
+
+.card-header {
+    margin-bottom: 15px;
+}
+
+.card-footer {
+    margin-top: 20px;
+}
+
+/* FORM */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: var(--transition);
+    background: #fff;
+}
+
+.form-group textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(148, 0, 211, .12);
+}
+
+/* BUTTON */
+.btn,
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 11px 18px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn:hover,
+button:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-success {
+    background: var(--success);
+    color: #fff;
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: #fff;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #9CA3AF;
+    color: #fff;
+}
+
+/* TABLE */
+.table-container {
+    overflow: auto;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+thead {
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    color: #fff;
+}
+
+th {
+    padding: 14px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+tbody tr:hover {
+    background: #f7edff;
+}
+
+/* BADGE */
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: #DCFCE7;
+    color: #15803D;
+}
+
+.badge-warning {
+    background: #FEF3C7;
+    color: #B45309;
+}
+
+.badge-danger {
+    background: #FEE2E2;
+    color: #B91C1C;
+}
+
+.badge-info {
+    background: #DBEAFE;
+    color: #1D4ED8;
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, .45);
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    width: 700px;
+    max-width: 95%;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+/* LOADING */
+.loading {
+    display: none;
+    position: fixed;
+    inset: 0;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, .8);
+}
+
+.loading.show {
+    display: flex;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 7px solid #eee;
+    border-top: 7px solid var(--primary);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    border-left: 5px solid var(--primary);
+    border-radius: 12px;
+    padding: 15px 18px;
+    box-shadow: var(--shadow);
+    display: none;
+}
+
+.toast.show {
+    display: block;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F1F1;
+}
+
+/* UTILITIES */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mb-30 {
+    margin-bottom: 30px;
+}
+
+.rounded {
+    border-radius: var(--radius);
+}
+
+.shadow {
+    box-shadow: var(--shadow);
+}
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+
+    .container,
+    .content {
+        padding: 15px;
+        width: 100%;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    .btn,
+    button {
+        width: 100%;
+    }
+}
