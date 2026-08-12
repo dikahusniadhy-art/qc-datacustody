@@ -56,10 +56,9 @@ const ROLES = {
         menu: [
 
             "dashboard",
-
             "data",
-
-            "monitoring"
+            "monitoring",
+            "input"
 
         ],
 
