@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <!-- ========================================================= -->
+    <!-- META -->
+    <!-- ========================================================= -->
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Data Agunan Custody Management System">
+
+    <meta name="author" content="Dika Andrian Husniadhy">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- ========================================================= -->
+    <!-- TITLE -->
+    <!-- ========================================================= -->
+
+    <title>
+
+        Login | Data Agunan Custody
+
+    </title>
+
+    <!-- ========================================================= -->
+    <!-- FAVICON -->
+    <!-- ========================================================= -->
+
+    <link rel="icon" type="image/png" href="foto/krom1.png">
+
+    <!-- ========================================================= -->
+    <!-- FONT AWESOME -->
+    <!-- ========================================================= -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- ========================================================= -->
+    <!-- LOGIN CSS -->
+    <!-- ========================================================= -->
+
+    <link rel="stylesheet" href="css/login.css">
+
+</head>
+
+<body>
+
+    <!-- ========================================================= -->
+    <!-- BACKGROUND DECORATION -->
+    <!-- ========================================================= -->
+
+    <div class="bg-circle one"></div>
+
+    <div class="bg-circle two"></div>
+
+    <div class="bg-circle three"></div>
+
+    <!-- ========================================================= -->
+    <!-- LOGIN CARD -->
+    <!-- ========================================================= -->
+
+    <div class="login-box">
+
+        <!-- ===================================================== -->
+        <!-- VERSION -->
+        <!-- ===================================================== -->
+
+        <div class="version">
+
+            V2.0 FINAL
+
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- LOGO -->
+        <!-- ===================================================== -->
+
+        <div class="logo">
+
+            <img src="foto/krom1.png" alt="Logo">
+
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- TITLE -->
+        <!-- ===================================================== -->
+
+        <h1>
+
+            DATA AGUNAN CUSTODY
+
+        </h1>
+
+        <p class="subtitle">
+
+            Enterprise Custody Management System
+
+        </p>
+
+        <div class="divider"></div>
+
+        <!-- ===================================================== -->
+        <!-- LOGIN FORM -->
+        <!-- ===================================================== -->
+
+        <form id="loginForm" autocomplete="off">
+
+            <!-- ================================================ -->
+            <!-- USERNAME -->
+            <!-- ================================================ -->
+
+            <div class="form-group">
+
+                <label for="username">
+
+                    Username
+
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <input type="text" id="username" name="username" autocomplete="username"
+                        placeholder="Masukkan Username" required>
+
+                </div>
+
+            </div>
+
+            <!-- ================================================ -->
+            <!-- PASSWORD -->
+            <!-- ================================================ -->
+
+            <div class="form-group">
+
+                <label for="password">
+
+                    Password
+
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input type="password" id="password" name="password" autocomplete="current-password"
+                        placeholder="Masukkan Password" required>
+
+                    <span class="toggle" onclick="togglePassword()">
+
+                        <i id="eye" class="fa-regular fa-eye">
+
+                        </i>
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- LOGIN BUTTON -->
+            <!-- ================================================ -->
+
+            <button type="submit" id="btnLogin">
+
+                <span id="loginSpinner" class="login-spinner" style="display:none;">
+
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+
+                </span>
+
+                <i id="loginIcon" class="fa-solid fa-right-to-bracket">
+                </i>
+
+                <span id="loginBtnText">
+                    LOGIN KE SISTEM
+                </span>
+
+            </button>
+
+            <div class="back-home">
+
+                <button type="button" id="btnBeranda" onclick="window.location.href='index.html'">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    BERANDA
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- ===================================================== -->
+        <!-- FOOTER -->
+        <!-- ===================================================== -->
+
+        <div class="footer">
+
+            <br>
+
+            <span id="appVersion">
+
+                V2.0 FINAL
+
+            </span>
+
+            <br><br>
+
+            Enterprise Custody Management System
+
+            <br>
+
+            © 2026 PT Krom Bank Indonesia Tbk
+
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- CONFIG -->
+    <!-- ========================================================= -->
+
+    <script src="js/config.js"></script>
+
+    <!-- ========================================================= -->
+    <!-- API -->
+    <!-- ========================================================= -->
+
+    <script src="js/api.js"></script>
+
+    <!-- ========================================================= -->
+    <!-- HELPER -->
+    <!-- ========================================================= -->
+
+    <script src="js/helper.js"></script>
+
+    <!-- ========================================================= -->
+    <!-- AUTH -->
+    <!-- ========================================================= -->
+
+    <script src="js/auth.js"></script>
+
+    <!-- ========================================================= -->
+    <!-- LOGIN -->
+    <!-- ========================================================= -->
+
+    <script src="js/login.js"></script>
+
+    <!-- ========================================================= -->
+    <!-- INITIALIZE -->
+    <!-- ========================================================= -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            if (typeof CONFIG !== "undefined") {
+
+                const version = document.getElementById("appVersion");
+
+                if (version) {
+
+                    version.textContent =
+
+                        "Version " + CONFIG.VERSION;
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

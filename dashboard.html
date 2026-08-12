@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Data Agunan Custody</title>
+
+    <link rel="icon" href="foto/krom1.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <!-- ========================================================= -->
+        <!-- SIDEBAR -->
+        <!-- ========================================================= -->
+
+        <aside class="sidebar">
+
+            <div class="brand">
+
+                <img src="foto/bavi.png">
+
+                <h2>DATA AGUNAN</h2>
+
+                <small>Custody Management System</small>
+
+            </div>
+
+            <ul class="menu">
+
+                <li>
+                    <a href="dashboard.html" class="active" data-menu="dashboard">
+
+                        <i class="fa-solid fa-house"></i>
+
+                        <span>Dashboard</span>
+
+                    </a>
+                </li>
+
+                <li>
+
+                    <a href="aksi/input.html" data-menu="input">
+
+                        <i class="fa-solid fa-file-circle-plus"></i>
+
+                        <span>Input Agunan</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="aksi/data_agunan.html" data-menu="data">
+
+                        <i class="fa-solid fa-table"></i>
+
+                        <span>Data Agunan</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="aksi/monitoring.html" data-menu="monitoring">
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                        <span>Monitoring</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="aksi/laporan.html" data-menu="laporan">
+
+                        <i class="fa-solid fa-file-lines"></i>
+
+                        <span>Laporan</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="aksi/user.html" data-menu="user_management">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        <span>User Management</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="aksi/pengaturan.html" data-menu="pengaturan">
+
+                        <i class="fa-solid fa-gears"></i>
+
+                        <span>Pengaturan</span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- ========================================================= -->
+        <!-- CONTENT -->
+        <!-- ========================================================= -->
+
+        <div class="content">
+
+            <!-- ========================================================= -->
+            <!-- HEADER -->
+            <!-- ========================================================= -->
+            <header class="header">
+                <div>
+                    <h1>Enterprise Reporting Center GIT HUB</h1>
+                    <p>Operations Division</p>
+                </div>
+                <div class="user">
+                    <!-- 1. Tambahkan id="avatar" -->
+                    <div class="avatar" id="avatar">
+                        A
+                    </div>
+                    <div>
+                        <div id="username">
+                            Administrator
+                        </div>
+                        <!-- 2. Tambahkan id="role" -->
+                        <small id="role">
+                            ADMIN
+                        </small>
+                    </div>
+                    <!-- 3. Tambahkan teks Logout -->
+                    <button class="logout" id="btnLogout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- ========================================================= -->
+            <!-- MAIN -->
+            <!-- ========================================================= -->
+
+            <main class="main">
+
+                <!-- ========================================================= -->
+                <!-- KPI -->
+                <!-- ========================================================= -->
+
+                <div class="cards">
+
+                    <div class="card primary">
+
+                        <div>
+
+                            <div>Total Agunan</div>
+
+                            <h2 id="kpiTotal">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+                        <div class="icon">
+
+                            <i class="fa-solid fa-folder"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card success">
+
+                        <div>
+
+                            <div>Dokumen Lengkap</div>
+
+                            <h2 id="kpiLengkap">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+                        <div class="icon">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card warning">
+
+                        <div>
+
+                            <div>Belum Lengkap</div>
+
+                            <h2 id="kpiBelum">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+                        <div class="icon">
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card danger">
+
+                        <div>
+
+                            <div>Expired</div>
+
+                            <h2 id="kpiExpired">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+                        <div class="icon">
+
+                            <i class="fa-solid fa-clock"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- QUICK MENU -->
+                <!-- ========================================================= 
+
+                <div class="section">
+
+                    <h3>
+                        <i class="fa-solid fa-bolt"></i>
+                        Menu Cepat
+                    </h3>
+
+                    <div class="cards">
+
+                        <div class="card">
+                            <div>
+                                <div>Input Agunan</div>
+                                <h2><i class="fa-solid fa-file-circle-plus"></i></h2>
+                            </div>
+
+                            <div class="icon">
+                                <i class="fa-solid fa-file-circle-plus"></i>
+                            </div>
+
+                            <a href="aksi/input.html" class="btn btn-primary mt-20">
+                                Buka
+                            </a>
+                        </div>
+
+                        <div class="card">
+                            <div>
+                                <div>Data Agunan</div>
+                                <h2><i class="fa-solid fa-table"></i></h2>
+                            </div>
+
+                            <div class="icon">
+                                <i class="fa-solid fa-table"></i>
+                            </div>
+
+                            <a href="aksi/data_agunan.html" class="btn btn-success mt-20">
+                                Lihat
+                            </a>
+                        </div>
+
+                        <div class="card">
+                            <div>
+                                <div>Monitoring</div>
+                                <h2><i class="fa-solid fa-chart-column"></i></h2>
+                            </div>
+
+                            <div class="icon">
+                                <i class="fa-solid fa-chart-column"></i>
+                            </div>
+
+                            <a href="aksi/monitoring.html" class="btn btn-warning mt-20">
+                                Monitoring
+                            </a>
+                        </div>
+
+                        <div class="card">
+                            <div>
+                                <div>Laporan</div>
+                                <h2><i class="fa-solid fa-file-export"></i></h2>
+                            </div>
+
+                            <div class="icon">
+                                <i class="fa-solid fa-file-export"></i>
+                            </div>
+
+                            <a href="aksi/laporan.html" class="btn btn-danger mt-20">
+                                Export
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>-->
+
+                <!-- ========================================================= -->
+                <!-- CHART -->
+                <!-- ========================================================= -->
+
+                <div class="chart-card">
+
+                    <h3>
+                        <i class="fa-solid fa-chart-line"></i>
+                        Grafik Monitoring Agunan
+                    </h3>
+
+                    <div class="chart">
+
+                        <canvas id="chartMonitoring"></canvas>
+
+                    </div>
+
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- KPI PROGRESS -->
+                <!-- ========================================================= -->
+
+                <div class="section">
+
+                    <h3>
+                        <i class="fa-solid fa-gauge-high"></i>
+                        Progress Monitoring
+                    </h3>
+
+                    <div class="kpi-progress">
+
+                        <span>Dokumen Lengkap</span>
+
+                        <div class="progress">
+
+                            <div id="progressLengkap" class="progress-bar" style="width:0%">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <div class="kpi-progress">
+
+                        <span>Belum Lengkap</span>
+
+                        <div class="progress">
+
+                            <div id="progressBelum" class="progress-bar" style="width:0%">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <div class="kpi-progress">
+
+                        <span>Expired</span>
+
+                        <div class="progress">
+
+                            <div id="progressExpired" class="progress-bar" style="width:0%">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <div class="kpi-progress">
+
+                        <span>Tidak Aktif</span>
+
+                        <div class="progress">
+
+                            <div id="progressTidakAktif" class="progress-bar" style="width:0%">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- USER ACTIVITY -->
+                <!-- ========================================================= -->
+
+                <div class="section">
+
+                    <h3>
+
+                        <i class="fa-solid fa-users"></i>
+
+                        Aktivitas Pengguna
+
+                    </h3>
+
+                    <!-- PERBAIKAN: Tambahkan max-height dan overflow-y -->
+                    <div id="activityLog" style="max-height: 350px; overflow-y: auto; padding-right: 10px;">
+                    </div>
+
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- DOKUMEN EXPIRED -->
+                <!-- ========================================================= -->
+
+                <div class="section">
+
+                    <h3>
+
+                        <i class="fa-solid fa-clock"></i>
+
+                        Dokumen Akan Expired
+
+                    </h3>
+
+                    <div class="table-container table-scroll">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>No</th>
+                                    <th>NO AGUNAN</th>
+                                    <th>JENIS DOKUMEN</th>
+                                    <th>CIF</th>
+                                    <th>NAMA DEBITUR</th>
+                                    <th>STATUS</th>
+                                    <th>TANGGAL EXPIRED</th>
+                                    <th>Sisa Hari</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="tblExpired">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- FOOTER -->
+                <!-- ========================================================= -->
+
+                <footer class="footer">
+
+                    <strong>DATA AGUNAN CUSTODY</strong>
+
+                    <br>
+
+                    <span id="appVersion"></span>
+
+                    <br>
+
+                    © 2026 PT KROM BANK INDONESIA - OPERASIONAL
+
+                </footer>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- LOADING -->
+    <!-- ========================================================= -->
+
+    <div class="loading" id="loading">
+
+        <div class="spinner"></div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TOAST -->
+    <!-- ========================================================= -->
+
+    <div class="toast" id="toast" style="display:none;">
+
+        <span id="toastMessage">
+
+        </span>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL -->
+    <!-- ========================================================= -->
+
+    <div class="modal" id="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h3 id="modalTitle">
+
+                    Informasi
+
+                </h3>
+
+                <button class="modal-close" onclick="closeModal()">
+
+                    ×
+
+                </button>
+
+            </div>
+
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-primary" onclick="closeModal()">
+
+                    Tutup
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- CONFIG -->
+    <!-- ========================================================= -->
+
+    <script src="js/config.js?v=3.0.1"></script>
+    <script src="js/helper.js?v=3.0.1"></script>
+    <script src="js/api.js?v=3.0.1"></script>
+    <script src="js/auth.js?v=3.0.1"></script>
+    <script src="js/roles.js?v=3.0.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js?v=3.0.1"></script>
+
+    <!-- ========================================================= -->
+    <!-- INITIALIZE -->
+    <!-- ========================================================= -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", async () => {
+
+            try {
+
+                // Version
+                document.getElementById("appVersion").textContent =
+                    `Version ${CONFIG.VERSION}`;
+
+                // Cek Login
+                if (!Auth.isLogin()) {
+
+                    location.href = "login.html";
+
+                    return;
+
+                }
+
+                // Ambil Data User
+                const user = Auth.getUser();
+
+                document.getElementById("username").textContent =
+                    user?.nama || "Administrator";
+
+                document.getElementById("role").textContent =
+                    user?.role || CONFIG.DEFAULT_ROLE;
+
+                document.getElementById("avatar").textContent =
+                    (user?.nama || "A").charAt(0).toUpperCase();
+
+                // Terapkan Role
+                Role.renderSidebar();
+                Role.renderPermission();
+
+                // Load Dashboard
+                await Dashboard.init();
+
+            } catch (err) {
+
+                console.error(err);
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
