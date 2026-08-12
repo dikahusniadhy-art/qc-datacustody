@@ -2,12 +2,17 @@
 <html lang="id">
 
 <head>
-    
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard | Data Agunan Custody</title>
+
     <link rel="icon" href="foto/krom1.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
     <link rel="stylesheet" href="css/dashboard.css">
 
 </head>
@@ -32,93 +37,75 @@
 
             </div>
 
+
             <ul class="menu">
 
                 <li>
                     <a href="dashboard.html" class="active" data-menu="dashboard">
-
                         <i class="fa-solid fa-house"></i>
-
                         <span>Dashboard</span>
-
                     </a>
                 </li>
 
-                <li>
 
+                <li>
                     <a href="aksi/input.html" data-menu="input">
-
                         <i class="fa-solid fa-file-circle-plus"></i>
-
                         <span>Input Agunan</span>
-
                     </a>
-
                 </li>
 
-                <li>
 
+                <li>
                     <a href="aksi/data_agunan.html" data-menu="data">
-
                         <i class="fa-solid fa-table"></i>
-
                         <span>Data Agunan</span>
-
                     </a>
-
                 </li>
 
-                <li>
 
+                <li>
                     <a href="aksi/monitoring.html" data-menu="monitoring">
-
                         <i class="fa-solid fa-chart-column"></i>
-
                         <span>Monitoring</span>
-
                     </a>
-
                 </li>
 
-                <li>
 
+                <li>
                     <a href="aksi/laporan.html" data-menu="laporan">
-
                         <i class="fa-solid fa-file-lines"></i>
-
                         <span>Laporan</span>
-
                     </a>
-
                 </li>
 
-                <li>
 
+                <li>
                     <a href="aksi/user.html" data-menu="user_management">
-
                         <i class="fa-solid fa-users"></i>
-
                         <span>User Management</span>
-
                     </a>
-
                 </li>
 
+
                 <li>
-
                     <a href="aksi/pengaturan.html" data-menu="pengaturan">
-
                         <i class="fa-solid fa-gears"></i>
-
                         <span>Pengaturan</span>
-
                     </a>
-
                 </li>
 
             </ul>
 
         </aside>
+
+
+        <!-- ========================================================= -->
+        <!-- MOBILE SIDEBAR OVERLAY -->
+        <!-- ========================================================= -->
+
+        <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
 
         <!-- ========================================================= -->
         <!-- CONTENT -->
@@ -126,41 +113,80 @@
 
         <div class="content">
 
+
             <!-- ========================================================= -->
             <!-- HEADER -->
             <!-- ========================================================= -->
+
             <header class="header">
+
+
+                <!-- MOBILE MENU BUTTON -->
+
+                <button type="button" id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Buka menu"
+                    aria-expanded="false">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+
+                <!-- TITLE -->
+
                 <div>
-                    <h1>Enterprise Reporting Center Production</h1>
-                    <p>Operations Division</p>
+
+                    <h1>
+                        Enterprise Reporting Center Production
+                    </h1>
+
+                    <p>
+                        Operations Division
+                    </p>
+
                 </div>
+
+
+                <!-- USER -->
+
                 <div class="user">
-                    <!-- 1. Tambahkan id="avatar" -->
+
                     <div class="avatar" id="avatar">
                         A
                     </div>
+
+
                     <div>
+
                         <div id="username">
                             Administrator
                         </div>
-                        <!-- 2. Tambahkan id="role" -->
+
                         <small id="role">
                             ADMIN
                         </small>
+
                     </div>
-                    <!-- 3. Tambahkan teks Logout -->
+
+
                     <button class="logout" id="btnLogout">
+
                         <i class="fa-solid fa-right-from-bracket"></i>
+
                         Logout
+
                     </button>
+
                 </div>
+
             </header>
+
 
             <!-- ========================================================= -->
             <!-- MAIN -->
             <!-- ========================================================= -->
 
             <main class="main">
+
 
                 <!-- ========================================================= -->
                 <!-- KPI -->
@@ -172,15 +198,16 @@
 
                         <div>
 
-                            <div>Total Agunan</div>
+                            <div>
+                                Total Agunan
+                            </div>
 
                             <h2 id="kpiTotal">
-
                                 ...
-
                             </h2>
 
                         </div>
+
 
                         <div class="icon">
 
@@ -190,19 +217,21 @@
 
                     </div>
 
+
                     <div class="card success">
 
                         <div>
 
-                            <div>Dokumen Lengkap</div>
+                            <div>
+                                Dokumen Lengkap
+                            </div>
 
                             <h2 id="kpiLengkap">
-
                                 ...
-
                             </h2>
 
                         </div>
+
 
                         <div class="icon">
 
@@ -212,19 +241,21 @@
 
                     </div>
 
+
                     <div class="card warning">
 
                         <div>
 
-                            <div>Belum Lengkap</div>
+                            <div>
+                                Belum Lengkap
+                            </div>
 
                             <h2 id="kpiBelum">
-
                                 ...
-
                             </h2>
 
                         </div>
+
 
                         <div class="icon">
 
@@ -234,19 +265,21 @@
 
                     </div>
 
+
                     <div class="card danger">
 
                         <div>
 
-                            <div>Expired</div>
+                            <div>
+                                Expired
+                            </div>
 
                             <h2 id="kpiExpired">
-
                                 ...
-
                             </h2>
 
                         </div>
+
 
                         <div class="icon">
 
