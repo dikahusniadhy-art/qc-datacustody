@@ -15,7 +15,7 @@ const Dashboard = {
 
     autoRefresh: null,
 
-    /******************************************************************************
+/******************************************************************************
  * INIT - FAST BOOT
  ******************************************************************************/
 
@@ -56,15 +56,13 @@ async init() {
 
         /*
          * LOAD USER IMMEDIATELY
-         *
-         * Tidak perlu menunggu API.
          */
 
         this.loadUser();
 
 
         /*
-         * ROLE UI IMMEDIATELY
+         * APPLY ROLE IMMEDIATELY
          */
 
         if (
@@ -72,6 +70,7 @@ async init() {
         ) {
 
             Role.renderSidebar();
+
             Role.renderPermission();
 
         }
@@ -79,11 +78,6 @@ async init() {
 
         /*
          * LOAD DASHBOARD IN BACKGROUND
-         *
-         * Jangan await.
-         *
-         * Ini membuat halaman langsung terasa
-         * responsif.
          */
 
         this.loadDashboard(
@@ -112,42 +106,73 @@ async init() {
 
 },
 
-    /**************************************************************************
-     * LOAD USER
-     **************************************************************************/
-    loadUser() {
-
-        const user = Auth.getUser();
-
-        if (!user) return;
-
-        const username = document.getElementById("username");
-        const role = document.getElementById("role");
-        const avatar = document.getElementById("avatar");
-
-        if (username) {
-
-            username.textContent = user.nama;
-
-        }
-
-        if (role) {
-
-            role.textContent = user.role;
-
-        }
-
-        if (avatar) {
-
-            avatar.textContent =
-                user.nama.substring(0, 1).toUpperCase();
-
-        }
-
-    },
 
 /******************************************************************************
- * LOAD DASHBOARD - OPTIMIZED
+ * LOAD USER
+ ******************************************************************************/
+
+loadUser() {
+
+    const user =
+        Auth.getUser();
+
+    if (!user) {
+        return;
+    }
+
+
+    const username =
+        document.getElementById(
+            "username"
+        );
+
+    const role =
+        document.getElementById(
+            "role"
+        );
+
+    const avatar =
+        document.getElementById(
+            "avatar"
+        );
+
+
+    if (username) {
+
+        username.textContent =
+            user.nama ||
+            "Administrator";
+
+    }
+
+
+    if (role) {
+
+        role.textContent =
+            user.role ||
+            CONFIG.DEFAULT_ROLE;
+
+    }
+
+
+    if (avatar) {
+
+        const nama =
+            user.nama ||
+            "A";
+
+        avatar.textContent =
+            nama
+                .substring(0, 1)
+                .toUpperCase();
+
+    }
+
+},
+
+
+/******************************************************************************
+ * LOAD DASHBOARD - PRODUCTION OPTIMIZED
  ******************************************************************************/
 
 async loadDashboard(
@@ -155,6 +180,12 @@ async loadDashboard(
 ) {
 
     try {
+
+        /*
+         * FULLSCREEN LOADING
+         *
+         * Hanya digunakan untuk refresh manual.
+         */
 
         if (showLoading) {
 
@@ -165,9 +196,17 @@ async loadDashboard(
         }
 
 
+        /*
+         * API REQUEST
+         */
+
         const result =
             await API.getDashboard();
 
+
+        /*
+         * VALIDASI RESPONSE
+         */
 
         if (
             !result ||
@@ -182,40 +221,42 @@ async loadDashboard(
         }
 
 
+        /*
+         * SIMPAN DATA
+         */
+
         this.dashboardData =
             result.data || {};
 
 
         /*
-         * PRIORITAS UTAMA
+         * =========================================================
+         * PRIORITAS 1
+         * =========================================================
+         *
+         * Komponen yang langsung terlihat user.
          */
 
         this.loadKPI();
 
         this.loadProgress();
 
-        this.loadExpired();
-
         this.loadActivityLog();
+
+        this.loadExpired();
 
 
         /*
-         * PRIORITAS SEKUNDER
+         * =========================================================
+         * PRIORITAS 2
+         * =========================================================
+         *
+         * Chart diproses setelah browser selesai melakukan
+         * paint awal.
          */
 
         requestAnimationFrame(
             () => {
-
-                this.loadLatest();
-
-                this.loadLoginHistory();
-
-                this.loadApproval();
-
-
-                /*
-                 * CHART PALING AKHIR
-                 */
 
                 requestAnimationFrame(
                     () => {
@@ -228,6 +269,12 @@ async loadDashboard(
             }
         );
 
+
+        /*
+         * HIDE LOADING
+         *
+         * Hanya saat refresh manual.
+         */
 
         if (showLoading) {
 
