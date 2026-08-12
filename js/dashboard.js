@@ -503,8 +503,8 @@ async loadDashboard(
 
     },
 
-    /******************************************************************************
- * LOAD DATA AGUNAN TERBARU
+/******************************************************************************
+ * LOAD DATA AGUNAN TERBARU - OPTIMIZED
  ******************************************************************************/
 
 loadLatest() {
@@ -520,13 +520,14 @@ loadLatest() {
 
 
     const data =
-        this.dashboardData.latestAgunan ||
-        [];
+        this.dashboardData?.latestAgunan || [];
 
 
-    if (
-        data.length === 0
-    ) {
+    /*
+     * KOSONG
+     */
+
+    if (!data.length) {
 
         tbody.innerHTML = `
             <tr>
@@ -540,61 +541,67 @@ loadLatest() {
         `;
 
         return;
-
     }
 
 
+    /*
+     * BUILD HTML SEKALI
+     */
+
     const html =
         data.map(
-            (
-                item,
-                index
-            ) => `
+            (item, index) => {
 
-                <tr>
+                return `
+                    <tr>
 
-                    <td>
-                        ${index + 1}
-                    </td>
+                        <td>
+                            ${index + 1}
+                        </td>
 
-                    <td>
-                        ${item.no_agunan || "-"}
-                    </td>
+                        <td>
+                            ${item.no_agunan || "-"}
+                        </td>
 
-                    <td>
-                        ${item.jenis_dokumen || "-"}
-                    </td>
+                        <td>
+                            ${item.jenis_dokumen || "-"}
+                        </td>
 
-                    <td>
-                        ${item.cif_debitur || "-"}
-                    </td>
+                        <td>
+                            ${item.cif_debitur || "-"}
+                        </td>
 
-                    <td>
-                        ${item.nama_pemilik_agunan || "-"}
-                    </td>
+                        <td>
+                            ${item.nama_pemilik_agunan || "-"}
+                        </td>
 
-                    <td>
-                        ${item.status || "-"}
-                    </td>
+                        <td>
+                            ${item.status || "-"}
+                        </td>
 
-                    <td>
-                        ${item.tanggal_expired_appraisal || "-"}
-                    </td>
+                        <td>
+                            ${item.tanggal_expired_appraisal || "-"}
+                        </td>
 
-                </tr>
+                    </tr>
+                `;
 
-            `
+            }
         )
         .join("");
 
+
+    /*
+     * SATU KALI UPDATE DOM
+     */
 
     tbody.innerHTML =
         html;
 
 },
 
-    /******************************************************************************
- * LOAD DOKUMEN EXPIRED
+/******************************************************************************
+ * LOAD DOKUMEN EXPIRED - OPTIMIZED
  ******************************************************************************/
 
 loadExpired() {
@@ -610,11 +617,14 @@ loadExpired() {
 
 
     const data =
-        this.dashboardData.expiredDocument ||
-        [];
+        this.dashboardData?.expiredDocument || [];
 
 
-    if (data.length === 0) {
+    /*
+     * KOSONG
+     */
+
+    if (!data.length) {
 
         tbody.innerHTML = `
             <tr>
@@ -628,9 +638,12 @@ loadExpired() {
         `;
 
         return;
-
     }
 
+
+    /*
+     * BUILD HTML SEKALI
+     */
 
     const html =
         data.map(
@@ -646,8 +659,12 @@ loadExpired() {
                     item.sisa_hari;
 
 
+                /*
+                 * STATUS EXPIRED
+                 */
+
                 if (
-                    item.sisa_hari <= 0
+                    Number(item.sisa_hari) <= 0
                 ) {
 
                     badge =
@@ -658,8 +675,13 @@ loadExpired() {
 
                 }
 
+
+                /*
+                 * WARNING <= 7 HARI
+                 */
+
                 else if (
-                    item.sisa_hari <= 7
+                    Number(item.sisa_hari) <= 7
                 ) {
 
                     badge =
@@ -669,7 +691,6 @@ loadExpired() {
 
 
                 return `
-
                     <tr>
 
                         <td>
@@ -701,20 +722,25 @@ loadExpired() {
                         </td>
 
                         <td>
+
                             <span
                                 class="badge ${badge}">
                                 ${statusHari}
                             </span>
+
                         </td>
 
                     </tr>
-
                 `;
 
             }
         )
         .join("");
 
+
+    /*
+     * SATU KALI UPDATE DOM
+     */
 
     tbody.innerHTML =
         html;
