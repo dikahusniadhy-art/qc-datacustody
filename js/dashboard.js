@@ -1214,3 +1214,179 @@ document.addEventListener(
 
     }
 );
+
+/******************************************************************************
+ * MOBILE SIDEBAR
+ ******************************************************************************/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const menuBtn =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+        const sidebar =
+            document.querySelector(
+                ".sidebar"
+            );
+
+        const overlay =
+            document.getElementById(
+                "sidebarOverlay"
+            );
+
+
+        if (
+            !menuBtn ||
+            !sidebar ||
+            !overlay
+        ) {
+
+            return;
+
+        }
+
+
+        function openSidebar() {
+
+            sidebar.classList.add(
+                "show"
+            );
+
+            overlay.classList.add(
+                "show"
+            );
+
+            menuBtn.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+            menuBtn.setAttribute(
+                "aria-label",
+                "Tutup menu"
+            );
+
+            menuBtn.innerHTML =
+                '<i class="fa-solid fa-xmark"></i>';
+
+            document.body.style.overflow =
+                "hidden";
+
+        }
+
+
+        function closeSidebar() {
+
+            sidebar.classList.remove(
+                "show"
+            );
+
+            overlay.classList.remove(
+                "show"
+            );
+
+            menuBtn.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuBtn.setAttribute(
+                "aria-label",
+                "Buka menu"
+            );
+
+            menuBtn.innerHTML =
+                '<i class="fa-solid fa-bars"></i>';
+
+            document.body.style.overflow =
+                "";
+
+        }
+
+
+        menuBtn.addEventListener(
+            "click",
+            function () {
+
+                const isOpen =
+                    sidebar.classList.contains(
+                        "show"
+                    );
+
+                if (isOpen) {
+
+                    closeSidebar();
+
+                }
+                else {
+
+                    openSidebar();
+
+                }
+
+            }
+        );
+
+
+        overlay.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+
+        /*
+         * Tutup menu ketika user
+         * memilih menu navigasi.
+         */
+
+        sidebar
+            .querySelectorAll(
+                "a"
+            )
+            .forEach(
+                link => {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            if (
+                                window.innerWidth <= 992
+                            ) {
+
+                                closeSidebar();
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /*
+         * Tutup ketika kembali ke desktop.
+         */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (
+                    window.innerWidth > 992
+                ) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    }
+);
