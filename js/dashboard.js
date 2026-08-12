@@ -156,16 +156,6 @@ async loadDashboard(
 
     try {
 
-        /*
-         * FULLSCREEN LOADING
-         *
-         * Hanya digunakan saat tombol
-         * refresh manual ditekan.
-         *
-         * Initial load tidak memakai
-         * fullscreen loading.
-         */
-
         if (showLoading) {
 
             Helper.showLoading(
@@ -175,17 +165,9 @@ async loadDashboard(
         }
 
 
-        /*
-         * REQUEST API
-         */
-
         const result =
             await API.getDashboard();
 
-
-        /*
-         * VALIDASI RESPONSE
-         */
 
         if (
             !result ||
@@ -200,19 +182,12 @@ async loadDashboard(
         }
 
 
-        /*
-         * SIMPAN DATA
-         */
-
         this.dashboardData =
             result.data || {};
 
 
         /*
-         * =========================================================
-         * PRIORITAS 1
-         * Render komponen yang paling penting terlebih dahulu.
-         * =========================================================
+         * PRIORITAS UTAMA
          */
 
         this.loadKPI();
@@ -225,10 +200,7 @@ async loadDashboard(
 
 
         /*
-         * =========================================================
-         * PRIORITAS 2
-         * Berikan browser kesempatan melakukan paint.
-         * =========================================================
+         * PRIORITAS SEKUNDER
          */
 
         requestAnimationFrame(
@@ -242,13 +214,7 @@ async loadDashboard(
 
 
                 /*
-                 * =====================================================
-                 * PRIORITAS 3
-                 * Chart dibuat paling akhir.
-                 *
-                 * Chart.js relatif lebih berat dibandingkan
-                 * manipulasi DOM biasa.
-                 * =====================================================
+                 * CHART PALING AKHIR
                  */
 
                 requestAnimationFrame(
@@ -262,12 +228,6 @@ async loadDashboard(
             }
         );
 
-
-        /*
-         * HILANGKAN LOADING
-         *
-         * Hanya jika memang refresh manual.
-         */
 
         if (showLoading) {
 
@@ -380,95 +340,143 @@ async loadDashboard(
 
     },
 
-    /**************************************************************************
-     * LOAD CHART
-     **************************************************************************/
-    loadChart() {
+    /******************************************************************************
+ * LOAD CHART - OPTIMIZED
+ ******************************************************************************/
 
-        const data = this.dashboardData;
+loadChart() {
 
-        if (!data) return;
+    const data =
+        this.dashboardData;
 
-        const canvas = document.getElementById("chartMonitoring");
+    if (!data) {
+        return;
+    }
 
-        if (!canvas) return;
 
-        if (this.chart) {
+    const canvas =
+        document.getElementById(
+            "chartMonitoring"
+        );
 
-            this.chart.destroy();
+    if (!canvas) {
+        return;
+    }
 
-        }
 
-        const lengkap = Number(data.dokumenLengkap || 0);
-        const belum = Number(data.belumLengkap || 0);
-        const expired = Number(data.expired || 0);
-        const tidakAktif = Number(data.tidakAktif || 0);
+    /*
+     * Hancurkan chart lama
+     */
 
-        this.chart = new Chart(canvas, {
+    if (this.chart) {
 
-            type: "doughnut",
+        this.chart.destroy();
 
-            data: {
+        this.chart = null;
 
-                labels: [
+    }
 
-                    "Dokumen Lengkap",
 
-                    "Belum Lengkap",
+    /*
+     * Ambil data
+     */
 
-                    "Expired",
+    const lengkap =
+        Number(
+            data.dokumenLengkap || 0
+        );
 
-                    "Tidak Aktif"
+    const belum =
+        Number(
+            data.belumLengkap || 0
+        );
 
-                ],
+    const expired =
+        Number(
+            data.expired || 0
+        );
 
-                datasets: [{
+    const tidakAktif =
+        Number(
+            data.tidakAktif || 0
+        );
 
-                    data: [
 
-                        lengkap,
-                        belum,
-                        expired,
-                        tidakAktif,
+    /*
+     * Tunda sedikit agar browser menyelesaikan
+     * pekerjaan DOM utama terlebih dahulu.
+     */
 
-                    ],
+    requestAnimationFrame(
+        () => {
 
-                    backgroundColor: [
+            this.chart =
+                new Chart(
+                    canvas,
+                    {
+                        type: "doughnut",
 
-                        "#10B981",
-                        "#F59E0B",
-                        "#EF4444",
-                        "#000000"
+                        data: {
 
-                    ],
+                            labels: [
+                                "Dokumen Lengkap",
+                                "Belum Lengkap",
+                                "Expired",
+                                "Tidak Aktif"
+                            ],
 
-                    borderWidth: 1
+                            datasets: [
 
-                }]
+                                {
+                                    data: [
+                                        lengkap,
+                                        belum,
+                                        expired,
+                                        tidakAktif
+                                    ],
 
-            },
+                                    backgroundColor: [
+                                        "#10B981",
+                                        "#F59E0B",
+                                        "#EF4444",
+                                        "#000000"
+                                    ],
 
-            options: {
+                                    borderWidth: 1
+                                }
 
-                responsive: true,
+                            ]
 
-                maintainAspectRatio: false,
+                        },
 
-                plugins: {
+                        options: {
 
-                    legend: {
+                            responsive: true,
 
-                        position: "bottom"
+                            maintainAspectRatio:
+                                false,
+
+                            animation: {
+                                duration: 500
+                            },
+
+                            plugins: {
+
+                                legend: {
+                                    position: "bottom"
+                                }
+
+                            }
+
+                        }
 
                     }
+                );
 
-                }
+        }
+    );
 
-            }
-
-        });
-
-    },
+},
 
     /**************************************************************************
      * LOAD ALERT EXPIRED
@@ -838,51 +846,180 @@ loadExpired() {
 
     },
 
-    /**************************************************************************
-     * LOAD ACTIVITY LOG
-     **************************************************************************/
-    loadActivityLog() {
-        const activityLog = document.getElementById("activityLog");
-        if (!activityLog) return;
+    /******************************************************************************
+ * LOAD ACTIVITY LOG - OPTIMIZED
+ ******************************************************************************/
 
-        activityLog.innerHTML = "";
-        const data = this.dashboardData.timeline || [];
+loadActivityLog() {
 
-        if (data.length === 0) {
-            activityLog.innerHTML = "<div style='color:gray;'>Tidak ada aktivitas pengguna terbaru.</div>";
-            return;
-        }
+    const activityLog =
+        document.getElementById(
+            "activityLog"
+        );
 
-        // Bikin tampilan list tanpa bullet dan ada garis pemisahnya
-        let html = "<ul style='padding-left: 0; list-style: none; margin: 0;'>";
+    if (!activityLog) {
+        return;
+    }
 
-        data.forEach(item => {
-            // PERBAIKAN: Format tanggal menggunakan Helper.datetime
-            const formatWaktu = item.waktu ? Helper.datetime(item.waktu) : "-";
 
-            html += `
-                <li style='margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;'>
-                    <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;'>
-                        <strong style='color: var(--primary-dark); font-size: 14px;'>
-                            <i class="fa-solid fa-user-tie"></i> ${item.username || "-"}
-                        </strong>
-                        <span style='font-size: 11px; font-weight: bold; background: #e0e7ff; color: #4338ca; padding: 3px 8px; border-radius: 12px;'>
-                            ${item.activity || "-"}
-                        </span>
-                    </div>
-                    <div style='font-size: 13px; color: #475569; margin-bottom: 5px;'>
-                        ${item.detail || "-"}
-                    </div>
-                    <div style='color: #94a3b8; font-size: 11px;'>
-                        <i class="fa-regular fa-clock"></i> ${formatWaktu}
-                    </div>
-                </li>
-            `;
-        });
+    const data =
+        this.dashboardData?.timeline || [];
 
-        html += "</ul>";
-        activityLog.innerHTML = html;
-    },
+
+    /*
+     * KOSONG
+     */
+
+    if (!data.length) {
+
+        activityLog.innerHTML =
+            "<div style='color:gray;'>Tidak ada aktivitas pengguna terbaru.</div>";
+
+        return;
+
+    }
+
+
+    /*
+     * BATASI JUMLAH AKTIVITAS
+     *
+     * Dashboard tidak perlu menampilkan
+     * seluruh history.
+     *
+     * Ambil maksimal 10.
+     */
+
+    const items =
+        data.slice(
+            0,
+            10
+        );
+
+
+    /*
+     * BUILD HTML SEKALI
+     */
+
+    const html =
+        items.map(
+            item => {
+
+                const formatWaktu =
+                    item.waktu
+                        ? Helper.datetime(
+                            item.waktu
+                        )
+                        : "-";
+
+
+                return `
+
+                    <li
+                        style="
+                            margin-bottom:12px;
+                            border-bottom:1px solid #e2e8f0;
+                            padding-bottom:10px;
+                        "
+                    >
+
+                        <div
+                            style="
+                                display:flex;
+                                justify-content:space-between;
+                                align-items:center;
+                                margin-bottom:5px;
+                            "
+                        >
+
+                            <strong
+                                style="
+                                    color:var(--primary-dark);
+                                    font-size:14px;
+                                "
+                            >
+
+                                <i
+                                    class="fa-solid fa-user-tie"
+                                ></i>
+
+                                ${item.username || "-"}
+
+                            </strong>
+
+
+                            <span
+                                style="
+                                    font-size:11px;
+                                    font-weight:bold;
+                                    background:#e0e7ff;
+                                    color:#4338ca;
+                                    padding:3px 8px;
+                                    border-radius:12px;
+                                "
+                            >
+
+                                ${item.activity || "-"}
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            style="
+                                font-size:13px;
+                                color:#475569;
+                                margin-bottom:5px;
+                            "
+                        >
+
+                            ${item.detail || "-"}
+
+                        </div>
+
+
+                        <div
+                            style="
+                                color:#94a3b8;
+                                font-size:11px;
+                            "
+                        >
+
+                            <i
+                                class="fa-regular fa-clock"
+                            ></i>
+
+                            ${formatWaktu}
+
+                        </div>
+
+                    </li>
+
+                `;
+
+            }
+        )
+        .join("");
+
+
+    /*
+     * SATU KALI UPDATE DOM
+     */
+
+    activityLog.innerHTML = `
+        <ul
+            style="
+                padding-left:0;
+                list-style:none;
+                margin:0;
+            "
+        >
+            ${html}
+        </ul>
+    `;
+
+},
+
     /**************************************************************************
      * LOAD APPROVAL
      **************************************************************************/
