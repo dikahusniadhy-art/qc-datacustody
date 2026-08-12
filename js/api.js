@@ -836,7 +836,7 @@ async get(
     },
 
 
-    /******************************************************************************
+ /******************************************************************************
  * INSERT AGUNAN
  *
  * Google Apps Script Web App + GitHub/localhost
@@ -975,37 +975,194 @@ async get(
     },
 
 
-    /**************************************************************************
-     * UPDATE AGUNAN
+   /******************************************************************************
+ * UPDATE AGUNAN
+ *
+ * Google Apps Script Web App + GitHub Pages
+ *
+ * POST response dapat terkena CORS.
+ *
+ * Oleh karena itu UPDATE dikirim menggunakan fetch
+ * mode: "no-cors" tanpa mencoba membaca response.
+ *
+ * Signature tetap:
+ *
+ * API.updateAgunan(id, data)
+ *
+ ******************************************************************************/
+
+async updateAgunan(
+    id,
+    data = {}
+) {
+
+    /*
+     * PAYLOAD
+     */
+
+    const payload = {
+
+        ...data,
+
+        no_agunan:
+            data.no_agunan ||
+            id
+
+    };
+
+
+    /*
+     * URL
+     */
+
+    const url =
+        this.getUrl();
+
+
+    /*
+     * FORM
+     */
+
+    const form =
+        new URLSearchParams();
+
+
+    /*
+     * ACTION
+     */
+
+    form.append(
+        "action",
+        "updateAgunan"
+    );
+
+
+    /*
+     * TOKEN
+     */
+
+    const token =
+        this.getToken();
+
+    if (token) {
+
+        form.append(
+            "token",
+            token
+        );
+
+    }
+
+
+    /*
+     * DATA
+     */
+
+    Object.keys(
+        payload || {}
+    ).forEach(
+        key => {
+
+            const value =
+                payload[key];
+
+
+            if (
+                value === undefined ||
+                value === null
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                typeof value === "object"
+            ) {
+
+                form.append(
+                    key,
+                    JSON.stringify(
+                        value
+                    )
+                );
+
+            }
+            else {
+
+                form.append(
+                    key,
+                    String(value)
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * KIRIM REQUEST
      *
-     * Existing frontend:
-     *
-     * API.updateAgunan(id, data)
-     *
-     * Signature dipertahankan.
-     **************************************************************************/
+     * no-cors:
+     * browser tidak membaca response,
+     * tetapi request tetap dikirim.
+     */
 
-    async updateAgunan(
-        id,
-        data = {}
-    ) {
+    try {
 
-        const payload = {
+        await fetch(
+            url,
+            {
+                method: "POST",
 
-            ...data,
+                mode: "no-cors",
 
-            no_agunan:
-                data.no_agunan ||
-                id
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded;charset=UTF-8"
+                },
+
+                body:
+                    form.toString(),
+
+                cache:
+                    "no-store"
+            }
+        );
+
+
+        /*
+         * Response server tidak dibaca.
+         *
+         * Request dianggap terkirim.
+         */
+
+        return {
+
+            success: true,
+
+            sent: true,
+
+            message:
+                "Request update telah dikirim."
 
         };
 
-        return await this.post(
-            "updateAgunan",
-            payload
+    }
+    catch (err) {
+
+        console.error(
+            "API UPDATE ERROR:",
+            err
         );
 
-    },
+        throw err;
+
+    }
+
+},
 
 
     /**************************************************************************
@@ -1017,20 +1174,139 @@ async get(
      **************************************************************************/
 
     async deleteAgunan(
-        noAgunan
-    ) {
+    noAgunan
+) {
 
-        return await this.post(
-            "deleteAgunan",
+    /*
+     * VALIDASI
+     */
+
+    const target =
+        String(
+            noAgunan || ""
+        ).trim();
+
+
+    if (!target) {
+
+        throw new Error(
+            "NO AGUNAN wajib diisi."
+        );
+
+    }
+
+
+    /*
+     * URL
+     */
+
+    const url =
+        this.getUrl();
+
+
+    /*
+     * FORM
+     */
+
+    const form =
+        new URLSearchParams();
+
+
+    /*
+     * ACTION
+     */
+
+    form.append(
+        "action",
+        "deleteAgunan"
+    );
+
+
+    /*
+     * TOKEN
+     */
+
+    const token =
+        this.getToken();
+
+    if (token) {
+
+        form.append(
+            "token",
+            token
+        );
+
+    }
+
+
+    /*
+     * NO AGUNAN
+     */
+
+    form.append(
+        "no_agunan",
+        target
+    );
+
+
+    /*
+     * REQUEST
+     */
+
+    try {
+
+        await fetch(
+            url,
             {
+                method: "POST",
 
-                no_agunan:
-                    noAgunan
+                mode: "no-cors",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded;charset=UTF-8"
+
+                },
+
+                body:
+                    form.toString(),
+
+                cache:
+                    "no-store"
 
             }
         );
 
-    },
+
+        /*
+         * RESPONSE TIDAK DIBACA
+         */
+
+        return {
+
+            success: true,
+
+            sent: true,
+
+            message:
+                "Request penghapusan telah dikirim."
+
+        };
+
+    }
+    catch (err) {
+
+        console.error(
+            "API DELETE ERROR:",
+            err
+        );
+
+        throw err;
+
+    }
+
+},
 
 
     /**************************************************************************
