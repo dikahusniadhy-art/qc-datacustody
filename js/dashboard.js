@@ -15,40 +15,102 @@ const Dashboard = {
 
     autoRefresh: null,
 
-    /**************************************************************************
-    * INIT
-    **************************************************************************/
-    async init() {
+    /******************************************************************************
+ * INIT - FAST BOOT
+ ******************************************************************************/
 
-        try {
+async init() {
 
-            // Cek Login
-            if (!Auth.isLogin()) {
+    try {
 
-                window.location.href = "login.html";
-                return;
+        /*
+         * LOGIN CHECK
+         */
 
-            }
+        if (!Auth.isLogin()) {
 
-            // Load User
-            this.loadUser();
+            window.location.href =
+                "login.html";
 
-            // Load Dashboard
-            await this.loadDashboard();
-
-            console.log("Dashboard initialized.");
+            return;
 
         }
 
-        catch (err) {
 
-            console.error(err);
+        /*
+         * VERSION
+         */
 
-            Helper.error(err.message);
+        const version =
+            document.getElementById(
+                "appVersion"
+            );
+
+        if (version) {
+
+            version.textContent =
+                `Version ${CONFIG.VERSION}`;
 
         }
 
-    },
+
+        /*
+         * LOAD USER IMMEDIATELY
+         *
+         * Tidak perlu menunggu API.
+         */
+
+        this.loadUser();
+
+
+        /*
+         * ROLE UI IMMEDIATELY
+         */
+
+        if (
+            typeof Role !== "undefined"
+        ) {
+
+            Role.renderSidebar();
+            Role.renderPermission();
+
+        }
+
+
+        /*
+         * LOAD DASHBOARD IN BACKGROUND
+         *
+         * Jangan await.
+         *
+         * Ini membuat halaman langsung terasa
+         * responsif.
+         */
+
+        this.loadDashboard(
+            false
+        );
+
+
+        console.log(
+            "Dashboard initialized."
+        );
+
+    }
+    catch (err) {
+
+        console.error(
+            "Dashboard init error:",
+            err
+        );
+
+        Helper.error(
+            err.message ||
+            "Gagal menginisialisasi dashboard."
+        );
+
+    }
+
+},
 
     /**************************************************************************
      * LOAD USER
