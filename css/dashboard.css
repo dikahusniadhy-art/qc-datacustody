@@ -2197,3 +2197,417 @@ END OF FILE
     background: #7B1FA2;
 
 }
+
+/******************************************************************************
+ * MOBILE RESPONSIVE - ENTERPRISE
+ * DATA AGUNAN CUSTODY
+ ******************************************************************************/
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 992px) {
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .content {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .header {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px;
+        gap: 18px;
+        align-items: stretch;
+    }
+
+    .header>div:first-child {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .header h1 {
+        max-width: 100%;
+        font-size: 24px;
+        line-height: 1.25;
+        word-break: break-word;
+    }
+
+    .user {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .card {
+        min-width: 0;
+    }
+
+    .section {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .chart {
+        width: 100%;
+        height: 340px;
+    }
+
+    .table-scroll {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body {
+        background: #F4F5FB;
+    }
+
+    .content {
+        padding: 14px;
+    }
+
+    .header {
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 18px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+        line-height: 1.25;
+    }
+
+    .user {
+        justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .avatar {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+        flex: 0 0 auto;
+    }
+
+    #username {
+        font-size: 14px;
+        max-width: 160px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #role {
+        font-size: 12px;
+    }
+
+    .logout {
+        padding: 10px 14px;
+        font-size: 13px;
+        margin-left: auto;
+    }
+
+
+    /* KPI */
+
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        padding: 21px;
+        border-radius: 17px;
+    }
+
+    .card h2 {
+        font-size: 30px;
+        margin-top: 10px;
+    }
+
+    .card div:first-child div {
+        font-size: 14px;
+    }
+
+    .icon {
+        width: 50px;
+        height: 50px;
+        right: 18px;
+        top: 18px;
+        border-radius: 13px;
+        font-size: 21px;
+    }
+
+
+    /* SECTION */
+
+    .section {
+        padding: 17px;
+        border-radius: 17px;
+        margin-bottom: 18px;
+    }
+
+    .section h3 {
+        font-size: 17px;
+        line-height: 1.3;
+        margin-bottom: 15px;
+    }
+
+
+    /* CHART */
+
+    .chart {
+        height: 290px;
+        min-height: 290px;
+        border-radius: 14px;
+        font-size: 14px;
+    }
+
+
+    /* TABLE */
+
+    .table-scroll {
+        border-radius: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    table {
+        min-width: 720px;
+    }
+
+    thead th {
+        padding: 12px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    tbody td {
+        padding: 12px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+
+    /* TABLE ACTION */
+
+    .table-action {
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    .table-action button {
+        width: 34px;
+        height: 34px;
+    }
+
+
+    /* TOAST */
+
+    .toast {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        min-width: 0;
+        width: auto;
+        max-width: none;
+    }
+
+
+    /* MODAL */
+
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .modal-header {
+        padding: 15px 18px;
+    }
+
+    .modal-body {
+        padding: 18px;
+    }
+
+    .modal-footer {
+        padding: 15px;
+    }
+
+
+    /* FORM */
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 17px;
+    }
+
+    .form-control {
+        height: 46px;
+        font-size: 14px;
+    }
+
+    textarea.form-control {
+        height: 110px;
+    }
+
+
+    /* SEARCH */
+
+    .search-box {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+
+    /* BUTTON */
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .button-group .btn {
+        width: 100%;
+    }
+
+
+    /* PAGINATION */
+
+    .pagination {
+        justify-content: center;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .pagination button {
+        width: 38px;
+        height: 38px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    .content {
+        padding: 10px;
+    }
+
+    .header {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .header h1 {
+        font-size: 19px;
+    }
+
+    .header p {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .user {
+        gap: 8px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    #username {
+        max-width: 130px;
+        font-size: 13px;
+    }
+
+    #role {
+        font-size: 11px;
+    }
+
+    .logout {
+        padding: 9px 11px;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+
+    .card {
+        padding: 18px;
+        border-radius: 15px;
+    }
+
+    .card h2 {
+        font-size: 28px;
+    }
+
+    .icon {
+        width: 44px;
+        height: 44px;
+        right: 15px;
+        top: 15px;
+        font-size: 19px;
+    }
+
+    .section {
+        padding: 14px;
+    }
+
+    .section h3 {
+        font-size: 16px;
+    }
+
+    .chart {
+        height: 250px;
+        min-height: 250px;
+    }
+
+    .table-scroll {
+        border-radius: 10px;
+    }
+
+    .toast {
+        font-size: 13px;
+    }
+
+}
