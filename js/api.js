@@ -300,134 +300,113 @@ const API = {
     },
 
 
-    /**************************************************************************
-     * GET REQUEST
-     **************************************************************************/
-    async get(
-        action,
-        params = {}
-    ) {
+/******************************************************************************
+ * GET REQUEST
+ ******************************************************************************/
 
-        const url =
-            this.buildGetUrl(
-                action,
-                params
+async get(
+    action,
+    params = {}
+) {
+
+    const url =
+        this.buildGetUrl(
+            action,
+            params
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "GET",
+                    cache: "no-store",
+                    redirect: "follow"
+                }
             );
+
+
+        const text =
+            await response.text();
+
+
+        /*
+         * HTTP ERROR
+         */
+
+        if (!response.ok) {
+
+            console.error(
+                "API GET HTTP ERROR:",
+                response.status,
+                text
+            );
+
+            throw new Error(
+                "HTTP " +
+                response.status +
+                " saat memanggil " +
+                action
+            );
+
+        }
+
+
+        /*
+         * PARSE JSON
+         */
+
+        let result;
 
         try {
 
-            console.log(
-                "API GET URL:",
-                url
-            );
-
-            const response =
-                await fetch(
-                    url,
-                    {
-                        method: "GET",
-                        cache: "no-store",
-                        redirect: "follow"
-                    }
-                );
-
-            console.log(
-                "API GET STATUS:",
-                response.status
-            );
-
-            console.log(
-                "API GET REDIRECTED:",
-                response.redirected
-            );
-
-            console.log(
-                "API GET FINAL URL:",
-                response.url
-            );
-
-
-            const text =
-                await response.text();
-
-
-            /*
-             * HTTP ERROR
-             */
-
-            if (!response.ok) {
-
-                console.error(
-                    "API GET HTTP ERROR:",
-                    response.status,
+            result =
+                JSON.parse(
                     text
                 );
-
-                throw new Error(
-                    "HTTP " +
-                    response.status +
-                    " saat memanggil " +
-                    action
-                );
-
-            }
-
-
-            /*
-             * PARSE JSON
-             */
-
-            let result;
-
-            try {
-
-                result =
-                    JSON.parse(
-                        text
-                    );
-
-            }
-            catch (err) {
-
-                console.error(
-                    "API RESPONSE BUKAN JSON:",
-                    text
-                );
-
-                throw new Error(
-                    "Response API tidak valid."
-                );
-
-            }
-
-
-            /*
-             * AUTH ERROR
-             */
-
-            this.handleAuthError(
-                result
-            );
-
-
-            return result;
 
         }
         catch (err) {
 
             console.error(
-                "API GET ERROR:",
-                action,
-                err
+                "API RESPONSE BUKAN JSON:",
+                text
             );
 
-            throw err;
+            throw new Error(
+                "Response API tidak valid."
+            );
 
         }
 
-    },
+
+        /*
+         * AUTH ERROR
+         */
+
+        this.handleAuthError(
+            result
+        );
 
 
+        return result;
+
+    }
+    catch (err) {
+
+        console.error(
+            "API GET ERROR:",
+            action,
+            err
+        );
+
+        throw err;
+
+    }
+
+},
     /**************************************************************************
      * POST REQUEST
      *
