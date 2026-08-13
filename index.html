@@ -4,13 +4,10 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-
         Enterprise Custody Management System
-
     </title>
 
     <!-- FAVICON -->
@@ -65,6 +62,11 @@
                 </div>
 
             </div>
+
+            <!-- HAMBURGER HP -->
+            <button type="button" id="mobileNavBtn" class="mobile-nav-btn" aria-label="Buka menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
             <nav>
 
@@ -1336,6 +1338,113 @@
         </div>
 
     </footer>
+
+    <!-- BUAT DI HAPE HAMBURGER -->
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const btn =
+                    document.getElementById(
+                        "mobileNavBtn"
+                    );
+
+                const nav =
+                    document.getElementById(
+                        "mainNav"
+                    );
+
+
+                if (!btn || !nav) {
+                    return;
+                }
+
+
+                function closeMenu() {
+
+                    nav.classList.remove(
+                        "show"
+                    );
+
+                    btn.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    btn.innerHTML =
+                        '<i class="fa-solid fa-bars"></i>';
+
+                }
+
+
+                btn.addEventListener(
+                    "click",
+                    function () {
+
+                        const open =
+                            nav.classList.contains(
+                                "show"
+                            );
+
+
+                        if (open) {
+
+                            closeMenu();
+
+                        }
+                        else {
+
+                            nav.classList.add(
+                                "show"
+                            );
+
+                            btn.setAttribute(
+                                "aria-expanded",
+                                "true"
+                            );
+
+                            btn.innerHTML =
+                                '<i class="fa-solid fa-xmark"></i>';
+
+                        }
+
+                    }
+                );
+
+
+                nav
+                    .querySelectorAll("a")
+                    .forEach(
+                        link => {
+
+                            link.addEventListener(
+                                "click",
+                                closeMenu
+                            );
+
+                        }
+                    );
+
+
+                window.addEventListener(
+                    "resize",
+                    function () {
+
+                        if (
+                            window.innerWidth > 992
+                        ) {
+
+                            closeMenu();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+    </script>
 
 </body>
 
