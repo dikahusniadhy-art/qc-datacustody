@@ -2040,26 +2040,19 @@ function getRoleClass(role) {
     ) {
 
         case "ADMIN":
-
             return "badge-role-admin";
-
-
-        case "SUPERVISOR":
-
-            return "badge-role-supervisor";
-
-
+        case "CHECKER":
+            return "badge-role-checker";
         case "VIEWER":
-
             return "badge-role-viewer";
+        case "MAKER":
+            return "badge-role-maker";
 
-
-        default:
-
-            return "badge-role-user";
-
+        // default:
+        //     return "badge-role-user";
+        // case "SUPERVISOR":
+        //     return "badge-role-supervisor";
     }
-
 }
 
 
