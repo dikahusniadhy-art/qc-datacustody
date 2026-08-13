@@ -1190,6 +1190,48 @@ const DATA_AGUNAN = {
 
     },
 
+    /******************************************************************************
+ * CLOSE MODAL
+ ******************************************************************************/
+
+closeModal() {
+
+    const modal =
+        document.getElementById(
+            "viewModal"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.remove(
+        "show"
+    );
+
+    modal.style.display =
+        "none";
+
+    setTimeout(
+        () => {
+
+            if (
+                !modal.classList.contains(
+                    "show"
+                )
+            ) {
+
+                modal.style.display =
+                    "";
+
+            }
+
+        },
+        250
+    );
+
+},
+
     /**************************************************************************
      * REGISTER MODAL
      **************************************************************************/
