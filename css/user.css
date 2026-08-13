@@ -779,28 +779,18 @@ tbody tr:last-child td {
 
     background: #FFF7ED;
 
-    color: #C2410C;
+    color: #ff0000;
 
 }
 
 
-.badge-role-supervisor {
+.badge-role-checker {
 
     background: #EEF4FF;
 
     color: var(--primary);
 
 }
-
-
-.badge-role-user {
-
-    background: #F0FDF4;
-
-    color: #15803D;
-
-}
-
 
 .badge-role-viewer {
 
@@ -810,6 +800,13 @@ tbody tr:last-child td {
 
 }
 
+.badge-role-maker {
+
+    background: #F0FDF4;
+
+    color: #15803D;
+
+}
 
 .badge-active {
 
