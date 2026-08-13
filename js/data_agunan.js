@@ -532,224 +532,551 @@ const DATA_AGUNAN = {
 
     },
 
-    /**************************************************************************
- * VIEW DETAIL AGUNAN
- **************************************************************************/
+    /******************************************************************************
+    * VIEW DETAIL AGUNAN
+    ******************************************************************************/
     view(no_agunan) {
 
-        const data = this.data.find(item => item.no_agunan === no_agunan);
+        const data =
+            this.data.find(
+                item =>
+                    String(item.no_agunan) ===
+                    String(no_agunan)
+            );
+
 
         if (!data) {
 
-            alert("Data tidak ditemukan.");
+            alert(
+                "Data tidak ditemukan."
+            );
 
             return;
 
         }
 
-        const modal = document.getElementById("viewModal");
-        const body = document.getElementById("modalBody");
+
+        const modal =
+            document.getElementById(
+                "viewModal"
+            );
+
+        const body =
+            document.getElementById(
+                "modalBody"
+            );
+
+
+        if (!modal || !body) {
+
+            return;
+
+        }
+
+
+        /*
+         * HELPER VALUE
+         */
+
+        const value =
+            (val) => {
+
+                if (
+                    val === null ||
+                    val === undefined ||
+                    String(val).trim() === ""
+                ) {
+
+                    return "-";
+
+                }
+
+                return String(val);
+
+            };
+
+
+        /*
+         * DETAIL ITEM
+         */
+
+        const item =
+            (
+                label,
+                val,
+                extraClass = ""
+            ) => {
+
+                return `
+                <div class="detail-item ${extraClass}">
+
+                    <span class="detail-label">
+                        ${label}
+                    </span>
+
+                    <div class="detail-value">
+                        ${value(val)}
+                    </div>
+
+                </div>
+            `;
+
+            };
+
+
+        /*
+         * STATUS
+         */
+
+        const statusHTML =
+            this.getBadgeStatus(
+                data.status_agunan
+            );
+
+
+        /*
+         * DIGITAL FILE
+         */
+
+        let digitalFileHTML = "-";
+
+
+        if (
+            data.digital_file_link
+        ) {
+
+            const link =
+                String(
+                    data.digital_file_link
+                ).trim();
+
+
+            if (
+                /^https?:\/\//i.test(
+                    link
+                )
+            ) {
+
+                digitalFileHTML = `
+                <a
+                    href="${link}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="detail-link"
+                >
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    Buka Digital File
+                </a>
+            `;
+
+            }
+            else {
+
+                digitalFileHTML =
+                    value(link);
+
+            }
+
+        }
+
 
         body.innerHTML = `
 
-            <table class="detail-table">
-                
-                <tr>
-                    <th width="240">No Agunan</th>
-                    <td>${data.no_agunan}</td>
-                </tr>
+        <!-- ===================================================== -->
+        <!-- IDENTITAS AGUNAN -->
+        <!-- ===================================================== -->
 
-                <tr>
-                    <th>Status Agunan</th>
-                    <td>${this.getBadgeStatus(data.status_agunan)}</td>
-                </tr>
+        <div class="detail-section">
 
-                <tr>
-                    <th>Jenis Dokumen</th>
-                    <td>${data.jenis_dokumen}</td>
-                </tr>
+            <div class="detail-section-title">
 
-                <tr>
-                    <th>Cabang</th>
-                    <td>${data.kode_cabang}</td>
-                </tr>
+                <div class="detail-section-icon">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
 
-                <tr>
-                    <th>CIF Debitur</th>
-                    <td>${data.cif_debitur}</td>
-                </tr>
+                <div>
 
-                <tr>
-                    <th>Nama Debitur</th>
-                    <td>${data.nama_pemilik_agunan}</td>
-                </tr>
+                    <h3>
+                        Informasi Agunan
+                    </h3>
 
-                <tr>
-                    <th>Rekening Fasilitas</th>
-                    <td>${data.no_rek_fasilitas}</td>
-                </tr>
+                    <p>
+                        Identitas utama data agunan
+                    </p>
 
-                <tr>
-                    <th>Status Dokumen</th>
-                    <td>${data.status_dokumen}</td>
-                </tr>
+                </div>
 
-                <tr>
-                    <th>Kode Jenis Agunan</th>
-                    <td>${data.kode_jenis_agunan}</td>
-                </tr>
+            </div>
 
-                <tr>
-                    <th>Bukti Kepemilikan</th>
-                    <td>${data.bukti_kepemilikan}</td>
-                </tr>
 
-                <tr>
-                    <th>Penyimpanan Agunan</th>
-                    <td>${this.formatDate(data.penyimpanan_agunan)}</td>
-                </tr>
+            <div class="detail-grid">
 
-                <tr>
-                    <th>Alamat Agunan</th>
-                    <td>${this.formatDate(data.alamat_agunan)}</td>
-                </tr>
+                ${item(
+            "No Agunan",
+            data.no_agunan,
+            "detail-primary"
+        )}
 
-                <tr>
-                    <th>RT / RW</th>
-                    <td>${data.rt} / ${data.rw}</td>
-                </tr>
+                ${item(
+            "Status Agunan",
+            statusHTML,
+            "detail-status"
+        )}
 
-                <tr>
-                    <th>Kelurahan</th>
-                    <td>${data.kelurahan}</td>
-                </tr>
+                ${item(
+            "Jenis Dokumen",
+            data.jenis_dokumen
+        )}
 
-                <tr>
-                    <th>Kecamatan</th>
-                    <td>${data.kecamatan}</td>
-                </tr>
+                ${item(
+            "Kode Cabang",
+            data.kode_cabang
+        )}
 
-                <tr>
-                    <th>Kota/Kabupaten</th>
-                    <td>${data.kota_kabupaten}</td>
-                </tr>
+                ${item(
+            "CIF Debitur",
+            data.cif_debitur
+        )}
 
-                <tr>
-                    <th>Provinsi</th>
-                    <td>${data.provinsi} / ${data.kodepos}</td>
-                </tr>
+                ${item(
+            "Nama Pemilik Agunan",
+            data.nama_pemilik_agunan,
+            "detail-wide"
+        )}
 
-                <tr>
-                    <th>Nilai NJOP</th>
-                    <td>${data.nilai_njop}</td>
-                </tr>
+                ${item(
+            "No Rekening Fasilitas",
+            data.no_rek_fasilitas
+        )}
 
-                <tr>
-                    <th>Tanggal Penilaian Agunan</th>
-                    <td>${this.formatDate(data.tanggal_penilaian_agunan)}</td>
-                </tr>
+                ${item(
+            "Status Dokumen",
+            data.status_dokumen
+        )}
 
-                <tr>
-                    <th>Jenis Penilaian</th>
-                    <td>${data.jenis_penilaian}</td>
-                </tr>
+                ${item(
+            "Kode Jenis Agunan",
+            data.kode_jenis_agunan
+        )}
 
-                <tr>
-                    <th>Tanggal Penilaian Jatuh Tempo</th>
-                    <td>${this.formatDate(data.tanggal_penilaian_jatuh_tempo)}</td>
-                </tr>
+                ${item(
+            "Bukti Kepemilikan",
+            data.bukti_kepemilikan
+        )}
 
-                <tr>
-                    <th>Status Paripasu</th>
-                    <td>${data.status_paripasu}</td>
-                </tr>
+            </div>
 
-                <tr>
-                    <th>Persentase Paripasu</th>
-                    <td>${data.persentase_paripasu}</td>
-                </tr>
+        </div>
 
-                <tr>
-                    <th>Joint Account</th>
-                    <td>${data.joint_account}</td>
-                </tr>
 
-                <tr>
-                    <th>Tanggal Awal Asuransi</th>
-                    <td>${this.formatDate(data.tanggal_awal_asuransi)}</td>
-                </tr>       
-                
-                <tr>
-                    <th>Tanggal Jatuh Tempo Asuransi</th>
-                    <td>${this.formatDate(data.tanggal_jatuh_tempo_asuransi)}</td>
-                </tr>
-                
-                <tr>
-                    <th>Produk</th>
-                    <td>${data.produk}</td>
-                </tr>
-                
-                <tr>
-                    <th>Tanggal Pengikatan</th>
-                    <td>${this.formatDate(data.tanggal_pengikatan)}</td>
-                </tr>
+        <!-- ===================================================== -->
+        <!-- LOKASI AGUNAN -->
+        <!-- ===================================================== -->
 
-                <tr>
-                    <th>Lokasi Dokumen</th>
-                    <td>${data.lokasi_document}</td>
-                </tr>
-                
-                <tr>
-                    <th>Tanggal Expired Appraisal</th>
-                    <td>${this.formatDate(data.tanggal_expired_appraisal)}</td>
-                </tr>
+        <div class="detail-section">
 
-                <tr>
-                    <th>Asli / Copy</th>
-                    <td>${data.asli_copy}</td>
-                </tr>
+            <div class="detail-section-title">
 
-                <tr>
-                    <th>Dokumen Description</th>
-                    <td>${data.document_description}</td>
-                </tr>
+                <div class="detail-section-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
 
-                <tr>
-                    <th>Digital File</th>
-                    <td>
+                <div>
 
-                        <a href="${data.digital_file_link}"
-                           target="_blank">
+                    <h3>
+                        Lokasi Agunan
+                    </h3>
 
-                            ${data.digital_file_link}
+                    <p>
+                        Informasi alamat dan lokasi
+                    </p>
 
-                        </a>
+                </div>
 
-                    </td>
-                </tr>
+            </div>
 
-                <tr>
-                    <th>Catatan Sesuka Bavi Lah</th>
-                    <td>${data.catatan_tambahan}</td>
-                </tr>
 
-            </table>
+            <div class="detail-grid">
 
-        `;
+                ${item(
+            "Alamat Agunan",
+            data.alamat_agunan,
+            "detail-wide"
+        )}
 
-        modal.classList.add("show");
+                ${item(
+            "RT / RW",
+            `${value(data.rt)} / ${value(data.rw)}`
+        )}
 
-    },
+                ${item(
+            "Kelurahan",
+            data.kelurahan
+        )}
 
-    /**************************************************************************
-     * CLOSE MODAL
-     **************************************************************************/
-    closeModal() {
+                ${item(
+            "Kecamatan",
+            data.kecamatan
+        )}
 
-        document
-            .getElementById("viewModal")
-            .classList
-            .remove("show");
+                ${item(
+            "Kota / Kabupaten",
+            data.kota_kabupaten
+        )}
+
+                ${item(
+            "Provinsi",
+            data.provinsi
+        )}
+
+                ${item(
+            "Kode Pos",
+            data.kodepos
+        )}
+
+                ${item(
+            "Penyimpanan Agunan",
+            data.penyimpanan_agunan,
+            "detail-wide"
+        )}
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- PENILAIAN AGUNAN -->
+        <!-- ===================================================== -->
+
+        <div class="detail-section">
+
+            <div class="detail-section-title">
+
+                <div class="detail-section-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Penilaian Agunan
+                    </h3>
+
+                    <p>
+                        Informasi appraisal dan nilai agunan
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-grid">
+
+                ${item(
+            "Nilai NJOP",
+            data.nilai_njop,
+            "detail-highlight"
+        )}
+
+                ${item(
+            "Tanggal Penilaian",
+            this.formatDate(
+                data.tanggal_penilaian_agunan
+            )
+        )}
+
+                ${item(
+            "Jenis Penilaian",
+            data.jenis_penilaian
+        )}
+
+                ${item(
+            "Tanggal Jatuh Tempo Penilaian",
+            this.formatDate(
+                data.tanggal_penilaian_jatuh_tempo
+            )
+        )}
+
+                ${item(
+            "Tanggal Expired Appraisal",
+            this.formatDate(
+                data.tanggal_expired_appraisal
+            )
+        )}
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- PARIPASU & ASURANSI -->
+        <!-- ===================================================== -->
+
+        <div class="detail-section">
+
+            <div class="detail-section-title">
+
+                <div class="detail-section-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Paripasu & Asuransi
+                    </h3>
+
+                    <p>
+                        Informasi perlindungan dan pengikatan
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-grid">
+
+                ${item(
+            "Status Paripasu",
+            data.status_paripasu
+        )}
+
+                ${item(
+            "Persentase Paripasu",
+            data.persentase_paripasu
+        )}
+
+                ${item(
+            "Joint Account",
+            data.joint_account
+        )}
+
+                ${item(
+            "Produk",
+            data.produk
+        )}
+
+                ${item(
+            "Tanggal Awal Asuransi",
+            this.formatDate(
+                data.tanggal_awal_asuransi
+            )
+        )}
+
+                ${item(
+            "Tanggal Jatuh Tempo Asuransi",
+            this.formatDate(
+                data.tanggal_jatuh_tempo_asuransi
+            )
+        )}
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- DOKUMEN -->
+        <!-- ===================================================== -->
+
+        <div class="detail-section">
+
+            <div class="detail-section-title">
+
+                <div class="detail-section-icon">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Informasi Dokumen
+                    </h3>
+
+                    <p>
+                        Detail penyimpanan dan digital file
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-grid">
+
+                ${item(
+            "Tanggal Pengikatan",
+            this.formatDate(
+                data.tanggal_pengikatan
+            )
+        )}
+
+                ${item(
+            "Lokasi Dokumen",
+            data.lokasi_document
+        )}
+
+                ${item(
+            "Asli / Copy",
+            data.asli_copy
+        )}
+
+                <div class="detail-item detail-wide">
+
+                    <span class="detail-label">
+                        Digital File
+                    </span>
+
+                    <div class="detail-value">
+                        ${digitalFileHTML}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-item detail-wide">
+
+                    <span class="detail-label">
+                        Document Description
+                    </span>
+
+                    <div class="detail-value detail-description">
+                        ${value(
+            data.document_description
+        )}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-item detail-wide">
+
+                    <span class="detail-label">
+                        Catatan Tambahan
+                    </span>
+
+                    <div class="detail-value detail-description">
+                        ${value(
+            data.catatan_tambahan
+        )}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+        modal.classList.add(
+            "show"
+        );
 
     },
 
@@ -768,100 +1095,100 @@ const DATA_AGUNAN = {
  * DELETE DATA
  ******************************************************************************/
 
-async delete(no_agunan) {
-
-    if (
-        !confirm(
-            "Yakin ingin menghapus data ini ?"
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    try {
-
-        this.showLoading();
-
-
-        /*
-         * DELETE KE BACKEND
-         */
-
-        const result =
-            await API.deleteAgunan(
-                no_agunan
-            );
-
-
-        /*
-         * REQUEST TERKIRIM
-         */
+    async delete(no_agunan) {
 
         if (
-            result &&
-            result.success === true
+            !confirm(
+                "Yakin ingin menghapus data ini ?"
+            )
         ) {
-
-            /*
-             * Tampilkan sukses
-             */
-
-            alert(
-                "Data berhasil dihapus."
-            );
-
-
-            /*
-             * JANGAN reload loadData()
-             *
-             * Karena GET getAgunan() bisa terkena
-             * redirect / 404 setelah POST.
-             *
-             * Untuk sementara kita refresh halaman
-             * secara penuh agar data terbaru tampil.
-             */
-
-            window.location.reload();
 
             return;
 
         }
 
 
-        /*
-         * GAGAL
-         */
+        try {
 
-        alert(
-            result?.message ||
-            "Gagal menghapus data."
-        );
-
-    }
-    catch (err) {
-
-        console.error(
-            "DELETE ERROR:",
-            err
-        );
+            this.showLoading();
 
 
-        alert(
-            err.message ||
-            "Gagal menghapus data."
-        );
+            /*
+             * DELETE KE BACKEND
+             */
 
-    }
-    finally {
+            const result =
+                await API.deleteAgunan(
+                    no_agunan
+                );
 
-        this.hideLoading();
 
-    }
+            /*
+             * REQUEST TERKIRIM
+             */
 
-},
+            if (
+                result &&
+                result.success === true
+            ) {
+
+                /*
+                 * Tampilkan sukses
+                 */
+
+                alert(
+                    "Data berhasil dihapus."
+                );
+
+
+                /*
+                 * JANGAN reload loadData()
+                 *
+                 * Karena GET getAgunan() bisa terkena
+                 * redirect / 404 setelah POST.
+                 *
+                 * Untuk sementara kita refresh halaman
+                 * secara penuh agar data terbaru tampil.
+                 */
+
+                window.location.reload();
+
+                return;
+
+            }
+
+
+            /*
+             * GAGAL
+             */
+
+            alert(
+                result?.message ||
+                "Gagal menghapus data."
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "DELETE ERROR:",
+                err
+            );
+
+
+            alert(
+                err.message ||
+                "Gagal menghapus data."
+            );
+
+        }
+        finally {
+
+            this.hideLoading();
+
+        }
+
+    },
 
     /**************************************************************************
      * REGISTER MODAL
