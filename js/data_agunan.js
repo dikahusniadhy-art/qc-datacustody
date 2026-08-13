@@ -1074,6 +1074,8 @@ const DATA_AGUNAN = {
     `;
 
 
+        modal.style.display = "flex";
+
         modal.classList.add(
             "show"
         );
@@ -1194,43 +1196,43 @@ const DATA_AGUNAN = {
  * CLOSE MODAL
  ******************************************************************************/
 
-closeModal() {
+    closeModal() {
 
-    const modal =
-        document.getElementById(
-            "viewModal"
+        const modal =
+            document.getElementById(
+                "viewModal"
+            );
+
+        if (!modal) {
+            return;
+        }
+
+        modal.classList.remove(
+            "show"
         );
 
-    if (!modal) {
-        return;
-    }
+        modal.style.display =
+            "none";
 
-    modal.classList.remove(
-        "show"
-    );
+        setTimeout(
+            () => {
 
-    modal.style.display =
-        "none";
+                if (
+                    !modal.classList.contains(
+                        "show"
+                    )
+                ) {
 
-    setTimeout(
-        () => {
+                    modal.style.display =
+                        "";
 
-            if (
-                !modal.classList.contains(
-                    "show"
-                )
-            ) {
+                }
 
-                modal.style.display =
-                    "";
+            },
+            250
+        );
 
-            }
-
-        },
-        250
-    );
-
-},
+    },
 
     /**************************************************************************
      * REGISTER MODAL
