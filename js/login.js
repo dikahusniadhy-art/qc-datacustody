@@ -793,5 +793,5 @@ window.addEventListener(
  ******************************************************************************/
 
 console.log(
-    "LOGIN.JS SECURITY HARDENED 3.0 LOADED"
+    "LOGIN.JS SECURITY HARDENED 1.0 LOADED"
 );
