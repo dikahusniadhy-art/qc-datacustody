@@ -23,8 +23,7 @@ const ROLES = {
             "monitoring",
             "laporan",
             "user_management",
-            "pengaturan",
-            "input"
+            "pengaturan"
 
         ],
 
@@ -57,9 +56,10 @@ const ROLES = {
         menu: [
 
             "dashboard",
+
             "data",
-            "monitoring",
-            "input"
+
+            "monitoring"
 
         ],
 

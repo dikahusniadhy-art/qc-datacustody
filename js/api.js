@@ -300,113 +300,113 @@ const API = {
     },
 
 
-/******************************************************************************
- * GET REQUEST
- ******************************************************************************/
+    /******************************************************************************
+     * GET REQUEST
+     ******************************************************************************/
 
-async get(
-    action,
-    params = {}
-) {
+    async get(
+        action,
+        params = {}
+    ) {
 
-    const url =
-        this.buildGetUrl(
-            action,
-            params
-        );
-
-    try {
-
-        const response =
-            await fetch(
-                url,
-                {
-                    method: "GET",
-                    cache: "no-store",
-                    redirect: "follow"
-                }
+        const url =
+            this.buildGetUrl(
+                action,
+                params
             );
-
-
-        const text =
-            await response.text();
-
-
-        /*
-         * HTTP ERROR
-         */
-
-        if (!response.ok) {
-
-            console.error(
-                "API GET HTTP ERROR:",
-                response.status,
-                text
-            );
-
-            throw new Error(
-                "HTTP " +
-                response.status +
-                " saat memanggil " +
-                action
-            );
-
-        }
-
-
-        /*
-         * PARSE JSON
-         */
-
-        let result;
 
         try {
 
-            result =
-                JSON.parse(
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+                        cache: "no-store",
+                        redirect: "follow"
+                    }
+                );
+
+
+            const text =
+                await response.text();
+
+
+            /*
+             * HTTP ERROR
+             */
+
+            if (!response.ok) {
+
+                console.error(
+                    "API GET HTTP ERROR:",
+                    response.status,
                     text
                 );
+
+                throw new Error(
+                    "HTTP " +
+                    response.status +
+                    " saat memanggil " +
+                    action
+                );
+
+            }
+
+
+            /*
+             * PARSE JSON
+             */
+
+            let result;
+
+            try {
+
+                result =
+                    JSON.parse(
+                        text
+                    );
+
+            }
+            catch (err) {
+
+                console.error(
+                    "API RESPONSE BUKAN JSON:",
+                    text
+                );
+
+                throw new Error(
+                    "Response API tidak valid."
+                );
+
+            }
+
+
+            /*
+             * AUTH ERROR
+             */
+
+            this.handleAuthError(
+                result
+            );
+
+
+            return result;
 
         }
         catch (err) {
 
             console.error(
-                "API RESPONSE BUKAN JSON:",
-                text
+                "API GET ERROR:",
+                action,
+                err
             );
 
-            throw new Error(
-                "Response API tidak valid."
-            );
+            throw err;
 
         }
 
-
-        /*
-         * AUTH ERROR
-         */
-
-        this.handleAuthError(
-            result
-        );
-
-
-        return result;
-
-    }
-    catch (err) {
-
-        console.error(
-            "API GET ERROR:",
-            action,
-            err
-        );
-
-        throw err;
-
-    }
-
-},
+    },
     /**************************************************************************
      * POST REQUEST
      *
@@ -570,72 +570,97 @@ async get(
     },
 
 
-    /**************************************************************************
-     * LOGIN
-     *
-     * LOGIN tidak membutuhkan token.
-     **************************************************************************/
-
+    /******************************************************************************
+ * LOGIN
+ * GET version
+ *
+ * Digunakan agar login dapat membaca response
+ * Google Apps Script dari GitHub Pages.
+ ******************************************************************************/
     async login(
         username,
         password
     ) {
 
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-        form.append(
-            "action",
-            "login"
-        );
-
-        form.append(
-            "username",
-            String(
-                username || ""
-            )
-        );
-
-        form.append(
-            "password",
-            String(
-                password || ""
-            )
-        );
-
         try {
+
+            const url =
+                new URL(
+                    this.getUrl()
+                );
+
+
+            url.searchParams.set(
+                "action",
+                "login"
+            );
+
+
+            url.searchParams.set(
+                "username",
+                String(
+                    username || ""
+                )
+            );
+
+
+            url.searchParams.set(
+                "password",
+                String(
+                    password || ""
+                )
+            );
+
+
+            url.searchParams.set(
+                "_ts",
+                String(
+                    Date.now()
+                )
+            );
+
+
+            console.log(
+                "API LOGIN URL:",
+                url.toString()
+            );
+
 
             const response =
                 await fetch(
-                    url,
+                    url.toString(),
                     {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/x-www-form-urlencoded;charset=UTF-8"
-                        },
-
-                        body:
-                            form.toString(),
-
-                        cache:
-                            "no-store"
+                        method: "GET",
+                        cache: "no-store"
                     }
                 );
+
+
+            console.log(
+                "API LOGIN STATUS:",
+                response.status
+            );
+
+
+            console.log(
+                "API LOGIN REDIRECTED:",
+                response.redirected
+            );
+
 
             const text =
                 await response.text();
 
+
             let result;
+
 
             try {
 
                 result =
-                    JSON.parse(text);
+                    JSON.parse(
+                        text
+                    );
 
             }
             catch (err) {
@@ -650,6 +675,13 @@ async get(
                 );
 
             }
+
+
+            console.log(
+                "API LOGIN RESPONSE:",
+                result
+            );
+
 
             return result;
 
@@ -666,7 +698,6 @@ async get(
         }
 
     },
-
 
     /**************************************************************************
      * LOGOUT
@@ -782,6 +813,412 @@ async get(
 
     },
 
+    /******************************************************************************
+ * USER MANAGEMENT
+ ******************************************************************************/
+
+    /**
+     * CREATE USER
+     *
+     * GitHub Pages / localhost
+     * POST menggunakan no-cors karena
+     * Google Apps Script tidak memberikan CORS header.
+     */
+    async createUser(
+        data = {}
+    ) {
+
+        const url =
+            this.getUrl();
+
+        const form =
+            new URLSearchParams();
+
+
+        form.append(
+            "action",
+            "createUser"
+        );
+
+
+        const token =
+            this.getToken();
+
+        if (token) {
+
+            form.append(
+                "token",
+                token
+            );
+
+        }
+
+
+        Object.keys(
+            data || {}
+        ).forEach(
+            key => {
+
+                const value =
+                    data[key];
+
+                if (
+                    value === undefined ||
+                    value === null
+                ) {
+
+                    return;
+
+                }
+
+                form.append(
+                    key,
+                    String(value)
+                );
+
+            }
+        );
+
+
+        try {
+
+            await fetch(
+                url,
+                {
+                    method: "POST",
+
+                    mode: "no-cors",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
+
+                    body:
+                        form.toString(),
+
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+            return {
+                success: true,
+                sent: true,
+                message:
+                    "Request create user telah dikirim."
+            };
+
+        }
+        catch (err) {
+
+            console.error(
+                "API CREATE USER ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * UPDATE USER
+     ******************************************************************************/
+
+    async updateUser(
+        data = {}
+    ) {
+
+        const url =
+            this.getUrl();
+
+        const form =
+            new URLSearchParams();
+
+
+        form.append(
+            "action",
+            "updateUser"
+        );
+
+
+        const token =
+            this.getToken();
+
+        if (token) {
+
+            form.append(
+                "token",
+                token
+            );
+
+        }
+
+
+        Object.keys(
+            data || {}
+        ).forEach(
+            key => {
+
+                const value =
+                    data[key];
+
+                if (
+                    value === undefined ||
+                    value === null
+                ) {
+
+                    return;
+
+                }
+
+                form.append(
+                    key,
+                    String(value)
+                );
+
+            }
+        );
+
+
+        try {
+
+            await fetch(
+                url,
+                {
+                    method: "POST",
+
+                    mode: "no-cors",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
+
+                    body:
+                        form.toString(),
+
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+            return {
+                success: true,
+                sent: true,
+                message:
+                    "Request update user telah dikirim."
+            };
+
+        }
+        catch (err) {
+
+            console.error(
+                "API UPDATE USER ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * UPDATE USER STATUS
+     ******************************************************************************/
+
+    async updateUserStatus(
+        data = {}
+    ) {
+
+        const url =
+            this.getUrl();
+
+        const form =
+            new URLSearchParams();
+
+
+        form.append(
+            "action",
+            "updateUserStatus"
+        );
+
+
+        const token =
+            this.getToken();
+
+        if (token) {
+
+            form.append(
+                "token",
+                token
+            );
+
+        }
+
+
+        Object.keys(
+            data || {}
+        ).forEach(
+            key => {
+
+                const value =
+                    data[key];
+
+                if (
+                    value === undefined ||
+                    value === null
+                ) {
+
+                    return;
+
+                }
+
+                form.append(
+                    key,
+                    String(value)
+                );
+
+            }
+        );
+
+
+        try {
+
+            await fetch(
+                url,
+                {
+                    method: "POST",
+
+                    mode: "no-cors",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
+
+                    body:
+                        form.toString(),
+
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+            return {
+                success: true,
+                sent: true,
+                message:
+                    "Request perubahan status user telah dikirim."
+            };
+
+        }
+        catch (err) {
+
+            console.error(
+                "API UPDATE USER STATUS ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * DELETE USER
+     ******************************************************************************/
+
+    async deleteUser(
+        id
+    ) {
+
+        const url =
+            this.getUrl();
+
+        const form =
+            new URLSearchParams();
+
+
+        form.append(
+            "action",
+            "deleteUser"
+        );
+
+
+        const token =
+            this.getToken();
+
+        if (token) {
+
+            form.append(
+                "token",
+                token
+            );
+
+        }
+
+
+        form.append(
+            "id",
+            String(id)
+        );
+
+
+        try {
+
+            await fetch(
+                url,
+                {
+                    method: "POST",
+
+                    mode: "no-cors",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
+
+                    body:
+                        form.toString(),
+
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+            return {
+                success: true,
+                sent: true,
+                message:
+                    "Request delete user telah dikirim."
+            };
+
+        }
+        catch (err) {
+
+            console.error(
+                "API DELETE USER ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
+
 
     /**************************************************************************
  * DATA AGUNAN
@@ -836,15 +1273,15 @@ async get(
     },
 
 
- /******************************************************************************
- * INSERT AGUNAN
- *
- * Google Apps Script Web App + GitHub/localhost
- * POST response dapat terkena CORS.
- *
- * Oleh karena itu INSERT dikirim menggunakan fetch
- * tanpa mencoba membaca response.
- ******************************************************************************/
+    /******************************************************************************
+    * INSERT AGUNAN
+    *
+    * Google Apps Script Web App + GitHub/localhost
+    * POST response dapat terkena CORS.
+    *
+    * Oleh karena itu INSERT dikirim menggunakan fetch
+    * tanpa mencoba membaca response.
+    ******************************************************************************/
 
     async insertAgunan(
         data = {}
@@ -975,194 +1412,194 @@ async get(
     },
 
 
-   /******************************************************************************
- * UPDATE AGUNAN
- *
- * Google Apps Script Web App + GitHub Pages
- *
- * POST response dapat terkena CORS.
- *
- * Oleh karena itu UPDATE dikirim menggunakan fetch
- * mode: "no-cors" tanpa mencoba membaca response.
- *
- * Signature tetap:
- *
- * API.updateAgunan(id, data)
- *
- ******************************************************************************/
+    /******************************************************************************
+  * UPDATE AGUNAN
+  *
+  * Google Apps Script Web App + GitHub Pages
+  *
+  * POST response dapat terkena CORS.
+  *
+  * Oleh karena itu UPDATE dikirim menggunakan fetch
+  * mode: "no-cors" tanpa mencoba membaca response.
+  *
+  * Signature tetap:
+  *
+  * API.updateAgunan(id, data)
+  *
+  ******************************************************************************/
 
-async updateAgunan(
-    id,
-    data = {}
-) {
+    async updateAgunan(
+        id,
+        data = {}
+    ) {
 
-    /*
-     * PAYLOAD
-     */
+        /*
+         * PAYLOAD
+         */
 
-    const payload = {
+        const payload = {
 
-        ...data,
+            ...data,
 
-        no_agunan:
-            data.no_agunan ||
-            id
+            no_agunan:
+                data.no_agunan ||
+                id
 
-    };
-
-
-    /*
-     * URL
-     */
-
-    const url =
-        this.getUrl();
+        };
 
 
-    /*
-     * FORM
-     */
+        /*
+         * URL
+         */
 
-    const form =
-        new URLSearchParams();
-
-
-    /*
-     * ACTION
-     */
-
-    form.append(
-        "action",
-        "updateAgunan"
-    );
+        const url =
+            this.getUrl();
 
 
-    /*
-     * TOKEN
-     */
+        /*
+         * FORM
+         */
 
-    const token =
-        this.getToken();
+        const form =
+            new URLSearchParams();
 
-    if (token) {
+
+        /*
+         * ACTION
+         */
 
         form.append(
-            "token",
-            token
+            "action",
+            "updateAgunan"
         );
 
-    }
 
+        /*
+         * TOKEN
+         */
 
-    /*
-     * DATA
-     */
+        const token =
+            this.getToken();
 
-    Object.keys(
-        payload || {}
-    ).forEach(
-        key => {
+        if (token) {
 
-            const value =
-                payload[key];
-
-
-            if (
-                value === undefined ||
-                value === null
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                typeof value === "object"
-            ) {
-
-                form.append(
-                    key,
-                    JSON.stringify(
-                        value
-                    )
-                );
-
-            }
-            else {
-
-                form.append(
-                    key,
-                    String(value)
-                );
-
-            }
+            form.append(
+                "token",
+                token
+            );
 
         }
-    );
 
 
-    /*
-     * KIRIM REQUEST
-     *
-     * no-cors:
-     * browser tidak membaca response,
-     * tetapi request tetap dikirim.
-     */
+        /*
+         * DATA
+         */
 
-    try {
+        Object.keys(
+            payload || {}
+        ).forEach(
+            key => {
 
-        await fetch(
-            url,
-            {
-                method: "POST",
+                const value =
+                    payload[key];
 
-                mode: "no-cors",
 
-                headers: {
-                    "Content-Type":
-                        "application/x-www-form-urlencoded;charset=UTF-8"
-                },
+                if (
+                    value === undefined ||
+                    value === null
+                ) {
 
-                body:
-                    form.toString(),
+                    return;
 
-                cache:
-                    "no-store"
+                }
+
+
+                if (
+                    typeof value === "object"
+                ) {
+
+                    form.append(
+                        key,
+                        JSON.stringify(
+                            value
+                        )
+                    );
+
+                }
+                else {
+
+                    form.append(
+                        key,
+                        String(value)
+                    );
+
+                }
+
             }
         );
 
 
         /*
-         * Response server tidak dibaca.
+         * KIRIM REQUEST
          *
-         * Request dianggap terkirim.
+         * no-cors:
+         * browser tidak membaca response,
+         * tetapi request tetap dikirim.
          */
 
-        return {
+        try {
 
-            success: true,
+            await fetch(
+                url,
+                {
+                    method: "POST",
 
-            sent: true,
+                    mode: "no-cors",
 
-            message:
-                "Request update telah dikirim."
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
 
-        };
+                    body:
+                        form.toString(),
 
-    }
-    catch (err) {
+                    cache:
+                        "no-store"
+                }
+            );
 
-        console.error(
-            "API UPDATE ERROR:",
-            err
-        );
 
-        throw err;
+            /*
+             * Response server tidak dibaca.
+             *
+             * Request dianggap terkirim.
+             */
 
-    }
+            return {
 
-},
+                success: true,
+
+                sent: true,
+
+                message:
+                    "Request update telah dikirim."
+
+            };
+
+        }
+        catch (err) {
+
+            console.error(
+                "API UPDATE ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
 
 
     /**************************************************************************
@@ -1174,139 +1611,139 @@ async updateAgunan(
      **************************************************************************/
 
     async deleteAgunan(
-    noAgunan
-) {
+        noAgunan
+    ) {
 
-    /*
-     * VALIDASI
-     */
+        /*
+         * VALIDASI
+         */
 
-    const target =
-        String(
-            noAgunan || ""
-        ).trim();
-
-
-    if (!target) {
-
-        throw new Error(
-            "NO AGUNAN wajib diisi."
-        );
-
-    }
+        const target =
+            String(
+                noAgunan || ""
+            ).trim();
 
 
-    /*
-     * URL
-     */
+        if (!target) {
 
-    const url =
-        this.getUrl();
+            throw new Error(
+                "NO AGUNAN wajib diisi."
+            );
 
-
-    /*
-     * FORM
-     */
-
-    const form =
-        new URLSearchParams();
+        }
 
 
-    /*
-     * ACTION
-     */
+        /*
+         * URL
+         */
 
-    form.append(
-        "action",
-        "deleteAgunan"
-    );
+        const url =
+            this.getUrl();
 
 
-    /*
-     * TOKEN
-     */
+        /*
+         * FORM
+         */
 
-    const token =
-        this.getToken();
+        const form =
+            new URLSearchParams();
 
-    if (token) {
+
+        /*
+         * ACTION
+         */
 
         form.append(
-            "token",
-            token
-        );
-
-    }
-
-
-    /*
-     * NO AGUNAN
-     */
-
-    form.append(
-        "no_agunan",
-        target
-    );
-
-
-    /*
-     * REQUEST
-     */
-
-    try {
-
-        await fetch(
-            url,
-            {
-                method: "POST",
-
-                mode: "no-cors",
-
-                headers: {
-
-                    "Content-Type":
-                        "application/x-www-form-urlencoded;charset=UTF-8"
-
-                },
-
-                body:
-                    form.toString(),
-
-                cache:
-                    "no-store"
-
-            }
+            "action",
+            "deleteAgunan"
         );
 
 
         /*
-         * RESPONSE TIDAK DIBACA
+         * TOKEN
          */
 
-        return {
+        const token =
+            this.getToken();
 
-            success: true,
+        if (token) {
 
-            sent: true,
+            form.append(
+                "token",
+                token
+            );
 
-            message:
-                "Request penghapusan telah dikirim."
+        }
 
-        };
 
-    }
-    catch (err) {
+        /*
+         * NO AGUNAN
+         */
 
-        console.error(
-            "API DELETE ERROR:",
-            err
+        form.append(
+            "no_agunan",
+            target
         );
 
-        throw err;
 
-    }
+        /*
+         * REQUEST
+         */
 
-},
+        try {
+
+            await fetch(
+                url,
+                {
+                    method: "POST",
+
+                    mode: "no-cors",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+
+                    },
+
+                    body:
+                        form.toString(),
+
+                    cache:
+                        "no-store"
+
+                }
+            );
+
+
+            /*
+             * RESPONSE TIDAK DIBACA
+             */
+
+            return {
+
+                success: true,
+
+                sent: true,
+
+                message:
+                    "Request penghapusan telah dikirim."
+
+            };
+
+        }
+        catch (err) {
+
+            console.error(
+                "API DELETE ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
 
 
     /**************************************************************************

@@ -3,7 +3,7 @@
  * login.js
  * DATA AGUNAN CUSTODY
  * LOGIN CLIENT
- * SECURITY HARDENED 3.0
+ * SECURITY HARDENED 1.0
  *
  ******************************************************************************/
 

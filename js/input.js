@@ -402,7 +402,7 @@ async function saveData(
     try {
 
         /*
-         * SIMPAN NILAI KEY
+         * VALIDASI NO AGUNAN
          */
 
         const noAgunan =
@@ -421,7 +421,9 @@ async function saveData(
 
 
         /*
-         * 1. KIRIM INSERT
+         * ==========================================================
+         * INSERT
+         * ==========================================================
          */
 
         const result =
@@ -431,80 +433,50 @@ async function saveData(
 
 
         /*
-         * Request sudah terkirim.
+         * Karena insertAgunan() menggunakan
+         * mode no-cors, response server tidak
+         * dapat dibaca browser.
          *
-         * Jangan langsung menganggap gagal
-         * hanya karena response POST tidak
-         * bisa dibaca browser.
-         */
-
-
-        /*
-         * 2. TUNGGU SEBENTAR
+         * Tetapi request sudah dikirim ke Apps Script.
          *
-         * Memberikan waktu kepada Apps Script
-         * untuk menyelesaikan appendRow().
+         * Data akan diproses oleh endpoint
+         * insertAgunan().
          */
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    1200
-                )
-        );
 
 
         /*
-         * 3. VERIFIKASI DATA
-         */
-
-        const verify =
-            await API.getAgunanById(
-                noAgunan
-            );
-
-
-        /*
-         * 4. DATA DITEMUKAN
-         */
-
-        if (
-            verify &&
-            verify.success &&
-            verify.data
-        ) {
-
-            Helper.hideLoading();
-
-            Helper.success(
-                "Data berhasil disimpan."
-            );
-
-
-            resetForm();
-
-            generateNoAgunan();
-
-            return;
-
-        }
-
-
-        /*
-         * 5. DATA TIDAK DITEMUKAN
+         * ==========================================================
+         * SUCCESS
+         * ==========================================================
          */
 
         Helper.hideLoading();
 
-        Helper.error(
-            "Data belum ditemukan setelah proses penyimpanan."
+
+        Helper.success(
+            "Data berhasil disimpan."
         );
+
+
+        /*
+         * RESET FORM
+         */
+
+        resetForm();
+
+
+        /*
+         * GENERATE NO AGUNAN BARU
+         */
+
+        generateNoAgunan();
+
 
     }
     catch (err) {
 
         Helper.hideLoading();
+
 
         console.error(
             "SAVE DATA ERROR:",

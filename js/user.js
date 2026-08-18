@@ -2448,8 +2448,6 @@ function escapeAttribute(value) {
         );
 
 }
-
-
 /* =========================================================
    GLOBAL FUNCTIONS
    Supaya onclick HTML bisa mengakses function
