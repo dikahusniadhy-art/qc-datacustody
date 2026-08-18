@@ -3,7 +3,7 @@
  * api.js
  * DATA AGUNAN CUSTODY
  * SECURITY HARDENED API CLIENT
- * VERSION : 3.0
+ * VERSION : 1.0
  *
  ******************************************************************************/
 
