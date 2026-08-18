@@ -1860,5 +1860,5 @@ API.request =
  ******************************************************************************/
 
 console.log(
-    "API.JS SECURITY HARDENED 3.0 LOADED"
+    "API.JS SECURITY HARDENED 1.0 LOADED"
 );
