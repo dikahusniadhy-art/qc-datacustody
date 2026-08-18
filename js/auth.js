@@ -1010,5 +1010,5 @@ setInterval(
  ******************************************************************************/
 
 console.log(
-    "AUTH.JS SECURITY HARDENED 3.0 LOADED"
+    "AUTH.JS SECURITY HARDENED 1.0 LOADED"
 );
