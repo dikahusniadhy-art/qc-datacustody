@@ -3,7 +3,7 @@
  * auth.js
  * DATA AGUNAN CUSTODY
  * AUTHENTICATION CLIENT
- * SECURITY HARDENED 3.0
+ * SECURITY HARDENED 1.0
  *
  ******************************************************************************/
 
