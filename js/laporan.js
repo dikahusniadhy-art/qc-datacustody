@@ -1,6 +1,6 @@
 /******************************************************************************
  * LAPORAN DATA AGUNAN
- * VERSION : 2.0 ENTERPRISE
+ * VERSION : 1.0 ENTERPRISE
  * FITUR : PREVIEW, REFRESH, EXPORT XLSX, EXPORT PDF, PRINT
  ******************************************************************************/
 
