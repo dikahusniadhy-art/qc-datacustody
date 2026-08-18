@@ -1,705 +1,3492 @@
-<!DOCTYPE html>
-<html lang="id">
+/* =========================================================
+   CUSTODY - USER MANAGEMENT
+   Enterprise Banking Dashboard
+========================================================= */
 
-<head>
+:root {
 
-    <meta charset="UTF-8">
+    --primary: #163D7D;
+    --primary-light: #2F6FD3;
+    --primary-dark: #102F61;
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    --success: #10B981;
+    --success-light: #ECFDF5;
 
-    <title>Manajemen User - Custody</title>
+    --danger: #EF4444;
+    --danger-light: #FEF2F2;
 
-    <!-- CSS -->
-    <link rel="icon" href="../foto/krom1.png">
-    <link rel="stylesheet" href="../css/user.css">
+    --warning: #F59E0B;
+    --warning-light: #FFFBEB;
 
-</head>
+    --info: #3B82F6;
+    --info-light: #EFF6FF;
 
-<body>
+    --bg: #F4F7FB;
+    --card: #FFFFFF;
 
-    <div class="user-page">
+    --text: #24324B;
+    --text-dark: #172033;
+    --text-muted: #718096;
 
-        <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    --border: #E7EDF6;
 
-        <header class="page-header">
+    --shadow:
+        0 4px 20px rgba(15, 23, 42, 0.06);
 
-            <div class="header-left">
+    --shadow-hover:
+        0 10px 30px rgba(15, 23, 42, 0.10);
 
-                <div class="header-icon">
-                    👤
-                </div>
+    --radius: 12px;
 
-                <div>
+}
 
-                    <h1>Manajemen User</h1>
 
-                    <p>
-                        Kelola pengguna dan hak akses aplikasi Custody
-                    </p>
+/* =========================================================
+   RESET
+========================================================= */
 
-                </div>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-            </div>
 
-            <div class="header-right">
+body {
 
-                <button type="button" class="btn btn-primary" id="btnAddUser">
+    font-family:
+        Inter,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
 
-                    <span>＋</span>
-                    Tambah User
+    background: var(--bg);
 
-                </button>
+    color: var(--text);
 
-            </div>
+    min-height: 100vh;
 
-        </header>
+}
 
 
-        <!-- =====================================================
-         KPI
-    ====================================================== -->
+/* =========================================================
+   PAGE
+========================================================= */
 
-        <section class="kpi-grid">
+.user-page {
 
-            <!-- TOTAL USER -->
+    padding: 28px;
 
-            <div class="kpi-card">
+    max-width: 1600px;
 
-                <div class="kpi-icon total">
-                    👥
-                </div>
+    margin: auto;
 
-                <div class="kpi-content">
+}
 
-                    <span class="kpi-label">
-                        Total User
-                    </span>
 
-                    <strong class="kpi-value" id="totalUser">
-                        0
-                    </strong>
+/* =========================================================
+   HEADER
+========================================================= */
 
-                    <span class="kpi-description">
-                        Seluruh pengguna
-                    </span>
+.page-header {
 
-                </div>
+    display: flex;
 
-            </div>
+    justify-content: space-between;
 
+    align-items: center;
 
-            <!-- ACTIVE USER -->
+    margin-bottom: 25px;
 
-            <div class="kpi-card">
+}
 
-                <div class="kpi-icon active">
-                    ✓
-                </div>
 
-                <div class="kpi-content">
+.header-left {
 
-                    <span class="kpi-label">
-                        User Aktif
-                    </span>
+    display: flex;
 
-                    <strong class="kpi-value" id="activeUser">
-                        0
-                    </strong>
+    align-items: center;
 
-                    <span class="kpi-description">
-                        Memiliki akses
-                    </span>
+    gap: 15px;
 
-                </div>
+}
 
-            </div>
 
+.header-icon {
 
-            <!-- INACTIVE USER -->
+    width: 54px;
 
-            <div class="kpi-card">
+    height: 54px;
 
-                <div class="kpi-icon inactive">
-                    ⏸
-                </div>
+    display: flex;
 
-                <div class="kpi-content">
+    align-items: center;
 
-                    <span class="kpi-label">
-                        User Tidak Aktif
-                    </span>
+    justify-content: center;
 
-                    <strong class="kpi-value" id="inactiveUser">
-                        0
-                    </strong>
+    border-radius: 14px;
 
-                    <span class="kpi-description">
-                        Akses dinonaktifkan
-                    </span>
+    background:
+        linear-gradient(135deg,
+            var(--primary),
+            var(--primary-light));
 
-                </div>
+    color: white;
 
-            </div>
+    font-size: 25px;
 
+    box-shadow:
+        0 8px 20px rgba(22, 61, 125, .18);
 
-            <!-- ADMIN -->
+}
 
-            <div class="kpi-card">
 
-                <div class="kpi-icon admin">
-                    🛡
-                </div>
+.page-header h1 {
 
-                <div class="kpi-content">
+    font-size: 25px;
 
-                    <span class="kpi-label">
-                        Administrator
-                    </span>
+    font-weight: 700;
 
-                    <strong class="kpi-value" id="adminUser">
-                        0
-                    </strong>
+    color: var(--text-dark);
 
-                    <span class="kpi-description">
-                        Pengguna administrator
-                    </span>
+    margin-bottom: 5px;
 
-                </div>
+}
 
-            </div>
 
-        </section>
+.page-header p {
 
+    font-size: 14px;
 
-        <!-- =====================================================
-         FILTER PANEL
-    ====================================================== -->
+    color: var(--text-muted);
 
-        <section class="filter-card">
+}
 
-            <div class="filter-header">
 
-                <div>
+/* =========================================================
+   BUTTON
+========================================================= */
 
-                    <h2>Daftar Pengguna</h2>
+.btn {
 
-                    <p>
-                        Cari dan kelola pengguna aplikasi Custody
-                    </p>
+    border: none;
 
-                </div>
+    border-radius: 9px;
 
-                <button type="button" class="btn btn-secondary" id="btnRefresh">
+    padding: 11px 17px;
 
-                    ↻
-                    Refresh
+    font-size: 13px;
 
-                </button>
+    font-weight: 600;
 
-            </div>
+    cursor: pointer;
 
+    display: inline-flex;
 
-            <div class="filter-body">
+    align-items: center;
 
-                <!-- SEARCH -->
+    justify-content: center;
 
-                <div class="filter-group search-group">
+    gap: 7px;
 
-                    <label for="searchUser">
-                        Pencarian
-                    </label>
+    transition: .2s ease;
 
-                    <div class="search-box">
+}
 
-                        <span class="search-icon">
-                            🔍
-                        </span>
 
-                        <input type="text" id="searchUser" placeholder="Cari username, nama atau email...">
+.btn-primary {
 
-                    </div>
+    background:
+        linear-gradient(135deg,
+            var(--primary),
+            var(--primary-light));
 
-                </div>
+    color: white;
 
+    box-shadow:
+        0 5px 15px rgba(22, 61, 125, .18);
 
-                <!-- ROLE -->
+}
 
-                <div class="filter-group">
 
-                    <label for="filterRole">
-                        Role
-                    </label>
+.btn-primary:hover {
 
-                    <select id="filterRole">
+    transform: translateY(-1px);
 
-                        <option value="">
-                            Semua Role
-                        </option>
+    box-shadow:
+        0 8px 20px rgba(22, 61, 125, .25);
 
-                        <option value="ADMIN">
-                            ADMIN
-                        </option>
+}
 
-                        <option value="CHECKER">
-                            CHECKER
-                        </option>
 
-                        <option value="VIEWER">
-                            VIEWER
-                        </option>
+.btn-secondary {
 
-                        <option value="MAKER">
-                            MAKER
-                        </option>
+    background: white;
 
-                    </select>
+    color: var(--text);
 
-                </div>
+    border: 1px solid var(--border);
 
+}
 
-                <!-- STATUS -->
 
-                <div class="filter-group">
+.btn-secondary:hover {
 
-                    <label for="filterStatus">
-                        Status
-                    </label>
+    background: #F8FAFC;
 
-                    <select id="filterStatus">
+}
 
-                        <option value="">
-                            Semua Status
-                        </option>
 
-                        <option value="AKTIF">
-                            AKTIF
-                        </option>
+.btn-danger {
 
-                        <option value="NONAKTIF">
-                            NONAKTIF
-                        </option>
+    background: var(--danger);
 
-                    </select>
+    color: white;
 
-                </div>
+}
 
-            </div>
 
-        </section>
+.btn-danger:hover {
 
+    background: #DC2626;
 
-        <!-- =====================================================
-         TABLE
-    ====================================================== -->
+}
 
-        <section class="table-card">
 
-            <div class="table-wrapper">
+/* =========================================================
+   KPI
+========================================================= */
 
-                <table id="userTable">
+.kpi-grid {
 
-                    <thead>
+    display: grid;
 
-                        <tr>
+    grid-template-columns:
+        repeat(4, 1fr);
 
-                            <th class="col-number">
-                                NO
-                            </th>
+    gap: 18px;
 
-                            <th>
-                                USERNAME
-                            </th>
+    margin-bottom: 22px;
 
-                            <th>
-                                NAMA
-                            </th>
+}
 
-                            <th>
-                                EMAIL
-                            </th>
 
-                            <th>
-                                ROLE
-                            </th>
+.kpi-card {
 
-                            <th>
-                                STATUS
-                            </th>
+    background: var(--card);
 
-                            <th>
-                                TIMESTAMP
-                            </th>
+    border: 1px solid var(--border);
 
-                            <th class="col-action">
-                                ACTION
-                            </th>
+    border-radius: var(--radius);
 
-                        </tr>
+    padding: 20px;
 
-                    </thead>
+    display: flex;
 
-                    <tbody id="userTableBody">
+    align-items: center;
 
-                        <tr class="loading-row">
+    gap: 15px;
 
-                            <td colspan="8">
+    box-shadow: var(--shadow);
 
-                                <div class="loading-container">
+    transition: .2s ease;
 
-                                    <div class="spinner"></div>
+}
 
-                                    <span>
-                                        Memuat data user...
-                                    </span>
 
-                                </div>
+.kpi-card:hover {
 
-                            </td>
+    transform: translateY(-2px);
 
-                        </tr>
+    box-shadow: var(--shadow-hover);
 
-                    </tbody>
+}
 
-                </table>
 
+.kpi-icon {
 
-                <!-- EMPTY -->
+    width: 48px;
 
-                <div class="empty-state" id="emptyState" style="display:none;">
+    height: 48px;
 
-                    <div class="empty-icon">
-                        👥
-                    </div>
+    min-width: 48px;
 
-                    <h3>
-                        Data user tidak ditemukan
-                    </h3>
+    border-radius: 12px;
 
-                    <p>
-                        Belum ada user yang sesuai dengan filter.
-                    </p>
+    display: flex;
 
-                </div>
+    align-items: center;
 
-            </div>
+    justify-content: center;
 
+    font-size: 20px;
 
-            <!-- PAGINATION -->
+}
 
-            <div class="table-footer">
 
-                <div class="table-info">
+.kpi-icon.total {
 
-                    Menampilkan
-                    <strong id="showingFrom">0</strong>
-                    -
-                    <strong id="showingTo">0</strong>
-                    dari
-                    <strong id="showingTotal">0</strong>
-                    user
+    background: #EEF4FF;
 
-                </div>
+    color: var(--primary);
 
-                <div class="pagination">
+}
 
-                    <button type="button" id="btnPrev" class="pagination-btn">
 
-                        ‹
+.kpi-icon.active {
 
-                    </button>
+    background: var(--success-light);
 
-                    <span id="pageInfo">
-                        1 / 1
-                    </span>
+    color: var(--success);
 
-                    <button type="button" id="btnNext" class="pagination-btn">
+}
 
-                        ›
 
-                    </button>
+.kpi-icon.inactive {
 
-                </div>
+    background: #F1F5F9;
 
-            </div>
+    color: #64748B;
 
-        </section>
+}
 
-    </div>
 
+.kpi-icon.admin {
 
-    <!-- =====================================================
-     MODAL USER
-====================================================== -->
+    background: #FFF7ED;
 
-    <div class="modal-overlay" id="userModal">
+    color: #F97316;
 
-        <div class="modal">
+}
 
-            <div class="modal-header">
 
-                <div>
+.kpi-content {
 
-                    <h2 id="modalTitle">
-                        Tambah User
-                    </h2>
+    display: flex;
 
-                    <p>
-                        Isi informasi pengguna
-                    </p>
+    flex-direction: column;
 
-                </div>
+}
 
-                <button type="button" class="modal-close" id="btnCloseModal">
 
-                    ×
+.kpi-label {
 
-                </button>
+    font-size: 12px;
 
-            </div>
+    color: var(--text-muted);
 
+    margin-bottom: 3px;
 
-            <form id="userForm">
+}
 
-                <input type="hidden" id="userId">
 
+.kpi-value {
 
-                <!-- USERNAME -->
+    font-size: 24px;
 
-                <div class="form-group">
+    color: var(--text-dark);
 
-                    <label for="username">
-                        Username
-                        <span>*</span>
-                    </label>
+    line-height: 1.2;
 
-                    <input type="text" id="username" name="username" placeholder="Masukkan username" autocomplete="off"
-                        required>
+}
 
-                </div>
 
+.kpi-description {
 
-                <!-- PASSWORD -->
+    font-size: 11px;
 
-                <div class="form-group" id="passwordGroup">
+    color: #94A3B8;
 
-                    <label for="password">
-                        Password
-                        <span>*</span>
-                    </label>
+    margin-top: 3px;
 
-                    <div class="password-input">
+}
 
-                        <input type="password" id="password" name="password" placeholder="Masukkan password"
-                            autocomplete="new-password">
 
-                        <button type="button" id="togglePassword">
+/* =========================================================
+   FILTER CARD
+========================================================= */
 
-                            👁
+.filter-card {
 
-                        </button>
+    background: white;
 
-                    </div>
+    border: 1px solid var(--border);
 
-                    <small id="passwordHint">
-                        Minimal 6 karakter
-                    </small>
+    border-radius: var(--radius);
 
-                </div>
+    box-shadow: var(--shadow);
 
+    margin-bottom: 20px;
 
-                <!-- NAMA -->
+}
 
-                <div class="form-group">
 
-                    <label for="nama">
-                        Nama Lengkap
-                        <span>*</span>
-                    </label>
+.filter-header {
 
-                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
+    padding: 20px;
 
-                </div>
+    display: flex;
 
+    justify-content: space-between;
 
-                <!-- EMAIL -->
+    align-items: center;
 
-                <div class="form-group">
+    border-bottom: 1px solid var(--border);
 
-                    <label for="email">
-                        Email
-                        <span>*</span>
-                    </label>
+}
 
-                    <input type="email" id="email" name="email" placeholder="nama@email.com" required>
 
-                </div>
+.filter-header h2 {
 
+    font-size: 17px;
 
-                <!-- ROLE -->
+    color: var(--text-dark);
 
-                <div class="form-group">
+    margin-bottom: 4px;
 
-                    <label for="role">
-                        Role
-                        <span>*</span>
-                    </label>
+}
 
-                    <select id="role" name="role" required>
 
-                        <option value="">
-                            Pilih Role
-                        </option>
+.filter-header p {
 
-                        <option value="ADMIN">
-                            ADMIN
-                        </option>
+    font-size: 12px;
 
-                        <option value="SUPERVISOR">
-                            SUPERVISOR
-                        </option>
+    color: var(--text-muted);
 
-                        <option value="MAKER">
-                            MAKER
-                        </option>
+}
 
-                        <option value="VIEWER">
-                            VIEWER
-                        </option>
 
-                    </select>
+.filter-body {
 
-                </div>
+    padding: 18px 20px;
 
+    display: grid;
 
-                <!-- STATUS -->
+    grid-template-columns: 2fr 1fr 1fr;
 
-                <div class="form-group">
+    gap: 16px;
 
-                    <label for="status">
-                        Status
-                        <span>*</span>
-                    </label>
+}
 
-                    <select id="status" name="status" required>
 
-                        <option value="AKTIF">
-                            AKTIF
-                        </option>
+.filter-group {
 
-                        <option value="NONAKTIF">
-                            NONAKTIF
-                        </option>
+    display: flex;
 
-                    </select>
+    flex-direction: column;
 
-                </div>
+    gap: 7px;
 
+}
 
-                <!-- ACTION -->
 
-                <div class="modal-footer">
+.filter-group label {
 
-                    <button type="button" class="btn btn-secondary" id="btnCancel">
+    font-size: 12px;
 
-                        Batal
+    font-weight: 600;
 
-                    </button>
+    color: var(--text);
 
-                    <button type="submit" class="btn btn-primary" id="btnSaveUser">
+}
 
-                        <span id="saveButtonText">
-                            Simpan User
-                        </span>
 
-                    </button>
+.filter-group input,
+.filter-group select {
 
-                </div>
+    height: 42px;
 
-            </form>
+    border: 1px solid var(--border);
 
-        </div>
+    border-radius: 8px;
 
-    </div>
+    background: #FBFCFE;
 
+    padding: 0 13px;
 
-    <!-- =====================================================
-     CONFIRM MODAL
-====================================================== -->
+    color: var(--text);
 
-    <div class="modal-overlay" id="confirmModal">
+    font-size: 13px;
 
-        <div class="confirm-modal">
+    outline: none;
 
-            <div class="confirm-icon">
-                ⚠
-            </div>
+    transition: .2s ease;
 
-            <h2>
-                Konfirmasi
-            </h2>
+}
 
-            <p id="confirmMessage">
-                Apakah Anda yakin?
-            </p>
 
-            <div class="confirm-actions">
+.filter-group input:focus,
+.filter-group select:focus {
 
-                <button type="button" class="btn btn-secondary" id="btnConfirmCancel">
+    border-color: var(--primary-light);
 
-                    Batal
+    background: white;
 
-                </button>
+    box-shadow:
+        0 0 0 3px rgba(47, 111, 211, .08);
 
-                <button type="button" class="btn btn-danger" id="btnConfirm">
+}
 
-                    Ya, Lanjutkan
 
-                </button>
+.search-box {
 
-            </div>
+    position: relative;
 
-        </div>
+}
 
-    </div>
 
-    <!-- =====================================================
-         TOAST
-    ====================================================== -->
+.search-box input {
 
-    <div class="toast" id="toast">
+    width: 100%;
 
-        <div class="toast-icon" id="toastIcon">
-            ✓
-        </div>
+    padding-left: 40px;
 
-        <div class="toast-content">
+}
 
-            <strong id="toastTitle">
-                Berhasil
-            </strong>
 
-            <span id="toastMessage">
-                Data berhasil diproses.
-            </span>
+.search-icon {
 
-        </div>
+    position: absolute;
 
-        <button type="button" class="toast-close" id="toastClose">
-            ×
-        </button>
+    left: 13px;
 
-    </div>
+    top: 50%;
 
+    transform: translateY(-50%);
 
-    <!-- JS -->
+    color: #94A3B8;
 
-    <script src="../js/config.js"></script>
-    <script src="../js/api.js"></script>
-    <script src="../js/helper.js"></script>
-    <script src="../js/user.js"></script>
+    font-size: 14px;
 
-</body>
+}
 
-</html>
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-card {
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+
+}
+
+
+.table-wrapper {
+
+    overflow-x: auto;
+
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 950px;
+
+}
+
+
+thead {
+
+    background:
+        linear-gradient(180deg,
+            #F8FAFC,
+            #F3F6FA);
+
+}
+
+
+thead th {
+
+    padding: 14px 16px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    color: #FFFFFF;
+
+    text-align: left;
+
+    letter-spacing: .4px;
+
+    border-bottom: 1px solid var(--border);
+
+    white-space: nowrap;
+
+}
+
+
+tbody td {
+
+    padding: 14px 16px;
+
+    font-size: 13px;
+
+    border-bottom: 1px solid #EEF2F7;
+
+    vertical-align: middle;
+
+}
+
+
+tbody tr {
+
+    transition: .15s ease;
+
+}
+
+
+tbody tr:hover {
+
+    background: #F8FAFD;
+
+}
+
+
+tbody tr:last-child td {
+
+    border-bottom: none;
+
+}
+
+
+.col-number {
+
+    width: 50px;
+
+    text-align: center;
+
+}
+
+
+.col-action {
+
+    width: 130px;
+
+    text-align: center;
+
+}
+
+
+/* =========================================================
+   USERNAME
+========================================================= */
+
+.username-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.user-avatar {
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 9px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(135deg,
+            #E8F0FF,
+            #DDEAFF);
+
+    color: var(--primary);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+.username {
+
+    font-weight: 600;
+
+    color: var(--text-dark);
+
+}
+
+
+.user-name {
+
+    font-weight: 600;
+
+    color: var(--text-dark);
+
+}
+
+
+.email {
+
+    color: var(--text-muted);
+
+}
+
+
+/* =========================================================
+   BADGE
+========================================================= */
+
+.badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+}
+
+
+.badge-role-admin {
+
+    background: #FFF7ED;
+
+    color: #ff0000;
+
+}
+
+
+.badge-role-checker {
+
+    background: #EEF4FF;
+
+    color: var(--primary);
+
+}
+
+.badge-role-viewer {
+
+    background: #F1F5F9;
+
+    color: #9400D3;
+
+}
+
+.badge-role-maker {
+
+    background: #F0FDF4;
+
+    color: #15803D;
+
+}
+
+.badge-active {
+
+    background: var(--success-light);
+
+    color: #047857;
+
+}
+
+
+.badge-inactive {
+
+    background: var(--danger-light);
+
+    color: #B91C1C;
+
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+========================================================= */
+
+.action-buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 5px;
+
+}
+
+
+.action-btn {
+
+    width: 32px;
+
+    height: 32px;
+
+    border-radius: 7px;
+
+    border: 1px solid var(--border);
+
+    background: white;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 13px;
+
+    transition: .2s ease;
+
+}
+
+
+.action-btn:hover {
+
+    transform: translateY(-1px);
+
+}
+
+
+.action-edit:hover {
+
+    color: var(--primary);
+
+    background: #EEF4FF;
+
+    border-color: #C9D9F4;
+
+}
+
+
+.action-toggle:hover {
+
+    color: var(--success);
+
+    background: var(--success-light);
+
+    border-color: #A7F3D0;
+
+}
+
+
+.action-delete:hover {
+
+    color: var(--danger);
+
+    background: var(--danger-light);
+
+    border-color: #FECACA;
+
+}
+
+
+/* =========================================================
+   TABLE FOOTER
+========================================================= */
+
+.table-footer {
+
+    padding: 14px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-top: 1px solid var(--border);
+
+    background: #FCFDFE;
+
+}
+
+
+.table-info {
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+
+}
+
+
+.table-info strong {
+
+    color: var(--text);
+
+}
+
+
+.pagination {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+
+}
+
+
+.pagination-btn {
+
+    width: 32px;
+
+    height: 32px;
+
+    border: 1px solid var(--border);
+
+    background: white;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    color: var(--text);
+
+}
+
+
+.pagination-btn:hover:not(:disabled) {
+
+    background: #F1F5F9;
+
+}
+
+
+.pagination-btn:disabled {
+
+    opacity: .4;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-row td {
+
+    height: 160px;
+
+}
+
+
+.loading-container {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+}
+
+
+.spinner {
+
+    width: 22px;
+
+    height: 22px;
+
+    border-radius: 50%;
+
+    border: 3px solid #E2E8F0;
+
+    border-top-color: var(--primary);
+
+    animation: spin .8s linear infinite;
+
+}
+
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state {
+
+    text-align: center;
+
+    padding: 60px 20px;
+
+}
+
+
+.empty-icon {
+
+    font-size: 42px;
+
+    margin-bottom: 12px;
+
+    opacity: .5;
+
+}
+
+
+.empty-state h3 {
+
+    font-size: 16px;
+
+    color: var(--text-dark);
+
+    margin-bottom: 6px;
+
+}
+
+
+.empty-state p {
+
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(15, 23, 42, .55);
+
+    backdrop-filter: blur(3px);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 9999;
+
+    padding: 20px;
+
+}
+
+
+.modal-overlay.show {
+
+    display: flex;
+
+}
+
+
+.modal {
+
+    width: 100%;
+
+    max-width: 500px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: white;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, .20);
+
+    animation: modalIn .2s ease;
+
+}
+
+
+@keyframes modalIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(15px) scale(.98);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+
+    }
+
+}
+
+
+.modal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    padding: 22px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.modal-header h2 {
+
+    font-size: 18px;
+
+    color: var(--text-dark);
+
+    margin-bottom: 4px;
+
+}
+
+
+.modal-header p {
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+
+}
+
+
+.modal-close {
+
+    width: 32px;
+
+    height: 32px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #F1F5F9;
+
+    color: #64748B;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+}
+
+
+.modal-close:hover {
+
+    background: #E2E8F0;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+#userForm {
+
+    padding: 22px;
+
+}
+
+
+.form-group {
+
+    margin-bottom: 17px;
+
+}
+
+
+.form-group label {
+
+    display: block;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: var(--text);
+
+    margin-bottom: 7px;
+
+}
+
+
+.form-group label span {
+
+    color: var(--danger);
+
+}
+
+
+.form-group input,
+.form-group select {
+
+    width: 100%;
+
+    height: 42px;
+
+    padding: 0 12px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    background: #FBFCFE;
+
+    font-size: 13px;
+
+    color: var(--text);
+
+    outline: none;
+
+}
+
+
+.form-group input:focus,
+.form-group select:focus {
+
+    background: white;
+
+    border-color: var(--primary-light);
+
+    box-shadow:
+        0 0 0 3px rgba(47, 111, 211, .08);
+
+}
+
+
+.password-input {
+
+    position: relative;
+
+}
+
+
+.password-input input {
+
+    padding-right: 45px;
+
+}
+
+
+.password-input button {
+
+    position: absolute;
+
+    right: 5px;
+
+    top: 5px;
+
+    width: 32px;
+
+    height: 32px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    border-radius: 6px;
+
+}
+
+
+.password-input button:hover {
+
+    background: #F1F5F9;
+
+}
+
+
+.form-group small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color: #94A3B8;
+
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.modal-footer {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    padding-top: 7px;
+
+}
+
+
+/* =========================================================
+   CONFIRM
+========================================================= */
+
+.confirm-modal {
+
+    width: 100%;
+
+    max-width: 400px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, .20);
+
+}
+
+
+.confirm-icon {
+
+    width: 55px;
+
+    height: 55px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: var(--warning-light);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 24px;
+
+    color: var(--warning);
+
+}
+
+
+.confirm-modal h2 {
+
+    font-size: 18px;
+
+    color: var(--text-dark);
+
+    margin-bottom: 8px;
+
+}
+
+
+.confirm-modal p {
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    color: var(--text-muted);
+
+    margin-bottom: 22px;
+
+}
+
+
+.confirm-actions {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 9px;
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast {
+
+    position: fixed;
+
+    top: 25px;
+
+    right: 25px;
+
+    width: 350px;
+
+    min-height: 70px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 15px 40px rgba(15, 23, 42, .15);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    z-index: 10000;
+
+    transform:
+        translateX(120%);
+
+    transition: .3s ease;
+
+}
+
+
+.toast.show {
+
+    transform:
+        translateX(0);
+
+}
+
+
+.toast-icon {
+
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    background: var(--success-light);
+
+    color: var(--success);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: bold;
+
+}
+
+
+.toast-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    flex: 1;
+
+}
+
+
+.toast-content strong {
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+
+}
+
+
+.toast-content span {
+
+    font-size: 11px;
+
+    color: var(--text-muted);
+
+}
+
+
+.toast-close {
+
+    border: none;
+
+    background: transparent;
+
+    color: #94A3B8;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .kpi-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .user-page {
+
+        padding: 18px;
+
+    }
+
+
+    .page-header {
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+        flex-direction: column;
+
+    }
+
+
+    .filter-body {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .search-group {
+
+        grid-column: auto;
+
+    }
+
+}
+
+
+@media (max-width: 550px) {
+
+    .kpi-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .header-left {
+
+        align-items: flex-start;
+
+    }
+
+
+    .header-icon {
+
+        width: 45px;
+
+        height: 45px;
+
+    }
+
+
+    .page-header h1 {
+
+        font-size: 21px;
+
+    }
+
+
+    .filter-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+    }
+
+
+    .table-footer {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+    }
+
+
+    .toast {
+
+        left: 15px;
+
+        right: 15px;
+
+        width: auto;
+
+    }
+
+}
+
+/******************************************************************************
+ * CUSTODY USER MANAGEMENT
+ * ENTERPRISE VISUAL OVERRIDE
+ * SAFE UI ONLY
+ *
+ * Tidak mengubah JavaScript / API / logic.
+ ******************************************************************************/
+
+/* =========================================================
+   ENTERPRISE DESIGN TOKENS
+   ========================================================= */
+
+.user-page {
+
+    --user-primary: #163D7D;
+    --user-primary-light: #2F6FD3;
+    --user-primary-soft: #EFF6FF;
+
+    --user-purple: #7C3AED;
+    --user-purple-soft: #F3E8FF;
+
+    --user-success: #16A34A;
+    --user-success-soft: #DCFCE7;
+
+    --user-warning: #F59E0B;
+    --user-warning-soft: #FEF3C7;
+
+    --user-danger: #DC2626;
+    --user-danger-soft: #FEE2E2;
+
+    --user-text: #0F172A;
+    --user-text-soft: #475569;
+    --user-muted: #64748B;
+
+    --user-border: #E2E8F0;
+    --user-border-soft: #EEF2F7;
+
+    --user-background: #F4F7FB;
+    --user-card: #FFFFFF;
+
+    --user-radius: 18px;
+
+    --user-shadow:
+        0 8px 24px rgba(15, 23, 42, .07);
+
+    --user-shadow-lg:
+        0 18px 45px rgba(15, 23, 42, .12);
+
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.user-page {
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(circle at top right,
+            rgba(47, 111, 211, .08),
+            transparent 35%),
+
+        var(--user-background);
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.user-page .page-header {
+
+    background: var(--user-card);
+
+    border: 1px solid var(--user-border-soft);
+
+    border-radius: 22px;
+
+    padding: 24px 28px;
+
+    margin-bottom: 24px;
+
+    box-shadow: var(--user-shadow);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+
+.user-page .header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    min-width: 0;
+
+}
+
+
+.user-page .header-icon {
+
+    width: 62px;
+
+    height: 62px;
+
+    min-width: 62px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(135deg,
+            var(--user-primary),
+            var(--user-primary-light));
+
+    color: #FFFFFF;
+
+    font-size: 28px;
+
+    box-shadow:
+        0 8px 20px rgba(22, 61, 125, .20);
+
+}
+
+
+.user-page .header-left h1 {
+
+    margin: 0;
+
+    color: var(--user-text);
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    letter-spacing: -.4px;
+
+}
+
+
+.user-page .header-left p {
+
+    margin: 6px 0 0;
+
+    color: var(--user-muted);
+
+    font-size: 13px;
+
+}
+
+
+.user-page .header-right {
+
+    display: flex;
+
+    align-items: center;
+
+    flex: 0 0 auto;
+
+}
+
+
+/* =========================================================
+   BUTTON BASE
+   ========================================================= */
+
+.user-page .btn {
+
+    min-height: 44px;
+
+    padding: 0 18px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+
+}
+
+
+.user-page .btn:hover {
+
+    transform: translateY(-2px);
+
+}
+
+
+.user-page .btn-primary {
+
+    background:
+        linear-gradient(135deg,
+            var(--user-primary),
+            var(--user-primary-light));
+
+    color: #FFFFFF;
+
+    box-shadow:
+        0 8px 18px rgba(22, 61, 125, .20);
+
+}
+
+
+.user-page .btn-primary:hover {
+
+    box-shadow:
+        0 12px 25px rgba(22, 61, 125, .25);
+
+}
+
+
+.user-page .btn-secondary {
+
+    background: #FFFFFF;
+
+    color: var(--user-primary);
+
+    border: 1px solid var(--user-border);
+
+}
+
+
+.user-page .btn-danger {
+
+    background:
+        linear-gradient(135deg,
+            #DC2626,
+            #EF4444);
+
+    color: #FFFFFF;
+
+}
+
+
+/* =========================================================
+   KPI
+   ========================================================= */
+
+.user-page .kpi-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 24px;
+
+}
+
+
+.user-page .kpi-card {
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: var(--user-card);
+
+    border: 1px solid var(--user-border-soft);
+
+    border-radius: var(--user-radius);
+
+    padding: 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    box-shadow: var(--user-shadow);
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease;
+
+}
+
+
+.user-page .kpi-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    height: 4px;
+
+    background: var(--user-primary);
+
+}
+
+
+.user-page .kpi-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow: var(--user-shadow-lg);
+
+}
+
+
+.user-page .kpi-icon {
+
+    width: 54px;
+
+    height: 54px;
+
+    min-width: 54px;
+
+    border-radius: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+}
+
+
+.user-page .kpi-icon.total {
+
+    background: var(--user-primary-soft);
+
+    color: var(--user-primary);
+
+}
+
+
+.user-page .kpi-icon.active {
+
+    background: var(--user-success-soft);
+
+    color: var(--user-success);
+
+}
+
+
+.user-page .kpi-icon.inactive {
+
+    background: #F1F5F9;
+
+    color: #64748B;
+
+}
+
+
+.user-page .kpi-icon.admin {
+
+    background: var(--user-purple-soft);
+
+    color: var(--user-purple);
+
+}
+
+
+.user-page .kpi-content {
+
+    min-width: 0;
+
+}
+
+
+.user-page .kpi-label {
+
+    display: block;
+
+    color: var(--user-muted);
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.user-page .kpi-value {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--user-text);
+
+    font-size: 29px;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+}
+
+
+.user-page .kpi-description {
+
+    display: block;
+
+    margin-top: 7px;
+
+    color: #94A3B8;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   FILTER CARD
+   ========================================================= */
+
+.user-page .filter-card {
+
+    background: var(--user-card);
+
+    border: 1px solid var(--user-border-soft);
+
+    border-radius: var(--user-radius);
+
+    box-shadow: var(--user-shadow);
+
+    margin-bottom: 22px;
+
+    overflow: hidden;
+
+}
+
+
+.user-page .filter-header {
+
+    padding: 20px 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    border-bottom: 1px solid var(--user-border-soft);
+
+}
+
+
+.user-page .filter-header h2 {
+
+    margin: 0;
+
+    color: var(--user-text);
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+}
+
+
+.user-page .filter-header p {
+
+    margin: 5px 0 0;
+
+    color: var(--user-muted);
+
+    font-size: 12px;
+
+}
+
+
+.user-page .filter-body {
+
+    padding: 22px 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(280px, 1.5fr) minmax(180px, .8fr) minmax(180px, .8fr);
+
+    gap: 16px;
+
+}
+
+
+.user-page .filter-group {
+
+    min-width: 0;
+
+}
+
+
+.user-page .filter-group label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--user-text-soft);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+
+.user-page .search-box {
+
+    position: relative;
+
+    width: 100%;
+
+}
+
+
+.user-page .search-icon {
+
+    position: absolute;
+
+    left: 14px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    z-index: 2;
+
+}
+
+
+.user-page .search-box input,
+.user-page .filter-group select {
+
+    width: 100%;
+
+    height: 46px;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--user-border);
+
+    border-radius: 12px;
+
+    background: #FFFFFF;
+
+    color: var(--user-text);
+
+    font-size: 13px;
+
+    outline: none;
+
+    transition:
+        border .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.user-page .search-box input {
+
+    padding: 0 14px 0 42px;
+
+}
+
+
+.user-page .filter-group select {
+
+    padding: 0 13px;
+
+}
+
+
+.user-page .search-box input:focus,
+.user-page .filter-group select:focus {
+
+    border-color: var(--user-primary-light);
+
+    box-shadow:
+        0 0 0 3px rgba(47, 111, 211, .10);
+
+}
+
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.user-page .table-card {
+
+    background: var(--user-card);
+
+    border: 1px solid var(--user-border-soft);
+
+    border-radius: var(--user-radius);
+
+    box-shadow: var(--user-shadow);
+
+    overflow: hidden;
+
+}
+
+
+.user-page .table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+
+.user-page #userTable {
+
+    width: 100%;
+
+    min-width: 1050px;
+
+    border-collapse: collapse;
+
+}
+
+
+.user-page #userTable thead {
+
+    background:
+        linear-gradient(135deg,
+            #163D7D,
+            #2458A8);
+
+    color: #FFFFFF;
+
+}
+
+
+.user-page #userTable th {
+
+    padding: 14px 15px;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+    font-size: 11px;
+
+    letter-spacing: .5px;
+
+    font-weight: 800;
+
+}
+
+
+.user-page #userTable td {
+
+    padding: 14px 15px;
+
+    border-bottom: 1px solid var(--user-border-soft);
+
+    color: var(--user-text-soft);
+
+    font-size: 12px;
+
+    white-space: nowrap;
+
+}
+
+
+.user-page #userTable tbody tr {
+
+    background: #FFFFFF;
+
+    transition: background .15s ease;
+
+}
+
+
+.user-page #userTable tbody tr:hover {
+
+    background: #F8FAFC;
+
+}
+
+
+.user-page #userTable tbody tr:last-child td {
+
+    border-bottom: 0;
+
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.user-page #userTable button {
+
+    min-width: 34px;
+
+    width: 34px;
+
+    height: 34px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+
+}
+
+
+.user-page #userTable button:hover {
+
+    transform: translateY(-2px);
+
+}
+
+
+/* =========================================================
+   TABLE FOOTER
+   ========================================================= */
+
+.user-page .table-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 16px 20px;
+
+    border-top: 1px solid var(--user-border-soft);
+
+    background: #FBFCFE;
+
+}
+
+
+.user-page .table-info {
+
+    color: var(--user-muted);
+
+    font-size: 12px;
+
+}
+
+
+.user-page .table-info strong {
+
+    color: var(--user-text);
+
+    font-weight: 800;
+
+}
+
+
+.user-page .pagination {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.user-page .pagination-btn {
+
+    width: 36px;
+
+    height: 36px;
+
+    border: 1px solid var(--user-border);
+
+    border-radius: 10px;
+
+    background: #FFFFFF;
+
+    color: var(--user-primary);
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+
+
+.user-page .pagination-btn:hover {
+
+    background: var(--user-primary-soft);
+
+}
+
+
+/* =========================================================
+   LOADING TABLE
+   ========================================================= */
+
+.user-page .loading-row td {
+
+    padding: 45px 20px;
+
+}
+
+
+.user-page .loading-container {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    color: var(--user-muted);
+
+    font-size: 13px;
+
+}
+
+
+.user-page .spinner {
+
+    width: 24px;
+
+    height: 24px;
+
+    border-radius: 50%;
+
+    border: 3px solid #E2E8F0;
+
+    border-top-color: var(--user-primary);
+
+    animation:
+        user-spin .7s linear infinite;
+
+}
+
+
+@keyframes user-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.user-page .empty-state {
+
+    padding: 55px 20px;
+
+    text-align: center;
+
+}
+
+
+.user-page .empty-icon {
+
+    font-size: 40px;
+
+    margin-bottom: 12px;
+
+    opacity: .75;
+
+}
+
+
+.user-page .empty-state h3 {
+
+    margin: 0;
+
+    color: var(--user-text);
+
+    font-size: 16px;
+
+}
+
+
+.user-page .empty-state p {
+
+    margin-top: 6px;
+
+    color: var(--user-muted);
+
+    font-size: 12px;
+
+}
+
+
+/* =========================================================
+   MODAL USER
+   ========================================================= */
+
+.user-page .modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9990;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(15, 23, 42, .55);
+
+    backdrop-filter: blur(5px);
+
+}
+
+
+.user-page .modal-overlay.show {
+
+    display: flex;
+
+}
+
+
+.user-page .modal {
+
+    width: min(560px, 100%);
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: #FFFFFF;
+
+    border-radius: 20px;
+
+    border: 1px solid var(--user-border);
+
+    box-shadow: var(--user-shadow-lg);
+
+}
+
+
+.user-page .modal-header {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 2;
+
+    padding: 20px 22px;
+
+    background: #FFFFFF;
+
+    border-bottom: 1px solid var(--user-border-soft);
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+}
+
+
+.user-page .modal-header h2 {
+
+    margin: 0;
+
+    color: var(--user-text);
+
+    font-size: 20px;
+
+}
+
+
+.user-page .modal-header p {
+
+    margin: 5px 0 0;
+
+    color: var(--user-muted);
+
+    font-size: 12px;
+
+}
+
+
+.user-page .modal-close {
+
+    width: 38px;
+
+    height: 38px;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    background: #F1F5F9;
+
+    color: var(--user-text-soft);
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+}
+
+
+.user-page .modal-close:hover {
+
+    background: var(--user-danger-soft);
+
+    color: var(--user-danger);
+
+}
+
+
+.user-page #userForm {
+
+    padding: 22px;
+
+}
+
+
+.user-page #userForm .form-group {
+
+    margin-bottom: 16px;
+
+}
+
+
+.user-page #userForm label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--user-text-soft);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+
+.user-page #userForm label span {
+
+    color: var(--user-danger);
+
+}
+
+
+.user-page #userForm input,
+.user-page #userForm select {
+
+    width: 100%;
+
+    height: 46px;
+
+    box-sizing: border-box;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--user-border);
+
+    border-radius: 11px;
+
+    background: #FFFFFF;
+
+    color: var(--user-text);
+
+    font-size: 13px;
+
+    outline: none;
+
+}
+
+
+.user-page #userForm input:focus,
+.user-page #userForm select:focus {
+
+    border-color: var(--user-primary-light);
+
+    box-shadow:
+        0 0 0 3px rgba(47, 111, 211, .10);
+
+}
+
+
+.user-page .password-input {
+
+    position: relative;
+
+}
+
+
+.user-page .password-input input {
+
+    padding-right: 50px !important;
+
+}
+
+
+.user-page #togglePassword {
+
+    position: absolute;
+
+    right: 7px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 36px;
+
+    height: 36px;
+
+    border: 0;
+
+    background: transparent;
+
+    cursor: pointer;
+
+}
+
+
+.user-page #passwordHint {
+
+    display: block;
+
+    margin-top: 6px;
+
+    color: #94A3B8;
+
+    font-size: 10px;
+
+}
+
+
+.user-page .modal-footer {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding-top: 8px;
+
+}
+
+
+/* =========================================================
+   CONFIRM MODAL
+   ========================================================= */
+
+.user-page .confirm-modal {
+
+    width: min(420px, 100%);
+
+    padding: 28px;
+
+    background: #FFFFFF;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow: var(--user-shadow-lg);
+
+}
+
+
+.user-page .confirm-icon {
+
+    width: 58px;
+
+    height: 58px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--user-warning-soft);
+
+    color: var(--user-warning);
+
+    font-size: 25px;
+
+}
+
+
+.user-page .confirm-modal h2 {
+
+    margin: 0;
+
+    color: var(--user-text);
+
+    font-size: 20px;
+
+}
+
+
+.user-page .confirm-modal p {
+
+    margin: 10px 0 20px;
+
+    color: var(--user-muted);
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+}
+
+
+.user-page .confirm-actions {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.user-page .toast {
+
+    position: fixed;
+
+    right: 22px;
+
+    bottom: 22px;
+
+    z-index: 9999;
+
+    min-width: 300px;
+
+    max-width: 420px;
+
+    padding: 14px 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    background: #FFFFFF;
+
+    border: 1px solid var(--user-border);
+
+    border-radius: 15px;
+
+    box-shadow: var(--user-shadow-lg);
+
+}
+
+
+.user-page .toast-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    min-width: 38px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--user-success-soft);
+
+    color: var(--user-success);
+
+    font-weight: 800;
+
+}
+
+
+.user-page .toast-content {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+
+.user-page .toast-content strong {
+
+    display: block;
+
+    color: var(--user-text);
+
+    font-size: 13px;
+
+}
+
+
+.user-page .toast-content span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--user-muted);
+
+    font-size: 11px;
+
+}
+
+
+.user-page .toast-close {
+
+    width: 30px;
+
+    height: 30px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #94A3B8;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .user-page .kpi-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+    .user-page .filter-body {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+    .user-page .search-group {
+
+        grid-column: 1 / -1;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .user-page {
+
+        padding: 12px;
+
+    }
+
+
+    /* HEADER */
+
+    .user-page .page-header {
+
+        padding: 16px;
+
+        border-radius: 17px;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .user-page .header-left {
+
+        align-items: center;
+
+    }
+
+    .user-page .header-icon {
+
+        width: 50px;
+
+        height: 50px;
+
+        min-width: 50px;
+
+        font-size: 22px;
+
+        border-radius: 13px;
+
+    }
+
+    .user-page .header-left h1 {
+
+        font-size: 21px;
+
+    }
+
+    .user-page .header-left p {
+
+        font-size: 11px;
+
+    }
+
+    .user-page .header-right {
+
+        width: 100%;
+
+    }
+
+    .user-page .header-right .btn {
+
+        width: 100%;
+
+    }
+
+
+    /* KPI */
+
+    .user-page .kpi-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 10px;
+
+    }
+
+    .user-page .kpi-card {
+
+        padding: 17px;
+
+        border-radius: 15px;
+
+    }
+
+    .user-page .kpi-value {
+
+        font-size: 27px;
+
+    }
+
+
+    /* FILTER */
+
+    .user-page .filter-header {
+
+        padding: 16px;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .user-page .filter-header .btn {
+
+        width: 100%;
+
+    }
+
+    .user-page .filter-body {
+
+        grid-template-columns: 1fr;
+
+        padding: 16px;
+
+        gap: 12px;
+
+    }
+
+    .user-page .search-group {
+
+        grid-column: auto;
+
+    }
+
+
+    /* TABLE */
+
+    .user-page .table-card {
+
+        border-radius: 15px;
+
+    }
+
+    .user-page .table-wrapper {
+
+        overflow-x: auto;
+
+    }
+
+    .user-page #userTable {
+
+        min-width: 920px;
+
+    }
+
+    .user-page #userTable th,
+    .user-page #userTable td {
+
+        padding: 11px 12px;
+
+        font-size: 11px;
+
+    }
+
+
+    /* FOOTER / PAGINATION */
+
+    .user-page .table-footer {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        padding: 14px;
+
+    }
+
+    .user-page .table-info {
+
+        text-align: center;
+
+    }
+
+    .user-page .pagination {
+
+        justify-content: center;
+
+    }
+
+
+    /* MODAL */
+
+    .user-page .modal-overlay {
+
+        padding: 10px;
+
+        align-items: flex-end;
+
+    }
+
+    .user-page .modal {
+
+        width: 100%;
+
+        max-height: 92vh;
+
+        border-radius: 18px 18px 0 0;
+
+    }
+
+    .user-page #userForm {
+
+        padding: 17px;
+
+    }
+
+    .user-page .modal-footer {
+
+        flex-direction: column-reverse;
+
+    }
+
+    .user-page .modal-footer .btn {
+
+        width: 100%;
+
+    }
+
+
+    /* CONFIRM */
+
+    .user-page .confirm-modal {
+
+        width: 100%;
+
+        padding: 22px;
+
+    }
+
+    .user-page .confirm-actions {
+
+        flex-direction: column-reverse;
+
+    }
+
+    .user-page .confirm-actions .btn {
+
+        width: 100%;
+
+    }
+
+
+    /* TOAST */
+
+    .user-page .toast {
+
+        left: 12px;
+
+        right: 12px;
+
+        bottom: 12px;
+
+        min-width: 0;
+
+        max-width: none;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .user-page {
+
+        padding: 8px;
+
+    }
+
+    .user-page .page-header {
+
+        padding: 14px;
+
+    }
+
+    .user-page .header-left {
+
+        gap: 10px;
+
+    }
+
+    .user-page .header-icon {
+
+        width: 44px;
+
+        height: 44px;
+
+        min-width: 44px;
+
+        font-size: 19px;
+
+    }
+
+    .user-page .header-left h1 {
+
+        font-size: 18px;
+
+    }
+
+    .user-page .header-left p {
+
+        font-size: 10px;
+
+    }
+
+    .user-page .kpi-card {
+
+        padding: 15px;
+
+    }
+
+    .user-page .kpi-icon {
+
+        width: 46px;
+
+        height: 46px;
+
+        min-width: 46px;
+
+    }
+
+    .user-page .kpi-value {
+
+        font-size: 25px;
+
+    }
+
+}
