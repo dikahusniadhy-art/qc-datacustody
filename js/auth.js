@@ -3,7 +3,7 @@
  * auth.js
  * DATA AGUNAN CUSTODY
  * AUTHENTICATION CLIENT
- * SECURITY HARDENED 1.0
+ * SECURITY HARDENED 3.0
  *
  ******************************************************************************/
 
@@ -502,7 +502,7 @@ const Auth = {
             if (
                 typeof API !== "undefined" &&
                 typeof API.logout ===
-                    "function"
+                "function"
             ) {
 
                 await API.logout();
@@ -669,10 +669,10 @@ const Auth = {
             this.getUser();
 
         return user &&
-               user.username
+            user.username
             ? String(
                 user.username
-              )
+            )
             : "";
 
     },
@@ -688,10 +688,10 @@ const Auth = {
             this.getUser();
 
         return user &&
-               user.nama
+            user.nama
             ? String(
                 user.nama
-              )
+            )
             : "";
 
     },
@@ -707,10 +707,10 @@ const Auth = {
             this.getUser();
 
         return user &&
-               user.email
+            user.email
             ? String(
                 user.email
-              )
+            )
             : "";
 
     },
@@ -732,7 +732,7 @@ const Auth = {
         return String(
             user.status || ""
         ).toUpperCase() ===
-        "AKTIF";
+            "AKTIF";
 
     },
 
@@ -815,7 +815,7 @@ const Auth = {
             )
                 ? Number(
                     CONFIG.SESSION_TIMEOUT
-                  )
+                )
                 : 30;
 
 
