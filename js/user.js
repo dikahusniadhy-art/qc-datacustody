@@ -1,7 +1,6 @@
 /* =========================================================
    CUSTODY - USER MANAGEMENT
    user.js
-   VERSION 1.0
 ========================================================= */
 
 "use strict";
@@ -1611,7 +1610,6 @@ function toggleUserStatus(id) {
 
 }
 
-
 /* =========================================================
    CHANGE STATUS
 ========================================================= */
@@ -1623,88 +1621,156 @@ async function changeUserStatus(
 
     try {
 
-        let result;
+        console.log(
+            "USER PAGE: Update status user:",
+            {
+                id,
+                status
+            }
+        );
 
 
+        /*
+         * =====================================================
+         * PAYLOAD
+         * =====================================================
+         */
         const payload = {
 
-            id,
+            id:
+                id,
 
-            status
+            status:
+                status
 
         };
 
 
+        /*
+         * =====================================================
+         * PASTIKAN API TERSEDIA
+         * =====================================================
+         */
         if (
-            typeof window.updateUserStatus ===
-            "function"
+            typeof API === "undefined"
         ) {
-
-            result =
-                await window.updateUserStatus(
-                    payload
-                );
-
-        }
-
-        else if (
-            typeof window.apiUpdateUserStatus ===
-            "function"
-        ) {
-
-            result =
-                await window.apiUpdateUserStatus(
-                    payload
-                );
-
-        }
-
-        else if (
-            typeof google !== "undefined" &&
-            google.script &&
-            google.script.run
-        ) {
-
-            result =
-                await callGoogleScript(
-                    "updateUserStatus",
-                    payload
-                );
-
-        }
-
-        else {
-
-            /*
-             * DEVELOPMENT
-             */
-
-            const user =
-                findUser(id);
-
-            if (user) {
-
-                user.status =
-                    status;
-
-            }
-
-            result = true;
-
-        }
-
-
-        if (result === false) {
 
             throw new Error(
-                "Gagal mengubah status user."
+                "API tidak tersedia."
             );
 
         }
 
 
+        if (
+            typeof API.updateUserStatus !==
+            "function"
+        ) {
+
+            throw new Error(
+                "API.updateUserStatus tidak tersedia."
+            );
+
+        }
+
+
+        /*
+         * =====================================================
+         * KIRIM KE API
+         * =====================================================
+         */
+        const result =
+            await API.updateUserStatus(
+                payload
+            );
+
+
+        console.log(
+            "USER PAGE: Response update status:",
+            result
+        );
+
+
+        /*
+         * API no-cors:
+         * success = request berhasil dikirim.
+         */
+        if (
+            !result ||
+            result.success !== true
+        ) {
+
+            throw new Error(
+                result?.message ||
+                "Request perubahan status gagal dikirim."
+            );
+
+        }
+
+
+        /*
+         * =====================================================
+         * UPDATE UI LOKAL SEGERA
+         * =====================================================
+         */
+        const user =
+            findUser(
+                id
+            );
+
+
+        if (
+            user
+        ) {
+
+            user.status =
+                status;
+
+        }
+
+
+        /*
+         * Update filtered data juga.
+         */
+        const filteredUser =
+            UserPage.filteredData.find(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+
+        if (
+            filteredUser
+        ) {
+
+            filteredUser.status =
+                status;
+
+        }
+
+
+        /*
+         * Refresh UI.
+         */
+        updateKPI();
+
+        renderTable();
+
+
+        /*
+         * =====================================================
+         * CLOSE CONFIRMATION
+         * =====================================================
+         */
         closeConfirmModal();
 
+
+        /*
+         * =====================================================
+         * SUCCESS
+         * =====================================================
+         */
         showToast(
             "success",
             "Berhasil",
@@ -1712,10 +1778,33 @@ async function changeUserStatus(
         );
 
 
-        await loadUsers();
+        /*
+         * =====================================================
+         * SINKRONISASI DENGAN SERVER
+         * =====================================================
+         */
+        setTimeout(
+            async () => {
+
+                try {
+
+                    await loadUsers();
+
+                }
+                catch (err) {
+
+                    console.error(
+                        "Refresh status user gagal:",
+                        err
+                    );
+
+                }
+
+            },
+            700
+        );
 
     }
-
     catch (error) {
 
         console.error(
@@ -1725,6 +1814,7 @@ async function changeUserStatus(
 
 
         closeConfirmModal();
+
 
         showToast(
             "error",
@@ -1736,7 +1826,6 @@ async function changeUserStatus(
     }
 
 }
-
 
 /* =========================================================
    DELETE USER
