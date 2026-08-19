@@ -15,297 +15,297 @@ const Dashboard = {
 
     autoRefresh: null,
 
-/******************************************************************************
- * INIT - FAST BOOT
- ******************************************************************************/
+    /******************************************************************************
+     * INIT - FAST BOOT
+     ******************************************************************************/
 
-async init() {
+    async init() {
 
-    try {
+        try {
 
-        /*
-         * LOGIN CHECK
-         */
+            /*
+             * LOGIN CHECK
+             */
 
-        if (!Auth.isLogin()) {
+            if (!Auth.isLogin()) {
 
-            window.location.href =
-                "login.html";
+                window.location.href =
+                    "login.html";
 
+                return;
+
+            }
+
+
+            /*
+             * VERSION
+             */
+
+            const version =
+                document.getElementById(
+                    "appVersion"
+                );
+
+            if (version) {
+
+                version.textContent =
+                    `Version ${CONFIG.VERSION}`;
+
+            }
+
+
+            /*
+             * LOAD USER IMMEDIATELY
+             */
+
+            this.loadUser();
+
+
+            /*
+             * APPLY ROLE IMMEDIATELY
+             */
+
+            if (
+                typeof Role !== "undefined"
+            ) {
+
+                Role.renderSidebar();
+
+                Role.renderPermission();
+
+            }
+
+
+            /*
+             * LOAD DASHBOARD IN BACKGROUND
+             */
+
+            this.loadDashboard(
+                false
+            );
+
+
+            console.log(
+                "Dashboard initialized."
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "Dashboard init error:",
+                err
+            );
+
+            Helper.error(
+                err.message ||
+                "Gagal menginisialisasi dashboard."
+            );
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * LOAD USER
+     ******************************************************************************/
+
+    loadUser() {
+
+        const user =
+            Auth.getUser();
+
+        if (!user) {
             return;
-
         }
 
 
-        /*
-         * VERSION
-         */
-
-        const version =
+        const username =
             document.getElementById(
-                "appVersion"
+                "username"
             );
 
-        if (version) {
-
-            version.textContent =
-                `Version ${CONFIG.VERSION}`;
-
-        }
-
-
-        /*
-         * LOAD USER IMMEDIATELY
-         */
-
-        this.loadUser();
-
-
-        /*
-         * APPLY ROLE IMMEDIATELY
-         */
-
-        if (
-            typeof Role !== "undefined"
-        ) {
-
-            Role.renderSidebar();
-
-            Role.renderPermission();
-
-        }
-
-
-        /*
-         * LOAD DASHBOARD IN BACKGROUND
-         */
-
-        this.loadDashboard(
-            false
-        );
-
-
-        console.log(
-            "Dashboard initialized."
-        );
-
-    }
-    catch (err) {
-
-        console.error(
-            "Dashboard init error:",
-            err
-        );
-
-        Helper.error(
-            err.message ||
-            "Gagal menginisialisasi dashboard."
-        );
-
-    }
-
-},
-
-
-/******************************************************************************
- * LOAD USER
- ******************************************************************************/
-
-loadUser() {
-
-    const user =
-        Auth.getUser();
-
-    if (!user) {
-        return;
-    }
-
-
-    const username =
-        document.getElementById(
-            "username"
-        );
-
-    const role =
-        document.getElementById(
-            "role"
-        );
-
-    const avatar =
-        document.getElementById(
-            "avatar"
-        );
-
-
-    if (username) {
-
-        username.textContent =
-            user.nama ||
-            "Administrator";
-
-    }
-
-
-    if (role) {
-
-        role.textContent =
-            user.role ||
-            CONFIG.DEFAULT_ROLE;
-
-    }
-
-
-    if (avatar) {
-
-        const nama =
-            user.nama ||
-            "A";
-
-        avatar.textContent =
-            nama
-                .substring(0, 1)
-                .toUpperCase();
-
-    }
-
-},
-
-
-/******************************************************************************
- * LOAD DASHBOARD - PRODUCTION OPTIMIZED
- ******************************************************************************/
-
-async loadDashboard(
-    showLoading = false
-) {
-
-    try {
-
-        /*
-         * FULLSCREEN LOADING
-         *
-         * Hanya digunakan untuk refresh manual.
-         */
-
-        if (showLoading) {
-
-            Helper.showLoading(
-                "Memuat Dashboard..."
+        const role =
+            document.getElementById(
+                "role"
             );
 
-        }
-
-
-        /*
-         * API REQUEST
-         */
-
-        const result =
-            await API.getDashboard();
-
-
-        /*
-         * VALIDASI RESPONSE
-         */
-
-        if (
-            !result ||
-            result.success !== true
-        ) {
-
-            throw new Error(
-                result?.message ||
-                "Gagal mengambil data dashboard."
+        const avatar =
+            document.getElementById(
+                "avatar"
             );
 
+
+        if (username) {
+
+            username.textContent =
+                user.nama ||
+                "Administrator";
+
         }
 
 
-        /*
-         * SIMPAN DATA
-         */
+        if (role) {
 
-        this.dashboardData =
-            result.data || {};
+            role.textContent =
+                user.role ||
+                CONFIG.DEFAULT_ROLE;
 
-
-        /*
-         * =========================================================
-         * PRIORITAS 1
-         * =========================================================
-         *
-         * Komponen yang langsung terlihat user.
-         */
-
-        this.loadKPI();
-
-        this.loadProgress();
-
-        this.loadActivityLog();
-
-        this.loadExpired();
+        }
 
 
-        /*
-         * =========================================================
-         * PRIORITAS 2
-         * =========================================================
-         *
-         * Chart diproses setelah browser selesai melakukan
-         * paint awal.
-         */
+        if (avatar) {
 
-        requestAnimationFrame(
-            () => {
+            const nama =
+                user.nama ||
+                "A";
 
-                requestAnimationFrame(
-                    () => {
+            avatar.textContent =
+                nama
+                    .substring(0, 1)
+                    .toUpperCase();
 
-                        this.loadChart();
+        }
 
-                    }
+    },
+
+
+    /******************************************************************************
+     * LOAD DASHBOARD - PRODUCTION OPTIMIZED
+     ******************************************************************************/
+
+    async loadDashboard(
+        showLoading = false
+    ) {
+
+        try {
+
+            /*
+             * FULLSCREEN LOADING
+             *
+             * Hanya digunakan untuk refresh manual.
+             */
+
+            if (showLoading) {
+
+                Helper.showLoading(
+                    "Memuat Dashboard..."
                 );
 
             }
-        );
 
 
-        /*
-         * HIDE LOADING
-         *
-         * Hanya saat refresh manual.
-         */
+            /*
+             * API REQUEST
+             */
 
-        if (showLoading) {
+            const result =
+                await API.getDashboard();
 
-            Helper.hideLoading();
+
+            /*
+             * VALIDASI RESPONSE
+             */
+
+            if (
+                !result ||
+                result.success !== true
+            ) {
+
+                throw new Error(
+                    result?.message ||
+                    "Gagal mengambil data dashboard."
+                );
+
+            }
+
+
+            /*
+             * SIMPAN DATA
+             */
+
+            this.dashboardData =
+                result.data || {};
+
+
+            /*
+             * =========================================================
+             * PRIORITAS 1
+             * =========================================================
+             *
+             * Komponen yang langsung terlihat user.
+             */
+
+            this.loadKPI();
+
+            this.loadProgress();
+
+            this.loadActivityLog();
+
+            this.loadExpired();
+
+
+            /*
+             * =========================================================
+             * PRIORITAS 2
+             * =========================================================
+             *
+             * Chart diproses setelah browser selesai melakukan
+             * paint awal.
+             */
+
+            requestAnimationFrame(
+                () => {
+
+                    requestAnimationFrame(
+                        () => {
+
+                            this.loadChart();
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /*
+             * HIDE LOADING
+             *
+             * Hanya saat refresh manual.
+             */
+
+            if (showLoading) {
+
+                Helper.hideLoading();
+
+            }
+
+        }
+        catch (err) {
+
+            if (showLoading) {
+
+                Helper.hideLoading();
+
+            }
+
+
+            console.error(
+                "DASHBOARD ERROR:",
+                err
+            );
+
+
+            Helper.error(
+                err.message ||
+                "Gagal memuat dashboard."
+            );
 
         }
 
-    }
-    catch (err) {
-
-        if (showLoading) {
-
-            Helper.hideLoading();
-
-        }
-
-
-        console.error(
-            "DASHBOARD ERROR:",
-            err
-        );
-
-
-        Helper.error(
-            err.message ||
-            "Gagal memuat dashboard."
-        );
-
-    }
-
-},
+    },
 
     /**************************************************************************
      * LOAD KPI
@@ -391,139 +391,139 @@ async loadDashboard(
  * LOAD CHART - OPTIMIZED
  ******************************************************************************/
 
-loadChart() {
+    loadChart() {
 
-    const data =
-        this.dashboardData;
+        const data =
+            this.dashboardData;
 
-    if (!data) {
-        return;
-    }
-
-
-    const canvas =
-        document.getElementById(
-            "chartMonitoring"
-        );
-
-    if (!canvas) {
-        return;
-    }
+        if (!data) {
+            return;
+        }
 
 
-    /*
-     * Hancurkan chart lama
-     */
+        const canvas =
+            document.getElementById(
+                "chartMonitoring"
+            );
 
-    if (this.chart) {
-
-        this.chart.destroy();
-
-        this.chart = null;
-
-    }
+        if (!canvas) {
+            return;
+        }
 
 
-    /*
-     * Ambil data
-     */
+        /*
+         * Hancurkan chart lama
+         */
 
-    const lengkap =
-        Number(
-            data.dokumenLengkap || 0
-        );
+        if (this.chart) {
 
-    const belum =
-        Number(
-            data.belumLengkap || 0
-        );
+            this.chart.destroy();
 
-    const expired =
-        Number(
-            data.expired || 0
-        );
+            this.chart = null;
 
-    const tidakAktif =
-        Number(
-            data.tidakAktif || 0
-        );
+        }
 
 
-    /*
-     * Tunda sedikit agar browser menyelesaikan
-     * pekerjaan DOM utama terlebih dahulu.
-     */
+        /*
+         * Ambil data
+         */
 
-    requestAnimationFrame(
-        () => {
+        const lengkap =
+            Number(
+                data.dokumenLengkap || 0
+            );
 
-            this.chart =
-                new Chart(
-                    canvas,
-                    {
-                        type: "doughnut",
+        const belum =
+            Number(
+                data.belumLengkap || 0
+            );
 
-                        data: {
+        const expired =
+            Number(
+                data.expired || 0
+            );
 
-                            labels: [
-                                "Dokumen Lengkap",
-                                "Belum Lengkap",
-                                "Expired",
-                                "Tidak Aktif"
-                            ],
+        const tidakAktif =
+            Number(
+                data.tidakAktif || 0
+            );
 
-                            datasets: [
 
-                                {
-                                    data: [
-                                        lengkap,
-                                        belum,
-                                        expired,
-                                        tidakAktif
-                                    ],
+        /*
+         * Tunda sedikit agar browser menyelesaikan
+         * pekerjaan DOM utama terlebih dahulu.
+         */
 
-                                    backgroundColor: [
-                                        "#10B981",
-                                        "#F59E0B",
-                                        "#EF4444",
-                                        "#000000"
-                                    ],
+        requestAnimationFrame(
+            () => {
 
-                                    borderWidth: 1
-                                }
+                this.chart =
+                    new Chart(
+                        canvas,
+                        {
+                            type: "doughnut",
 
-                            ]
+                            data: {
 
-                        },
+                                labels: [
+                                    "Dokumen Lengkap",
+                                    "Belum Lengkap",
+                                    "Expired",
+                                    "Tidak Aktif"
+                                ],
 
-                        options: {
+                                datasets: [
 
-                            responsive: true,
+                                    {
+                                        data: [
+                                            lengkap,
+                                            belum,
+                                            expired,
+                                            tidakAktif
+                                        ],
 
-                            maintainAspectRatio:
-                                false,
+                                        backgroundColor: [
+                                            "#10B981",
+                                            "#F59E0B",
+                                            "#EF4444",
+                                            "#000000"
+                                        ],
 
-                            animation: {
-                                duration: 500
+                                        borderWidth: 1
+                                    }
+
+                                ]
+
                             },
 
-                            plugins: {
+                            options: {
 
-                                legend: {
-                                    position: "bottom"
+                                responsive: true,
+
+                                maintainAspectRatio:
+                                    false,
+
+                                animation: {
+                                    duration: 500
+                                },
+
+                                plugins: {
+
+                                    legend: {
+                                        position: "bottom"
+                                    }
+
                                 }
 
                             }
 
                         }
+                    );
 
-                    }
-                );
+            }
+        );
 
-        }
-    );
-
-},
+    },
 
     /**************************************************************************
      * LOAD ALERT EXPIRED
@@ -558,33 +558,33 @@ loadChart() {
 
     },
 
-/******************************************************************************
- * LOAD DATA AGUNAN TERBARU - OPTIMIZED
- ******************************************************************************/
+    /******************************************************************************
+     * LOAD DATA AGUNAN TERBARU - OPTIMIZED
+     ******************************************************************************/
 
-loadLatest() {
+    loadLatest() {
 
-    const tbody =
-        document.getElementById(
-            "tblLatest"
-        );
+        const tbody =
+            document.getElementById(
+                "tblLatest"
+            );
 
-    if (!tbody) {
-        return;
-    }
-
-
-    const data =
-        this.dashboardData?.latestAgunan || [];
+        if (!tbody) {
+            return;
+        }
 
 
-    /*
-     * KOSONG
-     */
+        const data =
+            this.dashboardData?.latestAgunan || [];
 
-    if (!data.length) {
 
-        tbody.innerHTML = `
+        /*
+         * KOSONG
+         */
+
+        if (!data.length) {
+
+            tbody.innerHTML = `
             <tr>
                 <td
                     colspan="7"
@@ -595,19 +595,19 @@ loadLatest() {
             </tr>
         `;
 
-        return;
-    }
+            return;
+        }
 
 
-    /*
-     * BUILD HTML SEKALI
-     */
+        /*
+         * BUILD HTML SEKALI
+         */
 
-    const html =
-        data.map(
-            (item, index) => {
+        const html =
+            data.map(
+                (item, index) => {
 
-                return `
+                    return `
                     <tr>
 
                         <td>
@@ -641,47 +641,47 @@ loadLatest() {
                     </tr>
                 `;
 
-            }
-        )
-        .join("");
+                }
+            )
+                .join("");
 
 
-    /*
-     * SATU KALI UPDATE DOM
-     */
+        /*
+         * SATU KALI UPDATE DOM
+         */
 
-    tbody.innerHTML =
-        html;
+        tbody.innerHTML =
+            html;
 
-},
+    },
 
-/******************************************************************************
- * LOAD DOKUMEN EXPIRED - OPTIMIZED
- ******************************************************************************/
+    /******************************************************************************
+     * LOAD DOKUMEN EXPIRED - OPTIMIZED
+     ******************************************************************************/
 
-loadExpired() {
+    loadExpired() {
 
-    const tbody =
-        document.getElementById(
-            "tblExpired"
-        );
+        const tbody =
+            document.getElementById(
+                "tblExpired"
+            );
 
-    if (!tbody) {
-        return;
-    }
-
-
-    const data =
-        this.dashboardData?.expiredDocument || [];
+        if (!tbody) {
+            return;
+        }
 
 
-    /*
-     * KOSONG
-     */
+        const data =
+            this.dashboardData?.expiredDocument || [];
 
-    if (!data.length) {
 
-        tbody.innerHTML = `
+        /*
+         * KOSONG
+         */
+
+        if (!data.length) {
+
+            tbody.innerHTML = `
             <tr>
                 <td
                     colspan="8"
@@ -692,60 +692,60 @@ loadExpired() {
             </tr>
         `;
 
-        return;
-    }
+            return;
+        }
 
 
-    /*
-     * BUILD HTML SEKALI
-     */
+        /*
+         * BUILD HTML SEKALI
+         */
 
-    const html =
-        data.map(
-            (
-                item,
-                index
-            ) => {
+        const html =
+            data.map(
+                (
+                    item,
+                    index
+                ) => {
 
-                let badge =
-                    "success";
+                    let badge =
+                        "success";
 
-                let statusHari =
-                    item.sisa_hari;
-
-
-                /*
-                 * STATUS EXPIRED
-                 */
-
-                if (
-                    Number(item.sisa_hari) <= 0
-                ) {
-
-                    badge =
-                        "danger";
-
-                    statusHari =
-                        "Expired";
-
-                }
+                    let statusHari =
+                        item.sisa_hari;
 
 
-                /*
-                 * WARNING <= 7 HARI
-                 */
+                    /*
+                     * STATUS EXPIRED
+                     */
 
-                else if (
-                    Number(item.sisa_hari) <= 7
-                ) {
+                    if (
+                        Number(item.sisa_hari) <= 0
+                    ) {
 
-                    badge =
-                        "warning";
+                        badge =
+                            "danger";
 
-                }
+                        statusHari =
+                            "Expired";
+
+                    }
 
 
-                return `
+                    /*
+                     * WARNING <= 7 HARI
+                     */
+
+                    else if (
+                        Number(item.sisa_hari) <= 7
+                    ) {
+
+                        badge =
+                            "warning";
+
+                    }
+
+
+                    return `
                     <tr>
 
                         <td>
@@ -788,19 +788,19 @@ loadExpired() {
                     </tr>
                 `;
 
-            }
-        )
-        .join("");
+                }
+            )
+                .join("");
 
 
-    /*
-     * SATU KALI UPDATE DOM
-     */
+        /*
+         * SATU KALI UPDATE DOM
+         */
 
-    tbody.innerHTML =
-        html;
+        tbody.innerHTML =
+            html;
 
-},
+    },
 
     /**************************************************************************
      * LOAD LOGIN HISTORY
@@ -897,69 +897,69 @@ loadExpired() {
  * LOAD ACTIVITY LOG - OPTIMIZED
  ******************************************************************************/
 
-loadActivityLog() {
+    loadActivityLog() {
 
-    const activityLog =
-        document.getElementById(
-            "activityLog"
-        );
+        const activityLog =
+            document.getElementById(
+                "activityLog"
+            );
 
-    if (!activityLog) {
-        return;
-    }
-
-
-    const data =
-        this.dashboardData?.timeline || [];
+        if (!activityLog) {
+            return;
+        }
 
 
-    /*
-     * KOSONG
-     */
-
-    if (!data.length) {
-
-        activityLog.innerHTML =
-            "<div style='color:gray;'>Tidak ada aktivitas pengguna terbaru.</div>";
-
-        return;
-
-    }
+        const data =
+            this.dashboardData?.timeline || [];
 
 
-    /*
-     * BATASI JUMLAH AKTIVITAS
-     *
-     * Dashboard tidak perlu menampilkan
-     * seluruh history.
-     *
-     * Ambil maksimal 10.
-     */
+        /*
+         * KOSONG
+         */
 
-    const items =
-        data.slice(
-            0,
-            10
-        );
+        if (!data.length) {
+
+            activityLog.innerHTML =
+                "<div style='color:gray;'>Tidak ada aktivitas pengguna terbaru.</div>";
+
+            return;
+
+        }
 
 
-    /*
-     * BUILD HTML SEKALI
-     */
+        /*
+         * BATASI JUMLAH AKTIVITAS
+         *
+         * Dashboard tidak perlu menampilkan
+         * seluruh history.
+         *
+         * Ambil maksimal 10.
+         */
 
-    const html =
-        items.map(
-            item => {
-
-                const formatWaktu =
-                    item.waktu
-                        ? Helper.datetime(
-                            item.waktu
-                        )
-                        : "-";
+        const items =
+            data.slice(
+                0,
+                10
+            );
 
 
-                return `
+        /*
+         * BUILD HTML SEKALI
+         */
+
+        const html =
+            items.map(
+                item => {
+
+                    const formatWaktu =
+                        item.waktu
+                            ? Helper.datetime(
+                                item.waktu
+                            )
+                            : "-";
+
+
+                    return `
 
                     <li
                         style="
@@ -1044,16 +1044,16 @@ loadActivityLog() {
 
                 `;
 
-            }
-        )
-        .join("");
+                }
+            )
+                .join("");
 
 
-    /*
-     * SATU KALI UPDATE DOM
-     */
+        /*
+         * SATU KALI UPDATE DOM
+         */
 
-    activityLog.innerHTML = `
+        activityLog.innerHTML = `
         <ul
             style="
                 padding-left:0;
@@ -1065,7 +1065,7 @@ loadActivityLog() {
         </ul>
     `;
 
-},
+    },
 
     /**************************************************************************
      * LOAD APPROVAL
