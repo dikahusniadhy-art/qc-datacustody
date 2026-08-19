@@ -2,7 +2,7 @@
  *
  * DATA AGUNAN CUSTODY
  * FILE      : dashboard.js
- * VERSION   : 2.0 FINAL
+ * VERSION   : 1.0 FINAL
  * AUTHOR    : Dika Andrian Husniadhy
  *
  ******************************************************************************/
