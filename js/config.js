@@ -11,7 +11,7 @@ const CONFIG = {
      **********************************************************************/
     APP_NAME: "DATA AGUNAN CUSTODY",
 
-    VERSION: "2.0 FINAL",
+    VERSION: "1.0 FINAL",
 
     COMPANY: "PT. KROM BANK INDONESIA Tbk",
 
