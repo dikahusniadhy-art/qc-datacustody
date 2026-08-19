@@ -1,7 +1,6 @@
 /* =========================================================
    CUSTODY - USER MANAGEMENT
    user.js
-   Version : 1.0
 ========================================================= */
 
 "use strict";
@@ -1109,39 +1108,30 @@ function closeUserModal() {
 
 }
 
-
 /* =========================================================
    SUBMIT
 ========================================================= */
-
 async function handleSubmit(event) {
 
     event.preventDefault();
 
-
     const username =
         $("#username").value.trim();
-
 
     const password =
         $("#password").value;
 
-
     const nama =
         $("#nama").value.trim();
-
 
     const email =
         $("#email").value.trim();
 
-
     const role =
         $("#role").value;
 
-
     const status =
         $("#status").value;
-
 
     /*
      * VALIDATION
@@ -1156,10 +1146,16 @@ async function handleSubmit(event) {
         );
 
         return;
-
     }
 
-
+    /*
+     * CREATE:
+     * Password wajib minimal 8 karakter.
+     *
+     * EDIT:
+     * Password boleh kosong,
+     * artinya password tidak diubah.
+     */
     if (
         !UserPage.editMode &&
         password.length < 8
@@ -1172,9 +1168,7 @@ async function handleSubmit(event) {
         );
 
         return;
-
     }
-
 
     if (!nama) {
 
@@ -1185,9 +1179,7 @@ async function handleSubmit(event) {
         );
 
         return;
-
     }
-
 
     if (!email) {
 
@@ -1198,9 +1190,7 @@ async function handleSubmit(event) {
         );
 
         return;
-
     }
-
 
     if (!role) {
 
@@ -1211,90 +1201,282 @@ async function handleSubmit(event) {
         );
 
         return;
-
     }
 
+    /*
+     * ID WAJIB ADA SAAT EDIT
+     */
+    const userId =
+        $("#userId").value.trim();
+
+    if (
+        UserPage.editMode &&
+        !userId
+    ) {
+
+        showToast(
+            "error",
+            "Error",
+            "ID user tidak ditemukan. Silakan buka Edit User kembali."
+        );
+
+        return;
+    }
 
     const userData = {
 
         id:
-            $("#userId").value,
+            userId,
 
-        username,
+        username:
+            username,
 
-        password,
+        password:
+            password,
 
-        nama,
+        nama:
+            nama,
 
-        email,
+        email:
+            email,
 
-        role,
+        role:
+            role,
 
-        status
-
+        status:
+            status
     };
 
+    console.log(
+        "USER PAGE: Submit User:",
+        userData
+    );
 
     setSaveLoading(true);
-
 
     try {
 
         let result;
 
+        /*
+         * ========================================================
+         * EDIT USER
+         * ========================================================
+         */
+        if (
+            UserPage.editMode
+        ) {
 
-        if (UserPage.editMode) {
+            console.log(
+                "USER PAGE: Update User:",
+                userData
+            );
 
             result =
                 await updateUserAPI(
                     userData
                 );
 
-        }
+            /*
+             * Karena API menggunakan no-cors,
+             * result.success hanya berarti request
+             * berhasil dikirim.
+             */
+            if (
+                !result ||
+                result.success !== true
+            ) {
 
-        else {
+                throw new Error(
+                    result?.message ||
+                    "Request update user gagal dikirim."
+                );
+            }
 
-            result =
-                await createUserAPI(
-                    userData
+            /*
+             * ====================================================
+             * VERIFIKASI DATA SETELAH UPDATE
+             * ====================================================
+             */
+            await loadUsers();
+
+            const updatedUser =
+                findUser(
+                    userId
                 );
 
+            if (
+                !updatedUser
+            ) {
+
+                throw new Error(
+                    "User tidak ditemukan setelah proses update."
+                );
+            }
+
+            /*
+             * Cocokkan hasil dengan input form.
+             */
+            const usernameOK =
+                String(
+                    updatedUser.username || ""
+                ).trim()
+                ===
+                username;
+
+            const namaOK =
+                String(
+                    updatedUser.nama || ""
+                ).trim()
+                ===
+                nama;
+
+            const emailOK =
+                String(
+                    updatedUser.email || ""
+                ).trim()
+                ===
+                email;
+
+            const roleOK =
+                String(
+                    updatedUser.role || ""
+                ).trim()
+                    .toUpperCase()
+                ===
+                String(
+                    role || ""
+                ).trim()
+                    .toUpperCase();
+
+            const statusOK =
+                String(
+                    updatedUser.status || ""
+                ).trim()
+                    .toUpperCase()
+                ===
+                String(
+                    status || ""
+                ).trim()
+                    .toUpperCase();
+
+            /*
+             * Jika salah satu tidak cocok,
+             * update dianggap gagal.
+             */
+            if (
+                !usernameOK ||
+                !namaOK ||
+                !emailOK ||
+                !roleOK ||
+                !statusOK
+            ) {
+
+                console.error(
+                    "USER PAGE: Verifikasi update gagal.",
+                    {
+                        expected: {
+                            id:
+                                userId,
+
+                            username:
+                                username,
+
+                            nama:
+                                nama,
+
+                            email:
+                                email,
+
+                            role:
+                                role,
+
+                            status:
+                                status
+                        },
+
+                        actual:
+                            updatedUser
+                    }
+                );
+
+                throw new Error(
+                    "Data user belum berubah di Spreadsheet."
+                );
+            }
+
+            /*
+             * SUCCESS
+             */
+            closeUserModal();
+
+            showToast(
+                "success",
+                "Berhasil",
+                "Data user berhasil diperbarui."
+            );
+
+            return;
         }
 
+        /*
+         * ========================================================
+         * CREATE USER
+         * ========================================================
+         */
+        result =
+            await createUserAPI(
+                userData
+            );
 
         if (
-            result === false
+            !result ||
+            result.success !== true
         ) {
 
             throw new Error(
-                "API mengembalikan status gagal."
+                result?.message ||
+                "Request tambah user gagal dikirim."
             );
-
         }
 
+        /*
+         * Refresh data
+         */
+        await loadUsers();
+
+        /*
+         * Verifikasi user benar-benar masuk.
+         */
+        const createdUser =
+            findUser(
+                userData.username
+            );
+
+        if (
+            !createdUser
+        ) {
+
+            throw new Error(
+                "User belum ditemukan di Spreadsheet setelah proses tambah."
+            );
+        }
+
+        closeUserModal();
 
         showToast(
             "success",
             "Berhasil",
-            UserPage.editMode
-                ? "Data user berhasil diperbarui."
-                : "User baru berhasil ditambahkan."
+            "User baru berhasil ditambahkan."
         );
 
-
-        closeUserModal();
-
-        await loadUsers();
-
     }
-
     catch (error) {
 
         console.error(
             "handleSubmit:",
             error
         );
-
 
         showToast(
             "error",
@@ -1304,15 +1486,13 @@ async function handleSubmit(event) {
         );
 
     }
-
     finally {
 
-        setSaveLoading(false);
-
+        setSaveLoading(
+            false
+        );
     }
-
 }
-
 
 /* =========================================================
    CREATE API
@@ -1356,55 +1536,21 @@ async function createUserAPI(
 /* =========================================================
    UPDATE API
 ========================================================= */
-
 async function updateUserAPI(userData) {
 
     if (
-        typeof window.updateUser ===
-        "function"
+        typeof API === "undefined" ||
+        typeof API.updateUser !== "function"
     ) {
 
-        return await window.updateUser(
-            userData
+        throw new Error(
+            "API.updateUser tidak tersedia."
         );
-
     }
 
-
-    if (
-        typeof window.apiUpdateUser ===
-        "function"
-    ) {
-
-        return await window.apiUpdateUser(
-            userData
-        );
-
-    }
-
-
-    if (
-        typeof google !== "undefined" &&
-        google.script &&
-        google.script.run
-    ) {
-
-        return await callGoogleScript(
-            "updateUser",
-            userData
-        );
-
-    }
-
-
-    console.warn(
-        "updateUser API belum tersedia.",
+    return await API.updateUser(
         userData
     );
-
-
-    return true;
-
 }
 
 
