@@ -1802,9 +1802,8 @@ const API = {
 
 
     /**************************************************************************
-     * LAPORAN
-     **************************************************************************/
-
+ * LAPORAN
+ **************************************************************************/
     async getLaporan(
         params = {}
     ) {
@@ -1814,10 +1813,153 @@ const API = {
             params
         );
 
+    },
+
+
+    /**************************************************************************
+     * REQUEST PASSWORD RESET
+     **************************************************************************/
+    async requestPasswordReset(
+        username,
+        email
+    ) {
+
+        return await this.get(
+            "requestPasswordReset",
+            {
+
+                username:
+                    String(
+                        username || ""
+                    ).trim(),
+
+                email:
+                    String(
+                        email || ""
+                    ).trim()
+            }
+        );
+
+    },
+
+
+    /**************************************************************************
+     * CONFIRM PASSWORD RESET
+     **************************************************************************/
+    async confirmPasswordReset(
+        data = {}
+    ) {
+
+        const url =
+            this.getUrl();
+
+        const form =
+            new URLSearchParams();
+
+
+        form.append(
+            "action",
+            "confirmPasswordReset"
+        );
+
+
+        const payload =
+            data || {};
+
+
+        Object.keys(
+            payload
+        ).forEach(
+            key => {
+
+                const value =
+                    payload[key];
+
+
+                if (
+                    value === undefined ||
+                    value === null
+                ) {
+
+                    return;
+
+                }
+
+
+                form.append(
+                    key,
+                    String(value)
+                );
+
+            }
+        );
+
+
+        try {
+
+            await fetch(
+                url,
+                {
+                    method:
+                        "POST",
+
+                    mode:
+                        "no-cors",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
+
+                    body:
+                        form.toString(),
+
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+            return {
+                success:
+                    true,
+
+                sent:
+                    true,
+
+                message:
+                    "Request reset password telah dikirim."
+            };
+
+        }
+        catch (err) {
+
+            console.error(
+                "API CONFIRM PASSWORD RESET ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
+
+    async getResetStatus(
+        requestId
+    ) {
+
+        return await this.get(
+            "getResetStatus",
+            {
+                request_id:
+                    requestId
+            }
+        );
+
     }
 
 };
-
 
 /******************************************************************************
  * COMPATIBILITY HELPERS
