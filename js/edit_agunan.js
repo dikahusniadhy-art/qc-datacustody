@@ -2,7 +2,7 @@
  *
  * EDIT DATA AGUNAN CUSTODY
  * FILE      : edit_agunan.js
- * VERSION   : 2.0 TIMEZONE FIX
+ * VERSION   : 1.0 TIMEZONE FIX
  *
  ******************************************************************************/
 
