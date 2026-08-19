@@ -1,6 +1,7 @@
 /* =========================================================
    CUSTODY - USER MANAGEMENT
    user.js
+   VERSION 1.0
 ========================================================= */
 
 "use strict";
@@ -1795,11 +1796,9 @@ async function executeDeleteUser(id) {
 
 
         /*
-         * API POST menggunakan no-cors,
-         * jadi response server tidak bisa dibaca.
-         * Karena itu result.success berarti
-         * request sudah terkirim, bukan jaminan
-         * row sudah terhapus.
+         * API menggunakan no-cors.
+         * Jadi success di sini berarti request
+         * berhasil dikirim ke server.
          */
         if (
             !result ||
@@ -1816,46 +1815,102 @@ async function executeDeleteUser(id) {
 
         /*
          * =====================================================
-         * VERIFIKASI KE SERVER
+         * HAPUS DARI STATE UI LANGSUNG
          * =====================================================
-         *
-         * Ambil ulang data dari Spreadsheet.
          */
-        await loadUsers();
+        UserPage.data =
+            UserPage.data.filter(
+                user =>
+                    String(user.id) !==
+                    String(id)
+            );
+
+
+        UserPage.filteredData =
+            UserPage.filteredData.filter(
+                user =>
+                    String(user.id) !==
+                    String(id)
+            );
 
 
         /*
-         * Cek apakah ID masih ada.
+         * =====================================================
+         * PASTIKAN PAGINATION VALID
+         * =====================================================
          */
-        const deletedUser =
-            findUser(
-                id
-            );
+        const totalPages =
+            getTotalPages();
 
 
         if (
-            deletedUser
+            UserPage.currentPage >
+            totalPages
         ) {
 
-            throw new Error(
-                "User belum terhapus dari Spreadsheet. Periksa deployment API atau permission user."
-            );
+            UserPage.currentPage =
+                totalPages;
 
         }
 
 
         /*
          * =====================================================
-         * SUCCESS
+         * UPDATE UI
+         * =====================================================
+         */
+        updateKPI();
+
+        renderTable();
+
+
+        /*
+         * =====================================================
+         * TUTUP KONFIRMASI
          * =====================================================
          */
         closeConfirmModal();
 
 
+        /*
+         * =====================================================
+         * NOTIFIKASI
+         * =====================================================
+         */
         showToast(
             "success",
             "Berhasil",
             "User berhasil dihapus."
+        );
+
+
+        /*
+         * =====================================================
+         * SINKRONISASI ULANG DENGAN SERVER
+         * =====================================================
+         *
+         * Tunggu sebentar agar Apps Script selesai
+         * menulis ke Spreadsheet.
+         */
+        setTimeout(
+            async () => {
+
+                try {
+
+                    await loadUsers();
+
+                }
+                catch (err) {
+
+                    console.error(
+                        "Refresh setelah delete gagal:",
+                        err
+                    );
+
+                }
+
+            },
+            700
         );
 
     }
