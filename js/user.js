@@ -990,7 +990,7 @@ function openAddModal() {
 
 
     $("#passwordHint").textContent =
-        "Minimal 6 karakter";
+        "Minimal 8 karakter";
 
 
     $("#userModal").classList.add(
@@ -1161,13 +1161,13 @@ async function handleSubmit(event) {
 
     if (
         !UserPage.editMode &&
-        password.length < 6
+        password.length < 8
     ) {
 
         showToast(
             "warning",
             "Validasi",
-            "Password minimal 6 karakter."
+            "Password minimal 8 karakter."
         );
 
         return;
@@ -1317,57 +1317,37 @@ async function handleSubmit(event) {
    CREATE API
 ========================================================= */
 
-async function createUserAPI(userData) {
+async function createUserAPI(
+    userData
+) {
 
     if (
-        typeof window.createUser ===
+        typeof API ===
+        "undefined"
+    ) {
+
+        throw new Error(
+            "API tidak tersedia."
+        );
+
+    }
+
+
+    if (
+        typeof API.createUser !==
         "function"
     ) {
 
-        return await window.createUser(
-            userData
+        throw new Error(
+            "API.createUser tidak tersedia."
         );
 
     }
 
 
-    if (
-        typeof window.apiCreateUser ===
-        "function"
-    ) {
-
-        return await window.apiCreateUser(
-            userData
-        );
-
-    }
-
-
-    if (
-        typeof google !== "undefined" &&
-        google.script &&
-        google.script.run
-    ) {
-
-        return await callGoogleScript(
-            "createUser",
-            userData
-        );
-
-    }
-
-
-    /*
-     * DEVELOPMENT FALLBACK
-     */
-
-    console.warn(
-        "createUser API belum tersedia.",
+    return await API.createUser(
         userData
     );
-
-
-    return true;
 
 }
 
@@ -1656,75 +1636,74 @@ async function executeDeleteUser(id) {
 
     try {
 
-        let result;
+        /*
+         * =====================================================
+         * DELETE LANGSUNG KE API
+         * =====================================================
+         */
+        const result =
+            await API.deleteUser(
+                id
+            );
 
 
+        /*
+         * API POST menggunakan no-cors,
+         * jadi response server tidak bisa dibaca.
+         * Karena itu result.success berarti
+         * request sudah terkirim, bukan jaminan
+         * row sudah terhapus.
+         */
         if (
-            typeof window.deleteUserAPI ===
-            "function"
+            !result ||
+            result.success !== true
         ) {
-
-            result =
-                await window.deleteUserAPI(
-                    id
-                );
-
-        }
-
-        else if (
-            typeof window.apiDeleteUser ===
-            "function"
-        ) {
-
-            result =
-                await window.apiDeleteUser(
-                    id
-                );
-
-        }
-
-        else if (
-            typeof google !== "undefined" &&
-            google.script &&
-            google.script.run
-        ) {
-
-            result =
-                await callGoogleScript(
-                    "deleteUser",
-                    id
-                );
-
-        }
-
-        else {
-
-            /*
-             * DEVELOPMENT FALLBACK
-             */
-
-            UserPage.data =
-                UserPage.data.filter(
-                    user =>
-                        String(user.id) !==
-                        String(id)
-                );
-
-            result = true;
-
-        }
-
-
-        if (result === false) {
 
             throw new Error(
-                "User gagal dihapus."
+                result?.message ||
+                "Request hapus user gagal dikirim."
             );
 
         }
 
 
+        /*
+         * =====================================================
+         * VERIFIKASI KE SERVER
+         * =====================================================
+         *
+         * Ambil ulang data dari Spreadsheet.
+         */
+        await loadUsers();
+
+
+        /*
+         * Cek apakah ID masih ada.
+         */
+        const deletedUser =
+            findUser(
+                id
+            );
+
+
+        if (
+            deletedUser
+        ) {
+
+            throw new Error(
+                "User belum terhapus dari Spreadsheet. Periksa deployment API atau permission user."
+            );
+
+        }
+
+
+        /*
+         * =====================================================
+         * SUCCESS
+         * =====================================================
+         */
         closeConfirmModal();
+
 
         showToast(
             "success",
@@ -1732,11 +1711,7 @@ async function executeDeleteUser(id) {
             "User berhasil dihapus."
         );
 
-
-        await loadUsers();
-
     }
-
     catch (error) {
 
         console.error(
@@ -1746,6 +1721,7 @@ async function executeDeleteUser(id) {
 
 
         closeConfirmModal();
+
 
         showToast(
             "error",
@@ -1757,7 +1733,6 @@ async function executeDeleteUser(id) {
     }
 
 }
-
 
 /* =========================================================
    CONFIRM ACTION
