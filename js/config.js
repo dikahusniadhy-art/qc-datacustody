@@ -21,7 +21,7 @@ const CONFIG = {
      * GOOGLE APPS SCRIPT API
      **********************************************************************/
     API_URL:
-        "https://script.google.com/macros/s/AKfycbzHjMYzbyf87UidR1KDrkkIvTbeLwMHVXYe3-Ego_nVoGJulNYnU9QatbNFopOdSuMO/exec",
+        "https://script.google.com/macros/s/AKfycbwQdmo1f5AdxJ0GWCyhtJcyodEQaZbsGF-Si36GrZmjVLxsULz6JnD06U8FJ_WC5mMr/exec",
 
     /**********************************************************************
      * SESSION
