@@ -182,7 +182,7 @@ const ResetPassword = {
 
 
         if (
-            value.length < 12
+            value.length < 8
         ) {
 
             return {
@@ -190,7 +190,7 @@ const ResetPassword = {
                     false,
 
                 message:
-                    "Password minimal 12 karakter."
+                    "Password minimal 8 karakter."
             };
 
         }
