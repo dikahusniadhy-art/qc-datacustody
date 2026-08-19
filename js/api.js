@@ -571,119 +571,202 @@ const API = {
 
 
     /******************************************************************************
- * LOGIN
- * GET version
- *
- * Digunakan agar login dapat membaca response
- * Google Apps Script dari GitHub Pages.
- ******************************************************************************/
+     * LOGIN
+     * ----------------------------------------------------------------------------
+     * GitHub Pages compatible.
+     *
+     * Password TIDAK dikirim melalui URL.
+     *
+     * Flow:
+     *
+     * POST no-cors
+     *      ↓
+     * loginAsync
+     *      ↓
+     * CacheService
+     *      ↓
+     * JSONP getLoginStatus
+     ******************************************************************************/
+
     async login(
         username,
         password
     ) {
 
+        username =
+            String(
+                username || ""
+            ).trim();
+
+
+        password =
+            String(
+                password || ""
+            );
+
+
+        if (
+            !username
+        ) {
+
+            return {
+                success: false,
+                message:
+                    "Username wajib diisi."
+            };
+
+        }
+
+
+        if (
+            !password
+        ) {
+
+            return {
+                success: false,
+                message:
+                    "Password wajib diisi."
+            };
+
+        }
+
+
+        /*
+         * REQUEST ID
+         */
+        const requestId =
+            (
+                typeof crypto !==
+                "undefined" &&
+                typeof crypto.randomUUID ===
+                "function"
+            )
+                ? crypto.randomUUID()
+                : (
+                    "req_" +
+                    Date.now() +
+                    "_" +
+                    Math.random()
+                        .toString(36)
+                        .substring(2, 12)
+                );
+
+
         try {
 
+            /*
+             * =========================================================
+             * POST LOGIN
+             * =========================================================
+             *
+             * no-cors:
+             * browser tidak membaca response.
+             *
+             * Yang dikirim:
+             * username
+             * password
+             * request_id
+             */
             const url =
-                new URL(
-                    this.getUrl()
-                );
+                this.getUrl();
 
 
-            url.searchParams.set(
+            const form =
+                new URLSearchParams();
+
+
+            form.append(
                 "action",
-                "login"
+                "loginAsync"
             );
 
 
-            url.searchParams.set(
+            form.append(
+                "request_id",
+                requestId
+            );
+
+
+            form.append(
                 "username",
-                String(
-                    username || ""
-                )
+                username
             );
 
 
-            url.searchParams.set(
+            form.append(
                 "password",
-                String(
-                    password || ""
-                )
+                password
             );
 
 
-            url.searchParams.set(
-                "_ts",
-                String(
-                    Date.now()
-                )
+            await fetch(
+                url,
+                {
+                    method:
+                        "POST",
+
+                    mode:
+                        "no-cors",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
+
+                    body:
+                        form.toString(),
+
+                    cache:
+                        "no-store"
+                }
             );
 
 
-            console.log(
-                "API LOGIN URL:",
-                url.toString()
-            );
+            /*
+             * =========================================================
+             * POLLING RESULT
+             * =========================================================
+             */
+            for (
+                let attempt = 0;
+                attempt < 20;
+                attempt++
+            ) {
 
-
-            const response =
-                await fetch(
-                    url.toString(),
-                    {
-                        method: "GET",
-                        cache: "no-store"
-                    }
-                );
-
-
-            console.log(
-                "API LOGIN STATUS:",
-                response.status
-            );
-
-
-            console.log(
-                "API LOGIN REDIRECTED:",
-                response.redirected
-            );
-
-
-            const text =
-                await response.text();
-
-
-            let result;
-
-
-            try {
-
-                result =
-                    JSON.parse(
-                        text
+                const result =
+                    await this.getLoginStatusJsonp(
+                        requestId
                     );
 
+
+                if (
+                    result &&
+                    result.message ===
+                    "PROCESSING"
+                ) {
+
+                    await new Promise(
+                        resolve =>
+                            setTimeout(
+                                resolve,
+                                500
+                            )
+                    );
+
+
+                    continue;
+
+                }
+
+
+                return result;
+
             }
-            catch (err) {
-
-                console.error(
-                    "LOGIN RESPONSE:",
-                    text
-                );
-
-                throw new Error(
-                    "Response login API tidak valid."
-                );
-
-            }
 
 
-            console.log(
-                "API LOGIN RESPONSE:",
-                result
+            throw new Error(
+                "Timeout saat memproses login."
             );
-
-
-            return result;
 
         }
         catch (err) {
@@ -693,9 +776,230 @@ const API = {
                 err
             );
 
+
             throw err;
 
         }
+
+    },
+
+    /******************************************************************************
+ * LOGIN STATUS JSONP
+ ******************************************************************************/
+
+    getLoginStatusJsonp(
+        requestId
+    ) {
+
+        return new Promise(
+            (
+                resolve,
+                reject
+            ) => {
+
+                const safeId =
+                    String(
+                        requestId
+                    )
+                        .replace(
+                            /[^A-Za-z0-9_]/g,
+                            ""
+                        );
+
+
+                const callbackName =
+                    "__custodyLoginCallback_" +
+                    safeId;
+
+
+                let completed =
+                    false;
+
+
+                const script =
+                    document.createElement(
+                        "script"
+                    );
+
+
+                const cleanup =
+                    () => {
+
+                        if (
+                            script.parentNode
+                        ) {
+
+                            script.parentNode.removeChild(
+                                script
+                            );
+
+                        }
+
+
+                        try {
+
+                            delete window[
+                                callbackName
+                            ];
+
+                        }
+                        catch (err) {
+
+                            window[
+                                callbackName
+                            ] =
+                                undefined;
+
+                        }
+
+                    };
+
+
+                const timeout =
+                    setTimeout(
+                        () => {
+
+                            if (
+                                completed
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            completed =
+                                true;
+
+
+                            cleanup();
+
+
+                            reject(
+                                new Error(
+                                    "Timeout mengambil status login."
+                                )
+                            );
+
+                        },
+                        8000
+                    );
+
+
+                window[
+                    callbackName
+                ] =
+                    result => {
+
+                        if (
+                            completed
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        completed =
+                            true;
+
+
+                        clearTimeout(
+                            timeout
+                        );
+
+
+                        cleanup();
+
+
+                        resolve(
+                            result
+                        );
+
+                    };
+
+
+                script.onerror =
+                    () => {
+
+                        if (
+                            completed
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        completed =
+                            true;
+
+
+                        clearTimeout(
+                            timeout
+                        );
+
+
+                        cleanup();
+
+
+                        reject(
+                            new Error(
+                                "Gagal mengambil status login."
+                            )
+                        );
+
+                    };
+
+
+                const url =
+                    new URL(
+                        this.getUrl()
+                    );
+
+
+                url.searchParams.set(
+                    "action",
+                    "getLoginStatus"
+                );
+
+
+                url.searchParams.set(
+                    "request_id",
+                    requestId
+                );
+
+
+                url.searchParams.set(
+                    "callback",
+                    callbackName
+                );
+
+
+                url.searchParams.set(
+                    "_ts",
+                    String(
+                        Date.now()
+                    )
+                );
+
+
+                script.src =
+                    url.toString();
+
+
+                script.async =
+                    true;
+
+
+                document
+                    .head
+                    .appendChild(
+                        script
+                    );
+
+            }
+        );
 
     },
 
