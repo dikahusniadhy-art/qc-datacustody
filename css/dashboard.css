@@ -2717,7 +2717,7 @@ END OF FILE
 
     /* AREA JUDUL */
 
-    .header > div:first-of-type {
+    .header>div:first-of-type {
 
         flex: 1 1 auto;
 
@@ -2729,7 +2729,7 @@ END OF FILE
     }
 
 
-    .header > div:first-of-type h1 {
+    .header>div:first-of-type h1 {
 
         width: 100%;
 
@@ -2747,7 +2747,7 @@ END OF FILE
     }
 
 
-    .header > div:first-of-type p {
+    .header>div:first-of-type p {
 
         margin: 4px 0 0;
 
@@ -2781,7 +2781,7 @@ END OF FILE
 
     /* USERNAME AREA */
 
-    .header .user > div:nth-child(2) {
+    .header .user>div:nth-child(2) {
 
         min-width: 0;
 
@@ -2835,19 +2835,19 @@ END OF FILE
     }
 
 
-    .header > div:first-of-type h1 {
+    .header>div:first-of-type h1 {
 
         font-size: 17px;
     }
 
 
-    .header > div:first-of-type p {
+    .header>div:first-of-type p {
 
         font-size: 11px;
     }
 
 
-    .header .user > div:nth-child(2) {
+    .header .user>div:nth-child(2) {
 
         max-width: 80px;
     }
