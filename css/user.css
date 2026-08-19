@@ -1,6 +1,7 @@
 /* =========================================================
    CUSTODY - USER MANAGEMENT
    Enterprise Banking Dashboard
+   VERSION 1.0
 ========================================================= */
 
 :root {
@@ -3489,4 +3490,11 @@ tbody tr:last-child td {
 
     }
 
+}
+
+.user-page .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
 }
