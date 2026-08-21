@@ -1,342 +1,119 @@
 /******************************************************************************
- *
- * api.js
  * DATA AGUNAN CUSTODY
- * SECURITY HARDENED API CLIENT
- * VERSION : 1.0
- *
- ******************************************************************************/
-
-"use strict";
-
-/******************************************************************************
- * API CLIENT
+ * API.JS
+ * SECURITY HARDENED
+ * Version : 1.0
  ******************************************************************************/
 
 const API = {
 
     /**************************************************************************
-     * CONFIG
+     * GET API URL
      **************************************************************************/
 
     getUrl() {
 
         if (
-            typeof CONFIG !== "undefined" &&
-            CONFIG.API_URL
+            typeof CONFIG === "undefined" ||
+            !CONFIG.API_URL
         ) {
-            return CONFIG.API_URL;
+
+            throw new Error(
+                "CONFIG.API_URL belum tersedia."
+            );
+
         }
 
-        throw new Error(
-            "CONFIG.API_URL belum dikonfigurasi."
-        );
+        return CONFIG.API_URL;
 
     },
 
 
     /**************************************************************************
-     * SESSION / TOKEN
+     * GET
      **************************************************************************/
-
-    getSession() {
-
-        try {
-
-            if (
-                typeof CONFIG === "undefined" ||
-                !CONFIG.SESSION_KEY
-            ) {
-                return null;
-            }
-
-            const raw =
-                sessionStorage.getItem(
-                    CONFIG.SESSION_KEY
-                );
-
-            if (!raw) {
-                return null;
-            }
-
-            return JSON.parse(raw);
-
-        }
-        catch (err) {
-
-            console.error(
-                "API.getSession:",
-                err
-            );
-
-            return null;
-
-        }
-
-    },
-
-
-    getToken() {
-
-        const session =
-            this.getSession();
-
-        return session &&
-            session.token
-            ? session.token
-            : "";
-
-    },
-
-
-    /**************************************************************************
-     * SESSION ERROR
-     **************************************************************************/
-
-    handleAuthError(result) {
-
-        if (!result) {
-            return false;
-        }
-
-        const message =
-            String(
-                result.message || ""
-            ).toUpperCase();
-
-        if (
-            message.indexOf(
-                "SESSION_EXPIRED"
-            ) !== -1 ||
-            message.indexOf(
-                "ACCESS_DENIED"
-            ) !== -1 ||
-            message.indexOf(
-                "UNAUTHORIZED"
-            ) !== -1
-        ) {
-
-            /*
-             * ACCESS_DENIED tidak langsung
-             * menghapus session karena user
-             * mungkin masih login tetapi memang
-             * tidak memiliki permission.
-             */
-
-            if (
-                message.indexOf(
-                    "SESSION_EXPIRED"
-                ) !== -1 ||
-                message.indexOf(
-                    "UNAUTHORIZED"
-                ) !== -1
-            ) {
-
-                this.clearSession();
-
-                if (
-                    typeof location !==
-                    "undefined"
-                ) {
-
-                    const loginPage =
-                        this.getLoginPage();
-
-                    location.href =
-                        loginPage;
-
-                }
-
-            }
-
-            return true;
-
-        }
-
-        return false;
-
-    },
-
-
-    clearSession() {
-
-        try {
-
-            if (
-                typeof CONFIG !== "undefined" &&
-                CONFIG.SESSION_KEY
-            ) {
-
-                sessionStorage.removeItem(
-                    CONFIG.SESSION_KEY
-                );
-
-            }
-
-        }
-        catch (err) {
-
-            console.error(
-                "API.clearSession:",
-                err
-            );
-
-        }
-
-    },
-
-
-    getLoginPage() {
-
-        /*
-         * Root:
-         * login.html
-         *
-         * Folder aksi:
-         * ../login.html
-         */
-
-        if (
-            typeof CONFIG !== "undefined" &&
-            CONFIG.LOGIN_PAGE
-        ) {
-
-            return CONFIG.LOGIN_PAGE;
-
-        }
-
-        const path =
-            String(
-                window.location.pathname ||
-                ""
-            );
-
-        if (
-            path.indexOf("/aksi/") !== -1
-        ) {
-
-            return "../login.html";
-
-        }
-
-        return "login.html";
-
-    },
-
-
-    /**************************************************************************
-     * BUILD GET URL
-     **************************************************************************/
-
-    buildGetUrl(
-        action,
-        params = {}
-    ) {
-
-        const url =
-            new URL(
-                this.getUrl()
-            );
-
-        url.searchParams.set(
-            "action",
-            action
-        );
-
-        /*
-         * Ambil server-side session token.
-         */
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            url.searchParams.set(
-                "token",
-                token
-            );
-
-        }
-
-        /*
-         * Parameter tambahan.
-         */
-
-        Object.keys(
-            params || {}
-        ).forEach(
-            key => {
-
-                const value =
-                    params[key];
-
-                if (
-                    value !== undefined &&
-                    value !== null
-                ) {
-
-                    url.searchParams.set(
-                        key,
-                        value
-                    );
-
-                }
-
-            }
-        );
-
-        /*
-         * Cache buster.
-         */
-
-        url.searchParams.set(
-            "_ts",
-            Date.now()
-        );
-
-        return url.toString();
-
-    },
-
-
-    /******************************************************************************
-     * GET REQUEST
-     ******************************************************************************/
 
     async get(
         action,
         params = {}
     ) {
 
-        const url =
-            this.buildGetUrl(
-                action,
-                params
+        try {
+
+            const url =
+                new URL(
+                    this.getUrl()
+                );
+
+
+            url.searchParams.set(
+                "action",
+                action
             );
 
-        try {
+
+            /*
+             * Tambahkan parameter
+             */
+            Object.keys(
+                params
+            ).forEach(
+                key => {
+
+                    const value =
+                        params[key];
+
+                    if (
+                        value !== undefined &&
+                        value !== null
+                    ) {
+
+                        url.searchParams.set(
+                            key,
+                            String(value)
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Cache busting
+             */
+            url.searchParams.set(
+                "_ts",
+                Date.now()
+            );
+
+
+            console.log(
+                "API GET:",
+                action,
+                url.toString()
+            );
+
 
             const response =
                 await fetch(
-                    url,
+                    url.toString(),
                     {
-                        method: "GET",
-                        cache: "no-store",
-                        redirect: "follow"
+                        method:
+                            "GET",
+
+                        cache:
+                            "no-store"
                     }
                 );
 
 
-            const text =
-                await response.text();
+            if (
+                !response.ok
+            ) {
 
-
-            /*
-             * HTTP ERROR
-             */
-
-            if (!response.ok) {
+                const text =
+                    await response.text();
 
                 console.error(
                     "API GET HTTP ERROR:",
@@ -344,21 +121,20 @@ const API = {
                     text
                 );
 
+
                 throw new Error(
-                    "HTTP " +
-                    response.status +
-                    " saat memanggil " +
-                    action
+                    `HTTP ${response.status} saat memanggil ${action}`
                 );
 
             }
 
 
-            /*
-             * PARSE JSON
-             */
+            const text =
+                await response.text();
+
 
             let result;
+
 
             try {
 
@@ -371,9 +147,10 @@ const API = {
             catch (err) {
 
                 console.error(
-                    "API RESPONSE BUKAN JSON:",
+                    "API GET RESPONSE:",
                     text
                 );
+
 
                 throw new Error(
                     "Response API tidak valid."
@@ -381,10 +158,6 @@ const API = {
 
             }
 
-
-            /*
-             * AUTH ERROR
-             */
 
             this.handleAuthError(
                 result
@@ -402,21 +175,16 @@ const API = {
                 err
             );
 
+
             throw err;
 
         }
 
     },
+
+
     /**************************************************************************
-     * POST REQUEST
-     *
-     * Google Apps Script menerima:
-     *
-     * e.parameter
-     *
-     * sehingga payload dikirim sebagai:
-     *
-     * application/x-www-form-urlencoded
+     * POST
      **************************************************************************/
 
     async post(
@@ -424,92 +192,71 @@ const API = {
         data = {}
     ) {
 
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-        /*
-         * Action
-         */
-
-        form.append(
-            "action",
-            action
-        );
-
-        /*
-         * Server-side session token
-         */
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-        /*
-         * Payload
-         */
-
-        Object.keys(
-            data || {}
-        ).forEach(
-            key => {
-
-                const value =
-                    data[key];
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-
-                    return;
-
-                }
-
-                /*
-                 * Jika object / array,
-                 * serialisasi menjadi JSON.
-                 */
-
-                if (
-                    typeof value === "object"
-                ) {
-
-                    form.append(
-                        key,
-                        JSON.stringify(value)
-                    );
-
-                }
-                else {
-
-                    form.append(
-                        key,
-                        String(value)
-                    );
-
-                }
-
-            }
-        );
-
         try {
 
+            const url =
+                this.getUrl();
+
+
+            const form =
+                new URLSearchParams();
+
+
+            form.append(
+                "action",
+                action
+            );
+
+
+            /*
+             * Tambahkan data
+             */
+            Object.keys(
+                data
+            ).forEach(
+                key => {
+
+                    const value =
+                        data[key];
+
+                    if (
+                        value !== undefined &&
+                        value !== null
+                    ) {
+
+                        form.append(
+                            key,
+                            String(value)
+                        );
+
+                    }
+
+                }
+            );
+
+
+            console.log(
+                "API POST:",
+                action
+            );
+
+
+            /*
+             * no-cors
+             *
+             * Digunakan agar GitHub Pages
+             * dapat mengirim request ke
+             * Google Apps Script.
+             */
             const response =
                 await fetch(
                     url,
                     {
-                        method: "POST",
+                        method:
+                            "POST",
+
+                        mode:
+                            "no-cors",
 
                         headers: {
                             "Content-Type":
@@ -524,35 +271,28 @@ const API = {
                     }
                 );
 
-            const text =
-                await response.text();
 
-            let result;
+            /*
+             * no-cors menghasilkan opaque response.
+             *
+             * Kita tidak dapat membaca
+             * response server.
+             */
+            return {
 
-            try {
+                success:
+                    true,
 
-                result =
-                    JSON.parse(text);
+                sent:
+                    true,
 
-            }
-            catch (err) {
+                action:
+                    action,
 
-                console.error(
-                    "API POST RESPONSE:",
-                    text
-                );
+                message:
+                    `Request ${action} telah dikirim.`
 
-                throw new Error(
-                    "Response API tidak valid."
-                );
-
-            }
-
-            this.handleAuthError(
-                result
-            );
-
-            return result;
+            };
 
         }
         catch (err) {
@@ -563,6 +303,7 @@ const API = {
                 err
             );
 
+
             throw err;
 
         }
@@ -570,155 +311,441 @@ const API = {
     },
 
 
+    /**************************************************************************
+     * AUTH ERROR HANDLER
+     **************************************************************************/
+
+    handleAuthError(
+        result
+    ) {
+
+        if (
+            !result
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Token/session invalid
+         */
+        if (
+            result.message ===
+            "SESSION_EXPIRED" ||
+            result.message ===
+            "UNAUTHORIZED" ||
+            result.message ===
+            "TOKEN_INVALID"
+        ) {
+
+            console.warn(
+                "API AUTH ERROR:",
+                result.message
+            );
+
+
+            if (
+                typeof Auth !==
+                "undefined" &&
+                typeof Auth.clear ===
+                "function"
+            ) {
+
+                Auth.clear();
+
+            }
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * GENERIC REQUEST
+     **************************************************************************/
+
+    async request(
+        action,
+        data = {}
+    ) {
+
+        return await this.post(
+            action,
+            data
+        );
+
+    },
+
+
+    /**************************************************************************
+     * PING
+     **************************************************************************/
+
+    async ping() {
+
+        return await this.get(
+            "ping"
+        );
+
+    },
+
+
+    /**************************************************************************
+     * DASHBOARD
+     **************************************************************************/
+
+    async getDashboard() {
+
+        const token =
+            this.getToken();
+
+
+        return await this.get(
+            "getDashboard",
+            {
+                token:
+                    token
+            }
+        );
+
+    },
+
+
+    /**************************************************************************
+     * TOKEN
+     **************************************************************************/
+
+    getToken() {
+
+        try {
+
+            if (
+                typeof Auth !==
+                "undefined" &&
+                typeof Auth.getToken ===
+                "function"
+            ) {
+
+                return Auth.getToken();
+
+            }
+
+
+            const session =
+                localStorage.getItem(
+                    "user"
+                );
+
+
+            if (
+                !session
+            ) {
+
+                return "";
+
+            }
+
+
+            const parsed =
+                JSON.parse(
+                    session
+                );
+
+
+            return (
+                parsed &&
+                parsed.token
+            )
+                ? parsed.token
+                : "";
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getToken ERROR:",
+                err
+            );
+
+
+            return "";
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * MASTER CABANG
+     **************************************************************************/
+
+    async getCabang() {
+
+        return await this.get(
+            "getCabang",
+            {
+                token:
+                    this.getToken()
+            }
+        );
+
+    },
+
+
+    /**************************************************************************
+     * MASTER NOTARIS
+     **************************************************************************/
+
+    async getNotaris() {
+
+        return await this.get(
+            "getNotaris",
+            {
+                token:
+                    this.getToken()
+            }
+        );
+
+    },
+
+
+    /**************************************************************************
+     * USER
+     **************************************************************************/
+
+    async getUser() {
+
+        return await this.get(
+            "getUser",
+            {
+                token:
+                    this.getToken()
+            }
+        );
+
+    },
+
+
+    /**************************************************************************
+     * DATA AGUNAN
+     **************************************************************************/
+
+    async getAgunan(
+        params = {}
+    ) {
+
+        return await this.get(
+            "getAgunan",
+            {
+                ...params,
+
+                token:
+                    this.getToken()
+            }
+        );
+
+    },
+
+
+    async getAgunanById(
+        id
+    ) {
+
+        return await this.get(
+            "getAgunanById",
+            {
+                id:
+                    id,
+
+                token:
+                    this.getToken()
+            }
+        );
+
+    },
+
+
+    /**************************************************************************
+     * MONITORING
+     **************************************************************************/
+
+    async getMonitoring() {
+
+        return await this.get(
+            "getMonitoring",
+            {
+                token:
+                    this.getToken()
+            }
+        );
+
+    },
+
+
+    /**************************************************************************
+     * LAPORAN
+     **************************************************************************/
+
+    async getLaporan() {
+
+        return await this.get(
+            "getLaporan",
+            {
+                token:
+                    this.getToken()
+            }
+        );
+
+    },
+
     /******************************************************************************
-     * LOGIN
-     * ----------------------------------------------------------------------------
-     * GitHub Pages compatible.
-     *
-     * Password TIDAK dikirim melalui URL.
-     *
-     * Flow:
-     *
-     * POST no-cors
-     *      ↓
-     * loginAsync
-     *      ↓
-     * CacheService
-     *      ↓
-     * JSONP getLoginStatus
-     ******************************************************************************/
+ * LOGIN
+ ******************************************************************************/
 
     async login(
         username,
         password
     ) {
 
-        username =
-            String(
-                username || ""
-            ).trim();
-
-
-        password =
-            String(
-                password || ""
-            );
-
-
-        if (
-            !username
-        ) {
-
-            return {
-                success: false,
-                message:
-                    "Username wajib diisi."
-            };
-
-        }
-
-
-        if (
-            !password
-        ) {
-
-            return {
-                success: false,
-                message:
-                    "Password wajib diisi."
-            };
-
-        }
-
-
-        /*
-         * REQUEST ID
-         */
-        const requestId =
-            (
-                typeof crypto !==
-                "undefined" &&
-                typeof crypto.randomUUID ===
-                "function"
-            )
-                ? crypto.randomUUID()
-                : (
-                    "req_" +
-                    Date.now() +
-                    "_" +
-                    Math.random()
-                        .toString(36)
-                        .substring(2, 12)
-                );
-
-
         try {
 
             /*
              * =========================================================
-             * POST LOGIN
+             * VALIDATION
+             * =========================================================
+             */
+
+            username =
+                String(
+                    username || ""
+                ).trim();
+
+            password =
+                String(
+                    password || ""
+                );
+
+
+            if (
+                !username
+            ) {
+
+                throw new Error(
+                    "Username wajib diisi."
+                );
+
+            }
+
+
+            if (
+                !password
+            ) {
+
+                throw new Error(
+                    "Password wajib diisi."
+                );
+
+            }
+
+
+            /*
+             * =========================================================
+             * REQUEST ID
              * =========================================================
              *
-             * no-cors:
-             * browser tidak membaca response.
+             * Digunakan untuk menghubungkan:
              *
-             * Yang dikirim:
-             * username
-             * password
-             * request_id
+             * loginAsync()
+             *        ↓
+             * getLoginStatus()
              */
-            const url =
-                this.getUrl();
+
+            const requestId =
+                "req_" +
+                Date.now() +
+                "_" +
+                Math.random()
+                    .toString(36)
+                    .substring(2, 12);
 
 
-            const form =
-                new URLSearchParams();
-
-
-            form.append(
-                "action",
-                "loginAsync"
-            );
-
-
-            form.append(
-                "request_id",
-                requestId
-            );
-
-
-            form.append(
-                "username",
-                username
-            );
-
-
-            form.append(
-                "password",
-                password
-            );
-
-
-            await fetch(
-                url,
+            console.log(
+                "API LOGIN REQUEST:",
                 {
-                    method:
-                        "POST",
+                    username:
+                        username,
 
-                    mode:
-                        "no-cors",
-
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
-
-                    body:
-                        form.toString(),
-
-                    cache:
-                        "no-store"
+                    requestId:
+                        requestId
                 }
+            );
+
+
+            /*
+             * =========================================================
+             * LOGIN ASYNC
+             * =========================================================
+             *
+             * Password dikirim melalui POST.
+             *
+             * Jangan menggunakan GET untuk password.
+             */
+
+            const loginResult =
+                await this.post(
+                    "loginAsync",
+                    {
+                        username:
+                            username,
+
+                        password:
+                            password,
+
+                        request_id:
+                            requestId
+                    }
+                );
+
+
+            if (
+                !loginResult ||
+                loginResult.success !== true
+            ) {
+
+                throw new Error(
+                    loginResult?.message ||
+                    "Gagal mengirim proses login."
+                );
+
+            }
+
+
+            /*
+             * =========================================================
+             * WAIT BEFORE POLLING
+             * =========================================================
+             *
+             * Beri waktu Apps Script:
+             *
+             * loginAsync()
+             *      ↓
+             * verifikasi password
+             *      ↓
+             * create session
+             *      ↓
+             * CacheService.put()
+             *
+             * sebelum browser melakukan GET.
+             */
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        800
+                    )
             );
 
 
@@ -726,12 +753,38 @@ const API = {
              * =========================================================
              * POLLING RESULT
              * =========================================================
+             *
+             * Maksimal 20 kali.
+             *
+             * Interval:
+             * 700 ms
+             *
+             * Total waktu maksimum sekitar:
+             * 14 - 15 detik
              */
+
             for (
                 let attempt = 0;
                 attempt < 20;
                 attempt++
             ) {
+
+                console.log(
+                    "API LOGIN POLLING:",
+                    {
+                        attempt:
+                            attempt + 1,
+
+                        requestId:
+                            requestId
+                    }
+                );
+
+
+                /*
+                 * Ambil status login
+                 * melalui JSONP.
+                 */
 
                 const result =
                     await this.getLoginStatusJsonp(
@@ -739,30 +792,85 @@ const API = {
                     );
 
 
+                console.log(
+                    "API LOGIN STATUS:",
+                    result
+                );
+
+
+                /*
+                 * =====================================================
+                 * HASIL SUDAH TERSEDIA
+                 * =====================================================
+                 *
+                 * Jangan hanya mengecek success.
+                 *
+                 * Selama message bukan PROCESSING,
+                 * berarti backend sudah memberikan
+                 * hasil final.
+                 */
+
                 if (
                     result &&
-                    result.message ===
+                    result.message !==
                     "PROCESSING"
+                ) {
+
+                    /*
+                     * Jika backend mengembalikan
+                     * success=false, lempar error.
+                     */
+
+                    if (
+                        result.success !== true
+                    ) {
+
+                        throw new Error(
+                            result.message ||
+                            "Username atau password salah."
+                        );
+
+                    }
+
+
+                    /*
+                     * Login berhasil.
+                     */
+
+                    return result;
+
+                }
+
+
+                /*
+                 * =====================================================
+                 * MASIH PROCESSING
+                 * =====================================================
+                 */
+
+                if (
+                    attempt <
+                    19
                 ) {
 
                     await new Promise(
                         resolve =>
                             setTimeout(
                                 resolve,
-                                500
+                                700
                             )
                     );
 
-
-                    continue;
-
                 }
-
-
-                return result;
 
             }
 
+
+            /*
+             * =========================================================
+             * TIMEOUT
+             * =========================================================
+             */
 
             throw new Error(
                 "Timeout saat memproses login."
@@ -783,9 +891,10 @@ const API = {
 
     },
 
+
     /******************************************************************************
- * LOGIN STATUS JSONP
- ******************************************************************************/
+     * GET LOGIN STATUS - JSONP
+     ******************************************************************************/
 
     getLoginStatusJsonp(
         requestId
@@ -797,40 +906,82 @@ const API = {
                 reject
             ) => {
 
-                const safeId =
+                /*
+                 * =====================================================
+                 * VALIDASI REQUEST ID
+                 * =====================================================
+                 */
+
+                if (
+                    !requestId
+                ) {
+
+                    reject(
+                        new Error(
+                            "Request ID login tidak tersedia."
+                        )
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * =====================================================
+                 * CALLBACK NAME
+                 * =====================================================
+                 *
+                 * Hanya gunakan karakter aman
+                 * untuk nama function JavaScript.
+                 */
+
+                const safeRequestId =
                     String(
                         requestId
                     )
                         .replace(
-                            /[^A-Za-z0-9_]/g,
-                            ""
+                            /[^a-zA-Z0-9_]/g,
+                            "_"
                         );
 
 
                 const callbackName =
                     "__custodyLoginCallback_" +
-                    safeId;
+                    safeRequestId;
 
 
-                let completed =
-                    false;
-
-
-                const script =
-                    document.createElement(
-                        "script"
-                    );
-
+                /*
+                 * =====================================================
+                 * CLEANUP
+                 * =====================================================
+                 */
 
                 const cleanup =
                     () => {
 
-                        if (
-                            script.parentNode
+                        try {
+
+                            if (
+                                script &&
+                                script.parentNode
+                            ) {
+
+                                script.parentNode
+                                    .removeChild(
+                                        script
+                                    );
+
+                            }
+
+                        }
+                        catch (
+                        cleanupError
                         ) {
 
-                            script.parentNode.removeChild(
-                                script
+                            console.warn(
+                                "JSONP cleanup error:",
+                                cleanupError
                             );
 
                         }
@@ -843,7 +994,9 @@ const API = {
                             ];
 
                         }
-                        catch (err) {
+                        catch (
+                        callbackError
+                        ) {
 
                             window[
                                 callbackName
@@ -852,65 +1005,40 @@ const API = {
 
                         }
 
+
+                        if (
+                            timeoutId
+                        ) {
+
+                            clearTimeout(
+                                timeoutId
+                            );
+
+                        }
+
                     };
 
 
-                const timeout =
-                    setTimeout(
-                        () => {
-
-                            if (
-                                completed
-                            ) {
-
-                                return;
-
-                            }
-
-
-                            completed =
-                                true;
-
-
-                            cleanup();
-
-
-                            reject(
-                                new Error(
-                                    "Timeout mengambil status login."
-                                )
-                            );
-
-                        },
-                        8000
-                    );
-
+                /*
+                 * =====================================================
+                 * CALLBACK
+                 * =====================================================
+                 */
 
                 window[
                     callbackName
                 ] =
-                    result => {
+                    (
+                        result
+                    ) => {
 
-                        if (
-                            completed
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        completed =
-                            true;
-
-
-                        clearTimeout(
-                            timeout
+                        console.log(
+                            "API LOGIN JSONP RESPONSE:",
+                            result
                         );
 
 
                         cleanup();
-
 
                         resolve(
                             result
@@ -919,43 +1047,37 @@ const API = {
                     };
 
 
-                script.onerror =
-                    () => {
+                /*
+                 * =====================================================
+                 * URL
+                 * =====================================================
+                 */
 
-                        if (
-                            completed
-                        ) {
+                let url;
 
-                            return;
+                try {
 
-                        }
-
-
-                        completed =
-                            true;
-
-
-                        clearTimeout(
-                            timeout
+                    url =
+                        new URL(
+                            this.getUrl()
                         );
 
+                }
+                catch (
+                urlError
+                ) {
 
-                        cleanup();
+                    cleanup();
 
-
-                        reject(
-                            new Error(
-                                "Gagal mengambil status login."
-                            )
-                        );
-
-                    };
-
-
-                const url =
-                    new URL(
-                        this.getUrl()
+                    reject(
+                        new Error(
+                            "API URL tidak valid."
+                        )
                     );
+
+                    return;
+
+                }
 
 
                 url.searchParams.set(
@@ -976,12 +1098,32 @@ const API = {
                 );
 
 
+                /*
+                 * Cache busting
+                 */
+
                 url.searchParams.set(
                     "_ts",
-                    String(
-                        Date.now()
-                    )
+                    Date.now()
                 );
+
+
+                console.log(
+                    "API LOGIN STATUS URL:",
+                    url.toString()
+                );
+
+
+                /*
+                 * =====================================================
+                 * SCRIPT
+                 * =====================================================
+                 */
+
+                const script =
+                    document.createElement(
+                        "script"
+                    );
 
 
                 script.src =
@@ -992,16 +1134,123 @@ const API = {
                     true;
 
 
-                document
-                    .head
-                    .appendChild(
-                        script
+                /*
+                 * =====================================================
+                 * LOAD ERROR
+                 * =====================================================
+                 */
+
+                script.onerror =
+                    () => {
+
+                        cleanup();
+
+                        reject(
+                            new Error(
+                                "Gagal mengambil status login."
+                            )
+                        );
+
+                    };
+
+
+                /*
+                 * =====================================================
+                 * TIMEOUT JSONP
+                 * =====================================================
+                 */
+
+                const timeoutId =
+                    setTimeout(
+                        () => {
+
+                            cleanup();
+
+                            reject(
+                                new Error(
+                                    "Timeout saat mengambil status login."
+                                )
+                            );
+
+                        },
+                        10000
                     );
+
+
+                /*
+                 * =====================================================
+                 * APPEND
+                 * =====================================================
+                 */
+
+                document.body.appendChild(
+                    script
+                );
 
             }
         );
 
     },
+
+    /******************************************************************************
+ * SESSION
+ ******************************************************************************/
+
+    /**************************************************************************
+     * GET CURRENT SESSION
+     **************************************************************************/
+
+    async getSession() {
+
+        try {
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                return {
+
+                    success:
+                        false,
+
+                    message:
+                        "SESSION_EXPIRED",
+
+                    data:
+                        null
+
+                };
+
+            }
+
+
+            return await this.get(
+                "getSession",
+                {
+                    token:
+                        token
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getSession ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
 
     /**************************************************************************
      * LOGOUT
@@ -1014,213 +1263,92 @@ const API = {
             const token =
                 this.getToken();
 
-            if (token) {
 
-                const result =
-                    await this.post(
-                        "logout"
-                    );
+            if (
+                !token
+            ) {
 
-                this.clearSession();
+                return {
 
-                return result;
+                    success:
+                        true,
+
+                    message:
+                        "Logout berhasil."
+
+                };
 
             }
 
-            this.clearSession();
 
-            return {
-                success: true,
+            /*
+             * Logout dikirim melalui POST.
+             */
+            const result =
+                await this.post(
+                    "logout",
+                    {
+                        token:
+                            token
+                    }
+                );
 
-                message:
-                    "Logout berhasil."
-            };
+
+            /*
+             * Hapus session lokal.
+             */
+            try {
+
+                localStorage.removeItem(
+                    "user"
+                );
+
+            }
+            catch (
+            storageError
+            ) {
+
+                console.warn(
+                    "Gagal menghapus localStorage:",
+                    storageError
+                );
+
+            }
+
+
+            return result;
 
         }
         catch (err) {
-
-            /*
-             * Session lokal tetap dihapus
-             * meskipun server tidak dapat
-             * dihubungi.
-             */
-
-            this.clearSession();
 
             console.error(
                 "API LOGOUT ERROR:",
                 err
             );
 
-            return {
 
-                success: false,
+            /*
+             * Walaupun request logout gagal,
+             * session lokal tetap dihapus.
+             */
+            try {
 
-                message:
-                    "Logout lokal berhasil, tetapi server tidak dapat dihubungi."
-
-            };
-
-        }
-
-    },
-
-
-    /**************************************************************************
-     * DASHBOARD
-     **************************************************************************/
-
-    async getDashboard() {
-
-        return await this.get(
-            "getDashboard"
-        );
-
-    },
-
-
-    /**************************************************************************
-     * MASTER CABANG
-     **************************************************************************/
-
-    async getCabang() {
-
-        return await this.get(
-            "getCabang"
-        );
-
-    },
-
-
-    /**************************************************************************
-     * MASTER NOTARIS
-     **************************************************************************/
-
-    async getNotaris() {
-
-        return await this.get(
-            "getNotaris"
-        );
-
-    },
-
-
-    /**************************************************************************
-     * MASTER USER
-     **************************************************************************/
-
-    async getUser() {
-
-        return await this.get(
-            "getUser"
-        );
-
-    },
-
-    /******************************************************************************
- * USER MANAGEMENT
- ******************************************************************************/
-
-    /**
-     * CREATE USER
-     *
-     * GitHub Pages / localhost
-     * POST menggunakan no-cors karena
-     * Google Apps Script tidak memberikan CORS header.
-     */
-    async createUser(
-        data = {}
-    ) {
-
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-
-        form.append(
-            "action",
-            "createUser"
-        );
-
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-
-        Object.keys(
-            data || {}
-        ).forEach(
-            key => {
-
-                const value =
-                    data[key];
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-
-                    return;
-
-                }
-
-                form.append(
-                    key,
-                    String(value)
+                localStorage.removeItem(
+                    "user"
                 );
 
             }
-        );
+            catch (
+            storageError
+            ) {
 
+                console.warn(
+                    "Gagal menghapus localStorage:",
+                    storageError
+                );
 
-        try {
+            }
 
-            await fetch(
-                url,
-                {
-                    method: "POST",
-
-                    mode: "no-cors",
-
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
-
-                    body:
-                        form.toString(),
-
-                    cache:
-                        "no-store"
-                }
-            );
-
-
-            return {
-                success: true,
-                sent: true,
-                message:
-                    "Request create user telah dikirim."
-            };
-
-        }
-        catch (err) {
-
-            console.error(
-                "API CREATE USER ERROR:",
-                err
-            );
 
             throw err;
 
@@ -1230,102 +1358,178 @@ const API = {
 
 
     /******************************************************************************
-     * UPDATE USER
+     * USER MANAGEMENT
      ******************************************************************************/
+
+    /**************************************************************************
+     * CREATE USER
+     **************************************************************************/
+
+    async createUser(
+        userData
+    ) {
+
+        try {
+
+            if (
+                !userData
+            ) {
+
+                throw new Error(
+                    "Data user tidak tersedia."
+                );
+
+            }
+
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.post(
+                "createUser",
+                {
+
+                    token:
+                        token,
+
+                    id:
+                        userData.id || "",
+
+                    username:
+                        userData.username || "",
+
+                    password:
+                        userData.password || "",
+
+                    nama:
+                        userData.nama || "",
+
+                    email:
+                        userData.email || "",
+
+                    role:
+                        userData.role || "",
+
+                    status:
+                        userData.status || ""
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API createUser ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * UPDATE USER
+     **************************************************************************/
 
     async updateUser(
-        data = {}
+        userData
     ) {
-
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-
-        form.append(
-            "action",
-            "updateUser"
-        );
-
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-
-        Object.keys(
-            data || {}
-        ).forEach(
-            key => {
-
-                const value =
-                    data[key];
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-
-                    return;
-
-                }
-
-                form.append(
-                    key,
-                    String(value)
-                );
-
-            }
-        );
-
 
         try {
 
-            await fetch(
-                url,
+            if (
+                !userData
+            ) {
+
+                throw new Error(
+                    "Data user tidak tersedia."
+                );
+
+            }
+
+
+            if (
+                !userData.id
+            ) {
+
+                throw new Error(
+                    "ID user wajib diisi."
+                );
+
+            }
+
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.post(
+                "updateUser",
                 {
-                    method: "POST",
 
-                    mode: "no-cors",
+                    token:
+                        token,
 
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
+                    id:
+                        userData.id,
 
-                    body:
-                        form.toString(),
+                    username:
+                        userData.username || "",
 
-                    cache:
-                        "no-store"
+                    password:
+                        userData.password || "",
+
+                    nama:
+                        userData.nama || "",
+
+                    email:
+                        userData.email || "",
+
+                    role:
+                        userData.role || "",
+
+                    status:
+                        userData.status || ""
+
                 }
             );
-
-
-            return {
-                success: true,
-                sent: true,
-                message:
-                    "Request update user telah dikirim."
-            };
 
         }
         catch (err) {
 
             console.error(
-                "API UPDATE USER ERROR:",
+                "API updateUser ERROR:",
                 err
             );
+
 
             throw err;
 
@@ -1334,103 +1538,88 @@ const API = {
     },
 
 
-    /******************************************************************************
+    /**************************************************************************
      * UPDATE USER STATUS
-     ******************************************************************************/
+     **************************************************************************/
 
     async updateUserStatus(
-        data = {}
+        userData
     ) {
-
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-
-        form.append(
-            "action",
-            "updateUserStatus"
-        );
-
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-
-        Object.keys(
-            data || {}
-        ).forEach(
-            key => {
-
-                const value =
-                    data[key];
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-
-                    return;
-
-                }
-
-                form.append(
-                    key,
-                    String(value)
-                );
-
-            }
-        );
-
 
         try {
 
-            await fetch(
-                url,
+            if (
+                !userData
+            ) {
+
+                throw new Error(
+                    "Data status user tidak tersedia."
+                );
+
+            }
+
+
+            if (
+                !userData.id
+            ) {
+
+                throw new Error(
+                    "ID user wajib diisi."
+                );
+
+            }
+
+
+            if (
+                !userData.status
+            ) {
+
+                throw new Error(
+                    "Status user wajib diisi."
+                );
+
+            }
+
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.post(
+                "updateUserStatus",
                 {
-                    method: "POST",
 
-                    mode: "no-cors",
+                    token:
+                        token,
 
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
+                    id:
+                        userData.id,
 
-                    body:
-                        form.toString(),
+                    status:
+                        userData.status
 
-                    cache:
-                        "no-store"
                 }
             );
-
-
-            return {
-                success: true,
-                sent: true,
-                message:
-                    "Request perubahan status user telah dikirim."
-            };
 
         }
         catch (err) {
 
             console.error(
-                "API UPDATE USER STATUS ERROR:",
+                "API updateUserStatus ERROR:",
                 err
             );
+
 
             throw err;
 
@@ -1439,83 +1628,99 @@ const API = {
     },
 
 
-    /******************************************************************************
+    /**************************************************************************
      * DELETE USER
-     ******************************************************************************/
+     **************************************************************************/
 
     async deleteUser(
         id
     ) {
 
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-
-        form.append(
-            "action",
-            "deleteUser"
-        );
-
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-
-        form.append(
-            "id",
-            String(id)
-        );
-
-
         try {
 
-            await fetch(
-                url,
+            if (
+                !id
+            ) {
+
+                throw new Error(
+                    "ID user wajib diisi."
+                );
+
+            }
+
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.post(
+                "deleteUser",
                 {
-                    method: "POST",
 
-                    mode: "no-cors",
+                    token:
+                        token,
 
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
+                    id:
+                        id
 
-                    body:
-                        form.toString(),
-
-                    cache:
-                        "no-store"
                 }
             );
-
-
-            return {
-                success: true,
-                sent: true,
-                message:
-                    "Request delete user telah dikirim."
-            };
 
         }
         catch (err) {
 
             console.error(
-                "API DELETE USER ERROR:",
+                "API deleteUser ERROR:",
                 err
             );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * MASTER DATA
+     ******************************************************************************/
+
+    /**************************************************************************
+     * GET CABANG
+     **************************************************************************/
+
+    async getCabangList() {
+
+        try {
+
+            return await this.get(
+                "getCabang",
+                {
+                    token:
+                        this.getToken()
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getCabangList ERROR:",
+                err
+            );
+
 
             throw err;
 
@@ -1525,189 +1730,339 @@ const API = {
 
 
     /**************************************************************************
+     * GET NOTARIS
+     **************************************************************************/
+
+    async getNotarisList() {
+
+        try {
+
+            return await this.get(
+                "getNotaris",
+                {
+                    token:
+                        this.getToken()
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getNotarisList ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+    /******************************************************************************
  * DATA AGUNAN
- **************************************************************************/
+ ******************************************************************************/
+
+    /**************************************************************************
+     * GET DATA AGUNAN
+     **************************************************************************/
 
     async getAgunan(
         params = {}
     ) {
 
-        return await this.get(
-            "getAgunan",
-            params
-        );
+        try {
 
-    },
+            const token =
+                this.getToken();
 
 
-    /**************************************************************************
-     * DETAIL DATA AGUNAN
-     *
-     * Digunakan oleh halaman edit_agunan.html
-     *
-     * Request:
-     * action=getAgunanById
-     * no_agunan=XXXX
-     **************************************************************************/
+            if (
+                !token
+            ) {
 
-    async getAgunanById(
-        noAgunan
-    ) {
-
-        if (
-            noAgunan === undefined ||
-            noAgunan === null ||
-            String(noAgunan).trim() === ""
-        ) {
-
-            throw new Error(
-                "NO AGUNAN wajib diisi."
-            );
-
-        }
-
-        return await this.get(
-            "getAgunanById",
-            {
-                no_agunan:
-                    String(noAgunan).trim()
-            }
-        );
-
-    },
-
-
-    /******************************************************************************
-    * INSERT AGUNAN
-    *
-    * Google Apps Script Web App + GitHub/localhost
-    * POST response dapat terkena CORS.
-    *
-    * Oleh karena itu INSERT dikirim menggunakan fetch
-    * tanpa mencoba membaca response.
-    ******************************************************************************/
-
-    async insertAgunan(
-        data = {}
-    ) {
-
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-
-        /*
-         * ACTION
-         */
-
-        form.append(
-            "action",
-            "insertAgunan"
-        );
-
-
-        /*
-         * TOKEN
-         */
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-
-        /*
-         * DATA
-         */
-
-        Object.keys(
-            data || {}
-        ).forEach(
-            key => {
-
-                const value =
-                    data[key];
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-
-                    return;
-
-                }
-
-                form.append(
-                    key,
-                    String(value)
+                throw new Error(
+                    "Session tidak tersedia."
                 );
 
             }
-        );
-
-
-        /*
-         * KIRIM REQUEST
-         *
-         * no-cors:
-         * browser tidak membaca response,
-         * tetapi request tetap dikirim.
-         */
-
-        try {
-
-            await fetch(
-                url,
-                {
-                    method: "POST",
-
-                    mode: "no-cors",
-
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
-
-                    body:
-                        form.toString(),
-
-                    cache:
-                        "no-store"
-                }
-            );
 
 
             /*
-             * Karena response tidak dapat dibaca,
-             * return status "sent".
-             *
-             * Konfirmasi sebenarnya dilakukan
-             * oleh input.js melalui GET verification.
+             * Gabungkan parameter
+             * dengan token session.
              */
+            const requestParams = {
 
-            return {
-                success: true,
-                sent: true,
-                message:
-                    "Request penyimpanan telah dikirim."
+                ...params,
+
+                token:
+                    token
+
             };
+
+
+            return await this.get(
+                "getAgunan",
+                requestParams
+            );
 
         }
         catch (err) {
 
             console.error(
-                "API INSERT ERROR:",
+                "API getAgunan ERROR:",
                 err
             );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * GET DATA AGUNAN BY ID
+     **************************************************************************/
+
+    async getAgunanById(
+        id
+    ) {
+
+        try {
+
+            if (
+                !id
+            ) {
+
+                throw new Error(
+                    "ID agunan wajib diisi."
+                );
+
+            }
+
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.get(
+                "getAgunanById",
+                {
+
+                    token:
+                        token,
+
+                    id:
+                        id
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getAgunanById ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * CREATE DATA AGUNAN
+     **************************************************************************/
+
+    async createAgunan(
+        data = {}
+    ) {
+
+        try {
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.post(
+                "createAgunan",
+                {
+
+                    ...data,
+
+                    token:
+                        token
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API createAgunan ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * UPDATE DATA AGUNAN
+     **************************************************************************/
+
+    async updateAgunan(
+        data = {}
+    ) {
+
+        try {
+
+            if (
+                !data.id
+            ) {
+
+                throw new Error(
+                    "ID agunan wajib diisi."
+                );
+
+            }
+
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.post(
+                "updateAgunan",
+                {
+
+                    ...data,
+
+                    token:
+                        token
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API updateAgunan ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * DELETE DATA AGUNAN
+     **************************************************************************/
+
+    async deleteAgunan(
+        id
+    ) {
+
+        try {
+
+            if (
+                !id
+            ) {
+
+                throw new Error(
+                    "ID agunan wajib diisi."
+                );
+
+            }
+
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.post(
+                "deleteAgunan",
+                {
+
+                    token:
+                        token,
+
+                    id:
+                        id
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API deleteAgunan ERROR:",
+                err
+            );
+
 
             throw err;
 
@@ -1717,531 +2072,111 @@ const API = {
 
 
     /******************************************************************************
-  * UPDATE AGUNAN
-  *
-  * Google Apps Script Web App + GitHub Pages
-  *
-  * POST response dapat terkena CORS.
-  *
-  * Oleh karena itu UPDATE dikirim menggunakan fetch
-  * mode: "no-cors" tanpa mencoba membaca response.
-  *
-  * Signature tetap:
-  *
-  * API.updateAgunan(id, data)
-  *
-  ******************************************************************************/
-
-    async updateAgunan(
-        id,
-        data = {}
-    ) {
-
-        /*
-         * PAYLOAD
-         */
-
-        const payload = {
-
-            ...data,
-
-            no_agunan:
-                data.no_agunan ||
-                id
-
-        };
-
-
-        /*
-         * URL
-         */
-
-        const url =
-            this.getUrl();
-
-
-        /*
-         * FORM
-         */
-
-        const form =
-            new URLSearchParams();
-
-
-        /*
-         * ACTION
-         */
-
-        form.append(
-            "action",
-            "updateAgunan"
-        );
-
-
-        /*
-         * TOKEN
-         */
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-
-        /*
-         * DATA
-         */
-
-        Object.keys(
-            payload || {}
-        ).forEach(
-            key => {
-
-                const value =
-                    payload[key];
-
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-                    typeof value === "object"
-                ) {
-
-                    form.append(
-                        key,
-                        JSON.stringify(
-                            value
-                        )
-                    );
-
-                }
-                else {
-
-                    form.append(
-                        key,
-                        String(value)
-                    );
-
-                }
-
-            }
-        );
-
-
-        /*
-         * KIRIM REQUEST
-         *
-         * no-cors:
-         * browser tidak membaca response,
-         * tetapi request tetap dikirim.
-         */
-
-        try {
-
-            await fetch(
-                url,
-                {
-                    method: "POST",
-
-                    mode: "no-cors",
-
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
-
-                    body:
-                        form.toString(),
-
-                    cache:
-                        "no-store"
-                }
-            );
-
-
-            /*
-             * Response server tidak dibaca.
-             *
-             * Request dianggap terkirim.
-             */
-
-            return {
-
-                success: true,
-
-                sent: true,
-
-                message:
-                    "Request update telah dikirim."
-
-            };
-
-        }
-        catch (err) {
-
-            console.error(
-                "API UPDATE ERROR:",
-                err
-            );
-
-            throw err;
-
-        }
-
-    },
-
-
-    /**************************************************************************
-     * DELETE AGUNAN
-     *
-     * Existing frontend:
-     *
-     * API.deleteAgunan(noAgunan)
-     **************************************************************************/
-
-    async deleteAgunan(
-        noAgunan
-    ) {
-
-        /*
-         * VALIDASI
-         */
-
-        const target =
-            String(
-                noAgunan || ""
-            ).trim();
-
-
-        if (!target) {
-
-            throw new Error(
-                "NO AGUNAN wajib diisi."
-            );
-
-        }
-
-
-        /*
-         * URL
-         */
-
-        const url =
-            this.getUrl();
-
-
-        /*
-         * FORM
-         */
-
-        const form =
-            new URLSearchParams();
-
-
-        /*
-         * ACTION
-         */
-
-        form.append(
-            "action",
-            "deleteAgunan"
-        );
-
-
-        /*
-         * TOKEN
-         */
-
-        const token =
-            this.getToken();
-
-        if (token) {
-
-            form.append(
-                "token",
-                token
-            );
-
-        }
-
-
-        /*
-         * NO AGUNAN
-         */
-
-        form.append(
-            "no_agunan",
-            target
-        );
-
-
-        /*
-         * REQUEST
-         */
-
-        try {
-
-            await fetch(
-                url,
-                {
-                    method: "POST",
-
-                    mode: "no-cors",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-
-                    },
-
-                    body:
-                        form.toString(),
-
-                    cache:
-                        "no-store"
-
-                }
-            );
-
-
-            /*
-             * RESPONSE TIDAK DIBACA
-             */
-
-            return {
-
-                success: true,
-
-                sent: true,
-
-                message:
-                    "Request penghapusan telah dikirim."
-
-            };
-
-        }
-        catch (err) {
-
-            console.error(
-                "API DELETE ERROR:",
-                err
-            );
-
-            throw err;
-
-        }
-
-    },
-
-
-    /**************************************************************************
-     * DUPLICATE NO AGUNAN
-     **************************************************************************/
-
-    async checkDuplicateAgunan(
-        noAgunan
-    ) {
-
-        return await this.get(
-            "checkDuplicateAgunan",
-            {
-
-                no_agunan:
-                    noAgunan
-
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * DUPLICATE CIF
-     **************************************************************************/
-
-    async checkDuplicateCIF(
-        cif
-    ) {
-
-        return await this.get(
-            "checkDuplicateCIF",
-            {
-
-                cif_debitur:
-                    cif
-
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
      * MONITORING
+     ******************************************************************************/
+
+    /**************************************************************************
+     * GET MONITORING
      **************************************************************************/
 
-    async getMonitoring() {
+    async getMonitoring(
+        params = {}
+    ) {
 
-        return await this.get(
-            "getMonitoring"
-        );
+        try {
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            return await this.get(
+                "getMonitoring",
+                {
+
+                    ...params,
+
+                    token:
+                        token
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getMonitoring ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
 
     },
 
 
+    /******************************************************************************
+     * LAPORAN
+     ******************************************************************************/
+
     /**************************************************************************
- * LAPORAN
- **************************************************************************/
+     * GET LAPORAN
+     **************************************************************************/
+
     async getLaporan(
         params = {}
     ) {
 
-        return await this.get(
-            "getLaporan",
-            params
-        );
+        try {
 
-    },
+            const token =
+                this.getToken();
 
 
-    /**************************************************************************
-     * REQUEST PASSWORD RESET
-     **************************************************************************/
-    async requestPasswordReset(
-        username,
-        email
-    ) {
+            if (
+                !token
+            ) {
 
-        return await this.get(
-            "requestPasswordReset",
-            {
-
-                username:
-                    String(
-                        username || ""
-                    ).trim(),
-
-                email:
-                    String(
-                        email || ""
-                    ).trim()
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * CONFIRM PASSWORD RESET
-     **************************************************************************/
-    async confirmPasswordReset(
-        data = {}
-    ) {
-
-        const url =
-            this.getUrl();
-
-        const form =
-            new URLSearchParams();
-
-
-        form.append(
-            "action",
-            "confirmPasswordReset"
-        );
-
-
-        const payload =
-            data || {};
-
-
-        Object.keys(
-            payload
-        ).forEach(
-            key => {
-
-                const value =
-                    payload[key];
-
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-
-                    return;
-
-                }
-
-
-                form.append(
-                    key,
-                    String(value)
+                throw new Error(
+                    "Session tidak tersedia."
                 );
 
             }
-        );
 
 
-        try {
-
-            await fetch(
-                url,
+            return await this.get(
+                "getLaporan",
                 {
-                    method:
-                        "POST",
 
-                    mode:
-                        "no-cors",
+                    ...params,
 
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded;charset=UTF-8"
-                    },
+                    token:
+                        token
 
-                    body:
-                        form.toString(),
-
-                    cache:
-                        "no-store"
                 }
             );
-
-
-            return {
-                success:
-                    true,
-
-                sent:
-                    true,
-
-                message:
-                    "Request reset password telah dikirim."
-            };
 
         }
         catch (err) {
 
             console.error(
-                "API CONFIRM PASSWORD RESET ERROR:",
+                "API getLaporan ERROR:",
                 err
             );
+
 
             throw err;
 
@@ -2249,56 +2184,103 @@ const API = {
 
     },
 
-    async getResetStatus(
-        requestId
+
+    /******************************************************************************
+     * GENERIC ACTION
+     ******************************************************************************/
+
+    /**************************************************************************
+     * CALL
+     *
+     * Fungsi umum untuk kebutuhan endpoint tambahan.
+     **************************************************************************/
+
+    async call(
+        action,
+        data = {},
+        method = "POST"
     ) {
 
-        return await this.get(
-            "getResetStatus",
-            {
-                request_id:
-                    requestId
-            }
-        );
+        try {
 
+            if (
+                !action
+            ) {
+
+                throw new Error(
+                    "Action API wajib diisi."
+                );
+
+            }
+
+
+            if (
+                method.toUpperCase() ===
+                "GET"
+            ) {
+
+                return await this.get(
+                    action,
+                    {
+
+                        ...data,
+
+                        token:
+                            data.token ||
+                            this.getToken()
+
+                    }
+                );
+
+            }
+
+
+            return await this.post(
+                action,
+                {
+
+                    ...data,
+
+                    token:
+                        data.token ||
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API call ERROR:",
+                action,
+                err
+            );
+
+
+            throw err;
+        }
     }
 
 };
 
 /******************************************************************************
- * COMPATIBILITY HELPERS
- *
- * Untuk file lama yang mungkin menggunakan:
- *
- * API.request(...)
- ******************************************************************************/
+* API READY
+******************************************************************************/
 
-API.request =
-    async function (
-        action,
-        data = {},
-        method = "GET"
-    ) {
+/*
+ * Pastikan object API sudah tersedia
+ * secara global untuk file JavaScript lain.
+ */
 
-        if (
-            String(method)
-                .toUpperCase() ===
-            "POST"
-        ) {
+if (
+    typeof window !== "undefined"
+) {
 
-            return await API.post(
-                action,
-                data
-            );
+    window.API =
+        API;
 
-        }
-
-        return await API.get(
-            action,
-            data
-        );
-
-    };
+}
 
 
 /******************************************************************************
