@@ -194,13 +194,25 @@ const MONITORING = {
         const lengkap = data.filter(x => String(this.getValue(x, "status_agunan")).trim().toUpperCase() === "A").length;
         const belum = data.filter(x => String(this.getValue(x, "status_agunan")).trim().toUpperCase() === "BL").length;
         const expired = data.filter(x => String(this.getValue(x, "status_agunan")).trim().toUpperCase() === "E").length;
+        const nonaktif = data.filter(x => String(this.getValue(x, "status_agunan")).trim().toUpperCase() === "D").length;
 
         const soon = data.filter(item => {
             const diff = this.calculateSisaHari(this.getValue(item, "tanggal_expired_appraisal"));
             return diff !== null && diff >= 0 && diff <= 30;
         }).length;
 
-        const percent = total === 0 ? 0 : Math.round((lengkap / total) * 100);
+        const totalProgress =
+            lengkap +
+            belum +
+            expired;
+
+
+        const percent =
+            totalProgress === 0
+                ? 0
+                : Math.round(
+                    (lengkap / totalProgress) * 100
+                );
 
         const elPercent = document.getElementById("progressPercent");
         if (elPercent) elPercent.textContent = percent + "%";
@@ -210,6 +222,29 @@ const MONITORING = {
 
         const elLengkap = document.getElementById("totalLengkap");
         if (elLengkap) elLengkap.textContent = lengkap;
+
+        /*
+         * ================================================================
+         * KPI NONAKTIF
+         * ================================================================
+         */
+        const elNonaktif = document.getElementById("totalNonaktif");
+        if (elNonaktif) { elNonaktif.textContent = nonaktif; }
+
+        const elKpiNonaktif =
+            document.getElementById(
+                "kpinonaktif"
+            );
+
+
+        if (
+            elKpiNonaktif
+        ) {
+
+            elKpiNonaktif.textContent =
+                nonaktif;
+
+        }
 
         const elBL = document.getElementById("totalBL");
         if (elBL) elBL.textContent = belum;
