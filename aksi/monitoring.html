@@ -73,22 +73,31 @@
                     <h3>Prioritas Hari Ini</h3>
                 </div>
                 <div class="priority-list">
-                    <div class="priority-item high">
-                        <div>🔴 Expired</div>
-                        <strong id="totalExpired">0</strong>
+                    <div class="priority-item success">
+                        <div>🟢 Lengkap / Aktif</div>
+                        <strong id="totalLengkap">0</strong>
                     </div>
-                    <div class="priority-item medium">
-                        <div>🟡 Akan Expired</div>
-                        <strong id="totalSoon">0</strong>
-                    </div>
+
                     <div class="priority-item pending">
                         <div>🟣 Belum Lengkap</div>
                         <strong id="totalBL">0</strong>
                     </div>
-                    <div class="priority-item success">
-                        <div>🟢 Lengkap</div>
-                        <strong id="totalLengkap">0</strong>
+
+                    <div class="priority-item medium">
+                        <div>🟡 Akan Expired</div>
+                        <strong id="totalSoon">0</strong>
                     </div>
+
+                    <div class="priority-item high">
+                        <div>🔴 Expired</div>
+                        <strong id="totalExpired">0</strong>
+                    </div>
+
+                    <div class="priority-item nonaktif">
+                        <div>⚫ Nonaktif</div>
+                        <strong id="totalNonaktif">0</strong>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -151,6 +160,19 @@
                     <small>Perlu Tindakan</small>
                 </div>
             </div>
+
+            <div class="kpi-card nonaktif">
+                <div class="kpi-icon">
+                    <i class="fa-solid fa-toggle-off"></i>
+                </div>
+
+                <div class="kpi-content">
+                    <span>Nonaktif</span>
+                    <h2 id="kpinonaktif">0</h2>
+                    <small>Status Tidak Aktif</small>
+                </div>
+            </div>
+
         </section>
 
         <!-- ========================================================= -->
