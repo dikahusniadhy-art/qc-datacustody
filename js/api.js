@@ -2,7 +2,7 @@
  * DATA AGUNAN CUSTODY
  * API.JS
  * SECURITY HARDENED
- * Version : 1.1 (Mobile Network Optimized)
+ * Version : 1.0 (Mobile Network Optimized)
  ******************************************************************************/
 
 const API = {
@@ -361,6 +361,103 @@ const API = {
 
     },
 
+    /******************************************************************************
+     * RESET PASSWORD
+     ******************************************************************************/
+
+    async requestPasswordReset(
+        username,
+        email
+    ) {
+
+        try {
+
+            if (!username || !email) {
+                throw new Error("Username dan Email wajib diisi.");
+            }
+
+            return await this.post(
+                "requestPasswordReset",
+                {
+                    username: username,
+                    email: email
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API requestPasswordReset ERROR:",
+                err
+            );
+            throw err;
+
+        }
+
+    },
+
+
+    async confirmPasswordReset(
+        data = {}
+    ) {
+
+        try {
+
+            if (!data.request_id || !data.otp || !data.password) {
+                throw new Error("Data konfirmasi tidak lengkap.");
+            }
+
+            return await this.post(
+                "confirmPasswordReset",
+                data
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API confirmPasswordReset ERROR:",
+                err
+            );
+            throw err;
+
+        }
+
+    },
+
+
+    async getResetStatus(
+        requestId
+    ) {
+
+        try {
+
+            if (!requestId) {
+                throw new Error("Request ID wajib diisi.");
+            }
+
+            // Memanggil endpoint menggunakan metode GET biasa (tanpa JSONP) 
+            // karena tidak melibatkan isu pengiriman password plain text di URL
+            return await this.get(
+                "getResetStatus",
+                {
+                    request_id: requestId
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getResetStatus ERROR:",
+                err
+            );
+            throw err;
+
+        }
+
+    },
 
     /**************************************************************************
      * GENERIC REQUEST
