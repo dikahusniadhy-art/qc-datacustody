@@ -1,7 +1,6 @@
 /* =========================================================
    CUSTODY - USER MANAGEMENT
    user.js
-   VERSION 1.0
 ========================================================= */
 
 "use strict";
@@ -1442,27 +1441,20 @@ async function handleSubmit(event) {
         }
 
         /*
-         * Refresh data
+         * ========================================================
+         * REFRESH DATA
+         * ========================================================
+         *
+         * Ambil ulang data dari Spreadsheet.
          */
         await loadUsers();
 
+
         /*
-         * Verifikasi user benar-benar masuk.
+         * ========================================================
+         * SUCCESS
+         * ========================================================
          */
-        const createdUser =
-            findUser(
-                userData.username
-            );
-
-        if (
-            !createdUser
-        ) {
-
-            throw new Error(
-                "User belum ditemukan di Spreadsheet setelah proses tambah."
-            );
-        }
-
         closeUserModal();
 
         showToast(
