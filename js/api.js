@@ -2,7 +2,7 @@
  * DATA AGUNAN CUSTODY
  * API.JS
  * SECURITY HARDENED
- * Version : 1.0
+ * Version : 1.1 (Mobile Network Optimized)
  ******************************************************************************/
 
 const API = {
@@ -601,8 +601,8 @@ const API = {
     },
 
     /******************************************************************************
- * LOGIN
- ******************************************************************************/
+     * LOGIN
+     ******************************************************************************/
 
     async login(
         username,
@@ -654,12 +654,6 @@ const API = {
              * =========================================================
              * REQUEST ID
              * =========================================================
-             *
-             * Digunakan untuk menghubungkan:
-             *
-             * loginAsync()
-             *        ↓
-             * getLoginStatus()
              */
 
             const requestId =
@@ -687,10 +681,6 @@ const API = {
              * =========================================================
              * LOGIN ASYNC
              * =========================================================
-             *
-             * Password dikirim melalui POST.
-             *
-             * Jangan menggunakan GET untuk password.
              */
 
             const loginResult =
@@ -724,27 +714,15 @@ const API = {
 
             /*
              * =========================================================
-             * WAIT BEFORE POLLING
+             * WAIT BEFORE POLLING (Diperbesar untuk perangkat HP)
              * =========================================================
-             *
-             * Beri waktu Apps Script:
-             *
-             * loginAsync()
-             *      ↓
-             * verifikasi password
-             *      ↓
-             * create session
-             *      ↓
-             * CacheService.put()
-             *
-             * sebelum browser melakukan GET.
              */
 
             await new Promise(
                 resolve =>
                     setTimeout(
                         resolve,
-                        800
+                        1500 // Diubah dari 800ms ke 1500ms agar server GAS punya waktu merespons jaringan seluler
                     )
             );
 
@@ -753,14 +731,6 @@ const API = {
              * =========================================================
              * POLLING RESULT
              * =========================================================
-             *
-             * Maksimal 20 kali.
-             *
-             * Interval:
-             * 700 ms
-             *
-             * Total waktu maksimum sekitar:
-             * 14 - 15 detik
              */
 
             for (
@@ -780,17 +750,27 @@ const API = {
                     }
                 );
 
+                let result;
 
-                /*
-                 * Ambil status login
-                 * melalui JSONP.
-                 */
-
-                const result =
-                    await this.getLoginStatusJsonp(
-                        requestId
-                    );
-
+                // FIX: Menambahkan Try-Catch khusus di dalam looping
+                // agar error jaringan sesaat (di HP) tidak langsung menggagalkan login
+                try {
+                    result =
+                        await this.getLoginStatusJsonp(
+                            requestId
+                        );
+                } catch (pollError) {
+                    console.warn(`Polling attempt ${attempt + 1} gagal (masalah jaringan HP):`, pollError.message);
+                    
+                    if (attempt < 19) {
+                        // Jika masih ada sisa percobaan, tunggu 1.5 detik lalu lanjut coba lagi
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        continue;
+                    } else {
+                        // Jika sudah 20 kali tetap gagal
+                        throw pollError;
+                    }
+                }
 
                 console.log(
                     "API LOGIN STATUS:",
@@ -802,12 +782,6 @@ const API = {
                  * =====================================================
                  * HASIL SUDAH TERSEDIA
                  * =====================================================
-                 *
-                 * Jangan hanya mengecek success.
-                 *
-                 * Selama message bukan PROCESSING,
-                 * berarti backend sudah memberikan
-                 * hasil final.
                  */
 
                 if (
@@ -815,11 +789,6 @@ const API = {
                     result.message !==
                     "PROCESSING"
                 ) {
-
-                    /*
-                     * Jika backend mengembalikan
-                     * success=false, lempar error.
-                     */
 
                     if (
                         result.success !== true
@@ -832,10 +801,6 @@ const API = {
 
                     }
 
-
-                    /*
-                     * Login berhasil.
-                     */
 
                     return result;
 
@@ -857,7 +822,7 @@ const API = {
                         resolve =>
                             setTimeout(
                                 resolve,
-                                700
+                                1000 // Jeda per polling dilonggarkan ke 1 detik
                             )
                     );
 
@@ -873,7 +838,7 @@ const API = {
              */
 
             throw new Error(
-                "Timeout saat memproses login."
+                "Timeout saat memproses login. Coba gunakan koneksi internet yang lebih stabil."
             );
 
         }
@@ -906,12 +871,6 @@ const API = {
                 reject
             ) => {
 
-                /*
-                 * =====================================================
-                 * VALIDASI REQUEST ID
-                 * =====================================================
-                 */
-
                 if (
                     !requestId
                 ) {
@@ -926,15 +885,6 @@ const API = {
 
                 }
 
-
-                /*
-                 * =====================================================
-                 * CALLBACK NAME
-                 * =====================================================
-                 *
-                 * Hanya gunakan karakter aman
-                 * untuk nama function JavaScript.
-                 */
 
                 const safeRequestId =
                     String(
@@ -1098,19 +1048,9 @@ const API = {
                 );
 
 
-                /*
-                 * Cache busting
-                 */
-
                 url.searchParams.set(
                     "_ts",
                     Date.now()
-                );
-
-
-                console.log(
-                    "API LOGIN STATUS URL:",
-                    url.toString()
                 );
 
 
@@ -1133,12 +1073,6 @@ const API = {
                 script.async =
                     true;
 
-
-                /*
-                 * =====================================================
-                 * LOAD ERROR
-                 * =====================================================
-                 */
 
                 script.onerror =
                     () => {
@@ -1173,15 +1107,9 @@ const API = {
                             );
 
                         },
-                        10000
+                        15000 // Ditingkatkan menjadi 15 detik agar aman di jaringan 3G/seluler
                     );
 
-
-                /*
-                 * =====================================================
-                 * APPEND
-                 * =====================================================
-                 */
 
                 document.body.appendChild(
                     script
@@ -1193,12 +1121,8 @@ const API = {
     },
 
     /******************************************************************************
- * SESSION
- ******************************************************************************/
-
-    /**************************************************************************
-     * GET CURRENT SESSION
-     **************************************************************************/
+     * SESSION
+     ******************************************************************************/
 
     async getSession() {
 
@@ -1252,10 +1176,6 @@ const API = {
     },
 
 
-    /**************************************************************************
-     * LOGOUT
-     **************************************************************************/
-
     async logout() {
 
         try {
@@ -1281,9 +1201,6 @@ const API = {
             }
 
 
-            /*
-             * Logout dikirim melalui POST.
-             */
             const result =
                 await this.post(
                     "logout",
@@ -1294,9 +1211,6 @@ const API = {
                 );
 
 
-            /*
-             * Hapus session lokal.
-             */
             try {
 
                 localStorage.removeItem(
@@ -1327,10 +1241,6 @@ const API = {
             );
 
 
-            /*
-             * Walaupun request logout gagal,
-             * session lokal tetap dihapus.
-             */
             try {
 
                 localStorage.removeItem(
@@ -1360,10 +1270,6 @@ const API = {
     /******************************************************************************
      * USER MANAGEMENT
      ******************************************************************************/
-
-    /**************************************************************************
-     * CREATE USER
-     **************************************************************************/
 
     async createUser(
         userData
@@ -1443,10 +1349,6 @@ const API = {
 
     },
 
-
-    /**************************************************************************
-     * UPDATE USER
-     **************************************************************************/
 
     async updateUser(
         userData
@@ -1538,10 +1440,6 @@ const API = {
     },
 
 
-    /**************************************************************************
-     * UPDATE USER STATUS
-     **************************************************************************/
-
     async updateUserStatus(
         userData
     ) {
@@ -1628,10 +1526,6 @@ const API = {
     },
 
 
-    /**************************************************************************
-     * DELETE USER
-     **************************************************************************/
-
     async deleteUser(
         id
     ) {
@@ -1697,10 +1591,6 @@ const API = {
      * MASTER DATA
      ******************************************************************************/
 
-    /**************************************************************************
-     * GET CABANG
-     **************************************************************************/
-
     async getCabangList() {
 
         try {
@@ -1729,10 +1619,6 @@ const API = {
     },
 
 
-    /**************************************************************************
-     * GET NOTARIS
-     **************************************************************************/
-
     async getNotarisList() {
 
         try {
@@ -1760,138 +1646,10 @@ const API = {
 
     },
 
+
     /******************************************************************************
- * DATA AGUNAN
- ******************************************************************************/
-
-    /**************************************************************************
-     * GET DATA AGUNAN
-     **************************************************************************/
-
-    async getAgunan(
-        params = {}
-    ) {
-
-        try {
-
-            const token =
-                this.getToken();
-
-
-            if (
-                !token
-            ) {
-
-                throw new Error(
-                    "Session tidak tersedia."
-                );
-
-            }
-
-
-            /*
-             * Gabungkan parameter
-             * dengan token session.
-             */
-            const requestParams = {
-
-                ...params,
-
-                token:
-                    token
-
-            };
-
-
-            return await this.get(
-                "getAgunan",
-                requestParams
-            );
-
-        }
-        catch (err) {
-
-            console.error(
-                "API getAgunan ERROR:",
-                err
-            );
-
-
-            throw err;
-
-        }
-
-    },
-
-
-    /**************************************************************************
-     * GET DATA AGUNAN BY ID
-     **************************************************************************/
-
-    async getAgunanById(
-        id
-    ) {
-
-        try {
-
-            if (
-                !id
-            ) {
-
-                throw new Error(
-                    "ID agunan wajib diisi."
-                );
-
-            }
-
-
-            const token =
-                this.getToken();
-
-
-            if (
-                !token
-            ) {
-
-                throw new Error(
-                    "Session tidak tersedia."
-                );
-
-            }
-
-
-            return await this.get(
-                "getAgunanById",
-                {
-
-                    token:
-                        token,
-
-                    id:
-                        id
-
-                }
-            );
-
-        }
-        catch (err) {
-
-            console.error(
-                "API getAgunanById ERROR:",
-                err
-            );
-
-
-            throw err;
-
-        }
-
-    },
-
-
-    /**************************************************************************
-     * CREATE DATA AGUNAN
-     **************************************************************************/
+     * DATA AGUNAN
+     ******************************************************************************/
 
     async createAgunan(
         data = {}
@@ -1941,10 +1699,6 @@ const API = {
 
     },
 
-
-    /**************************************************************************
-     * UPDATE DATA AGUNAN
-     **************************************************************************/
 
     async updateAgunan(
         data = {}
@@ -2005,10 +1759,6 @@ const API = {
 
     },
 
-
-    /**************************************************************************
-     * DELETE DATA AGUNAN
-     **************************************************************************/
 
     async deleteAgunan(
         id
@@ -2072,128 +1822,8 @@ const API = {
 
 
     /******************************************************************************
-     * MONITORING
-     ******************************************************************************/
-
-    /**************************************************************************
-     * GET MONITORING
-     **************************************************************************/
-
-    async getMonitoring(
-        params = {}
-    ) {
-
-        try {
-
-            const token =
-                this.getToken();
-
-
-            if (
-                !token
-            ) {
-
-                throw new Error(
-                    "Session tidak tersedia."
-                );
-
-            }
-
-
-            return await this.get(
-                "getMonitoring",
-                {
-
-                    ...params,
-
-                    token:
-                        token
-
-                }
-            );
-
-        }
-        catch (err) {
-
-            console.error(
-                "API getMonitoring ERROR:",
-                err
-            );
-
-
-            throw err;
-
-        }
-
-    },
-
-
-    /******************************************************************************
-     * LAPORAN
-     ******************************************************************************/
-
-    /**************************************************************************
-     * GET LAPORAN
-     **************************************************************************/
-
-    async getLaporan(
-        params = {}
-    ) {
-
-        try {
-
-            const token =
-                this.getToken();
-
-
-            if (
-                !token
-            ) {
-
-                throw new Error(
-                    "Session tidak tersedia."
-                );
-
-            }
-
-
-            return await this.get(
-                "getLaporan",
-                {
-
-                    ...params,
-
-                    token:
-                        token
-
-                }
-            );
-
-        }
-        catch (err) {
-
-            console.error(
-                "API getLaporan ERROR:",
-                err
-            );
-
-
-            throw err;
-
-        }
-
-    },
-
-
-    /******************************************************************************
      * GENERIC ACTION
      ******************************************************************************/
-
-    /**************************************************************************
-     * CALL
-     *
-     * Fungsi umum untuk kebutuhan endpoint tambahan.
-     **************************************************************************/
 
     async call(
         action,
@@ -2268,11 +1898,6 @@ const API = {
 * API READY
 ******************************************************************************/
 
-/*
- * Pastikan object API sudah tersedia
- * secara global untuk file JavaScript lain.
- */
-
 if (
     typeof window !== "undefined"
 ) {
@@ -2288,5 +1913,5 @@ if (
  ******************************************************************************/
 
 console.log(
-    "API.JS SECURITY HARDENED 1.0 LOADED"
+    "API.JS SECURITY HARDENED 1.1 (MOBILE OPTIMIZED) LOADED"
 );
