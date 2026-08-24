@@ -761,7 +761,7 @@ const API = {
                         );
                 } catch (pollError) {
                     console.warn(`Polling attempt ${attempt + 1} gagal (masalah jaringan HP):`, pollError.message);
-                    
+
                     if (attempt < 19) {
                         // Jika masih ada sisa percobaan, tunggu 1.5 detik lalu lanjut coba lagi
                         await new Promise(resolve => setTimeout(resolve, 1500));
