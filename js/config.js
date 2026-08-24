@@ -5,7 +5,6 @@
  **************************************************************************/
 
 const CONFIG = {
-
     /**********************************************************************
      * APLIKASI
      **********************************************************************/
@@ -21,8 +20,7 @@ const CONFIG = {
      * GOOGLE APPS SCRIPT API
      **********************************************************************/
     API_URL:
-        "https://script.google.com/macros/s/AKfycbwQdmo1f5AdxJ0GWCyhtJcyodEQaZbsGF-Si36GrZmjVLxsULz6JnD06U8FJ_WC5mMr/exec",
-
+        "https://script.google.com/macros/s/AKfycbxm0fl3Cu6ULm8GXdcckYPfJJMJ2WmWdfaGauLsLPpw2dNCCyJqW2ynFyM9D-v1J7Ag/exec",
     /**********************************************************************
      * SESSION
      **********************************************************************/
