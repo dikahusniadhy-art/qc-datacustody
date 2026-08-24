@@ -2,7 +2,7 @@
  * DATA AGUNAN CUSTODY
  * API.JS
  * SECURITY HARDENED
- * Version : 1.0 (Mobile Network Optimized)
+ * Version : 1.0 CLEANED
  ******************************************************************************/
 
 const API = {
@@ -362,7 +362,17 @@ const API = {
     },
 
     /******************************************************************************
-     * RESET PASSWORD
+     * PASSWORD RESET
+     *
+     * Flow:
+     * 1. requestPasswordReset -> GET
+     * 2. Backend membuat request_id sendiri
+     * 3. Frontend menerima request_id
+     * 4. confirmPasswordReset -> POST
+     * 5. getResetStatus -> GET
+     *
+     * IMPORTANT:
+     * Jangan membuat request_id reset di frontend.
      ******************************************************************************/
 
     async requestPasswordReset(
@@ -372,17 +382,81 @@ const API = {
 
         try {
 
-            if (!username || !email) {
-                throw new Error("Username dan Email wajib diisi.");
+            username =
+                String(
+                    username || ""
+                ).trim();
+
+
+            email =
+                String(
+                    email || ""
+                ).trim();
+
+
+            if (
+                !username ||
+                !email
+            ) {
+
+                throw new Error(
+                    "Username dan Email wajib diisi."
+                );
+
             }
 
-            return await this.post(
-                "requestPasswordReset",
-                {
-                    username: username,
-                    email: email
-                }
+
+            /*
+             * Backend membuat request_id sendiri.
+             */
+            const result =
+                await this.get(
+                    "requestPasswordReset",
+                    {
+                        username:
+                            username,
+
+                        email:
+                            email
+                    }
+                );
+
+
+            if (
+                !result ||
+                result.success !== true
+            ) {
+
+                throw new Error(
+                    result?.message ||
+                    "Gagal mengirim kode reset password."
+                );
+
+            }
+
+
+            /*
+             * request_id WAJIB berasal dari server.
+             */
+            if (
+                !result.data ||
+                !result.data.request_id
+            ) {
+
+                throw new Error(
+                    "Request ID reset password tidak diterima dari server."
+                );
+
+            }
+
+
+            console.log(
+                "API RESET REQUEST ID:",
+                result.data.request_id
             );
+
+
+            return result;
 
         }
         catch (err) {
@@ -391,6 +465,8 @@ const API = {
                 "API requestPasswordReset ERROR:",
                 err
             );
+
+
             throw err;
 
         }
@@ -398,19 +474,83 @@ const API = {
     },
 
 
+    /**************************************************************************
+     * CONFIRM PASSWORD RESET
+     **************************************************************************/
+
     async confirmPasswordReset(
         data = {}
     ) {
 
         try {
 
-            if (!data.request_id || !data.otp || !data.password) {
-                throw new Error("Data konfirmasi tidak lengkap.");
+            const requestId =
+                String(
+                    data.request_id || ""
+                ).trim();
+
+
+            const otp =
+                String(
+                    data.otp || ""
+                ).trim();
+
+
+            const password =
+                String(
+                    data.password || ""
+                );
+
+
+            if (
+                !requestId
+            ) {
+
+                throw new Error(
+                    "Request ID reset password tidak tersedia."
+                );
+
             }
 
+
+            if (
+                !otp
+            ) {
+
+                throw new Error(
+                    "OTP wajib diisi."
+                );
+
+            }
+
+
+            if (
+                !password
+            ) {
+
+                throw new Error(
+                    "Password baru wajib diisi."
+                );
+
+            }
+
+
+            /*
+             * Backend confirmPasswordReset
+             * memproses OTP dan password.
+             */
             return await this.post(
                 "confirmPasswordReset",
-                data
+                {
+                    request_id:
+                        requestId,
+
+                    otp:
+                        otp,
+
+                    password:
+                        password
+                }
             );
 
         }
@@ -420,6 +560,8 @@ const API = {
                 "API confirmPasswordReset ERROR:",
                 err
             );
+
+
             throw err;
 
         }
@@ -427,24 +569,44 @@ const API = {
     },
 
 
+    /**************************************************************************
+     * GET RESET STATUS
+     **************************************************************************/
+
     async getResetStatus(
         requestId
     ) {
 
         try {
 
-            if (!requestId) {
-                throw new Error("Request ID wajib diisi.");
+            requestId =
+                String(
+                    requestId || ""
+                ).trim();
+
+
+            if (
+                !requestId
+            ) {
+
+                throw new Error(
+                    "Request ID wajib diisi."
+                );
+
             }
 
-            // Memanggil endpoint menggunakan metode GET biasa (tanpa JSONP) 
-            // karena tidak melibatkan isu pengiriman password plain text di URL
-            return await this.get(
-                "getResetStatus",
-                {
-                    request_id: requestId
-                }
-            );
+
+            const result =
+                await this.get(
+                    "getResetStatus",
+                    {
+                        request_id:
+                            requestId
+                    }
+                );
+
+
+            return result;
 
         }
         catch (err) {
@@ -453,249 +615,14 @@ const API = {
                 "API getResetStatus ERROR:",
                 err
             );
+
+
             throw err;
 
         }
 
     },
 
-    /**************************************************************************
-     * GENERIC REQUEST
-     **************************************************************************/
-
-    async request(
-        action,
-        data = {}
-    ) {
-
-        return await this.post(
-            action,
-            data
-        );
-
-    },
-
-
-    /**************************************************************************
-     * PING
-     **************************************************************************/
-
-    async ping() {
-
-        return await this.get(
-            "ping"
-        );
-
-    },
-
-
-    /**************************************************************************
-     * DASHBOARD
-     **************************************************************************/
-
-    async getDashboard() {
-
-        const token =
-            this.getToken();
-
-
-        return await this.get(
-            "getDashboard",
-            {
-                token:
-                    token
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * TOKEN
-     **************************************************************************/
-
-    getToken() {
-
-        try {
-
-            if (
-                typeof Auth !==
-                "undefined" &&
-                typeof Auth.getToken ===
-                "function"
-            ) {
-
-                return Auth.getToken();
-
-            }
-
-
-            const session =
-                localStorage.getItem(
-                    "user"
-                );
-
-
-            if (
-                !session
-            ) {
-
-                return "";
-
-            }
-
-
-            const parsed =
-                JSON.parse(
-                    session
-                );
-
-
-            return (
-                parsed &&
-                parsed.token
-            )
-                ? parsed.token
-                : "";
-
-        }
-        catch (err) {
-
-            console.error(
-                "API getToken ERROR:",
-                err
-            );
-
-
-            return "";
-
-        }
-
-    },
-
-
-    /**************************************************************************
-     * MASTER CABANG
-     **************************************************************************/
-
-    async getCabang() {
-
-        return await this.get(
-            "getCabang",
-            {
-                token:
-                    this.getToken()
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * MASTER NOTARIS
-     **************************************************************************/
-
-    async getNotaris() {
-
-        return await this.get(
-            "getNotaris",
-            {
-                token:
-                    this.getToken()
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * USER
-     **************************************************************************/
-
-    async getUser() {
-
-        return await this.get(
-            "getUser",
-            {
-                token:
-                    this.getToken()
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * DATA AGUNAN
-     **************************************************************************/
-
-    async getAgunan(
-        params = {}
-    ) {
-
-        return await this.get(
-            "getAgunan",
-            {
-                ...params,
-
-                token:
-                    this.getToken()
-            }
-        );
-
-    },
-
-
-    async getAgunanById(
-        id
-    ) {
-
-        return await this.get(
-            "getAgunanById",
-            {
-                id:
-                    id,
-
-                token:
-                    this.getToken()
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * MONITORING
-     **************************************************************************/
-
-    async getMonitoring() {
-
-        return await this.get(
-            "getMonitoring",
-            {
-                token:
-                    this.getToken()
-            }
-        );
-
-    },
-
-
-    /**************************************************************************
-     * LAPORAN
-     **************************************************************************/
-
-    async getLaporan() {
-
-        return await this.get(
-            "getLaporan",
-            {
-                token:
-                    this.getToken()
-            }
-        );
-
-    },
 
     /******************************************************************************
      * LOGIN
@@ -718,6 +645,7 @@ const API = {
                 String(
                     username || ""
                 ).trim();
+
 
             password =
                 String(
@@ -811,7 +739,7 @@ const API = {
 
             /*
              * =========================================================
-             * WAIT BEFORE POLLING (Diperbesar untuk perangkat HP)
+             * WAIT BEFORE POLLING
              * =========================================================
              */
 
@@ -819,7 +747,7 @@ const API = {
                 resolve =>
                     setTimeout(
                         resolve,
-                        1500 // Diubah dari 800ms ke 1500ms agar server GAS punya waktu merespons jaringan seluler
+                        1500
                     )
             );
 
@@ -847,27 +775,56 @@ const API = {
                     }
                 );
 
+
                 let result;
 
-                // FIX: Menambahkan Try-Catch khusus di dalam looping
-                // agar error jaringan sesaat (di HP) tidak langsung menggagalkan login
+
+                /*
+                 * =====================================================
+                 * JSONP REQUEST
+                 * =====================================================
+                 */
+
                 try {
+
                     result =
                         await this.getLoginStatusJsonp(
                             requestId
                         );
-                } catch (pollError) {
-                    console.warn(`Polling attempt ${attempt + 1} gagal (masalah jaringan HP):`, pollError.message);
 
-                    if (attempt < 19) {
-                        // Jika masih ada sisa percobaan, tunggu 1.5 detik lalu lanjut coba lagi
-                        await new Promise(resolve => setTimeout(resolve, 1500));
-                        continue;
-                    } else {
-                        // Jika sudah 20 kali tetap gagal
-                        throw pollError;
-                    }
                 }
+                catch (
+                pollError
+                ) {
+
+                    console.warn(
+                        "API LOGIN POLLING ERROR:",
+                        pollError
+                    );
+
+
+                    if (
+                        attempt >= 19
+                    ) {
+
+                        throw pollError;
+
+                    }
+
+
+                    await new Promise(
+                        resolve =>
+                            setTimeout(
+                                resolve,
+                                1500
+                            )
+                    );
+
+
+                    continue;
+
+                }
+
 
                 console.log(
                     "API LOGIN STATUS:",
@@ -911,15 +868,14 @@ const API = {
                  */
 
                 if (
-                    attempt <
-                    19
+                    attempt < 19
                 ) {
 
                     await new Promise(
                         resolve =>
                             setTimeout(
                                 resolve,
-                                1000 // Jeda per polling dilonggarkan ke 1 detik
+                                1000
                             )
                     );
 
@@ -935,7 +891,7 @@ const API = {
              */
 
             throw new Error(
-                "Timeout saat memproses login. Coba gunakan koneksi internet yang lebih stabil."
+                "Timeout saat memproses login."
             );
 
         }
@@ -1000,6 +956,25 @@ const API = {
 
                 /*
                  * =====================================================
+                 * SCRIPT
+                 * =====================================================
+                 */
+
+                const script =
+                    document.createElement(
+                        "script"
+                    );
+
+
+                let finished =
+                    false;
+
+
+                let timeoutId;
+
+
+                /*
+                 * =====================================================
                  * CLEANUP
                  * =====================================================
                  */
@@ -1010,25 +985,23 @@ const API = {
                         try {
 
                             if (
-                                script &&
-                                script.parentNode
+                                timeoutId
                             ) {
 
-                                script.parentNode
-                                    .removeChild(
-                                        script
-                                    );
+                                clearTimeout(
+                                    timeoutId
+                                );
 
                             }
 
                         }
                         catch (
-                        cleanupError
+                        timeoutError
                         ) {
 
                             console.warn(
-                                "JSONP cleanup error:",
-                                cleanupError
+                                "Timeout cleanup error:",
+                                timeoutError
                             );
 
                         }
@@ -1053,12 +1026,28 @@ const API = {
                         }
 
 
-                        if (
-                            timeoutId
+                        try {
+
+                            if (
+                                script &&
+                                script.parentNode
+                            ) {
+
+                                script.parentNode
+                                    .removeChild(
+                                        script
+                                    );
+
+                            }
+
+                        }
+                        catch (
+                        scriptError
                         ) {
 
-                            clearTimeout(
-                                timeoutId
+                            console.warn(
+                                "Script cleanup error:",
+                                scriptError
                             );
 
                         }
@@ -1079,6 +1068,19 @@ const API = {
                         result
                     ) => {
 
+                        if (
+                            finished
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        finished =
+                            true;
+
+
                         console.log(
                             "API LOGIN JSONP RESPONSE:",
                             result
@@ -1086,6 +1088,7 @@ const API = {
 
 
                         cleanup();
+
 
                         resolve(
                             result
@@ -1102,6 +1105,7 @@ const API = {
 
                 let url;
 
+
                 try {
 
                     url =
@@ -1114,13 +1118,19 @@ const API = {
                 urlError
                 ) {
 
+                    finished =
+                        true;
+
+
                     cleanup();
+
 
                     reject(
                         new Error(
                             "API URL tidak valid."
                         )
                     );
+
 
                     return;
 
@@ -1151,17 +1161,17 @@ const API = {
                 );
 
 
+                console.log(
+                    "API LOGIN STATUS URL:",
+                    url.toString()
+                );
+
+
                 /*
                  * =====================================================
-                 * SCRIPT
+                 * SCRIPT ATTRIBUTES
                  * =====================================================
                  */
-
-                const script =
-                    document.createElement(
-                        "script"
-                    );
-
 
                 script.src =
                     url.toString();
@@ -1171,10 +1181,30 @@ const API = {
                     true;
 
 
+                /*
+                 * =====================================================
+                 * LOAD ERROR
+                 * =====================================================
+                 */
+
                 script.onerror =
                     () => {
 
+                        if (
+                            finished
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        finished =
+                            true;
+
+
                         cleanup();
+
 
                         reject(
                             new Error(
@@ -1191,11 +1221,25 @@ const API = {
                  * =====================================================
                  */
 
-                const timeoutId =
+                timeoutId =
                     setTimeout(
                         () => {
 
+                            if (
+                                finished
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            finished =
+                                true;
+
+
                             cleanup();
+
 
                             reject(
                                 new Error(
@@ -1204,9 +1248,15 @@ const API = {
                             );
 
                         },
-                        15000 // Ditingkatkan menjadi 15 detik agar aman di jaringan 3G/seluler
+                        15000
                     );
 
+
+                /*
+                 * =====================================================
+                 * APPEND SCRIPT
+                 * =====================================================
+                 */
 
                 document.body.appendChild(
                     script
@@ -1273,6 +1323,10 @@ const API = {
     },
 
 
+    /******************************************************************************
+     * LOGOUT
+     ******************************************************************************/
+
     async logout() {
 
         try {
@@ -1281,6 +1335,9 @@ const API = {
                 this.getToken();
 
 
+            /*
+             * Tidak ada session.
+             */
             if (
                 !token
             ) {
@@ -1298,6 +1355,9 @@ const API = {
             }
 
 
+            /*
+             * Logout ke server.
+             */
             const result =
                 await this.post(
                     "logout",
@@ -1308,6 +1368,9 @@ const API = {
                 );
 
 
+            /*
+             * Hapus session browser.
+             */
             try {
 
                 localStorage.removeItem(
@@ -1338,6 +1401,10 @@ const API = {
             );
 
 
+            /*
+             * Walaupun server error,
+             * session lokal tetap dihapus.
+             */
             try {
 
                 localStorage.removeItem(
@@ -1367,6 +1434,10 @@ const API = {
     /******************************************************************************
      * USER MANAGEMENT
      ******************************************************************************/
+
+    /**************************************************************************
+     * CREATE USER
+     **************************************************************************/
 
     async createUser(
         userData
@@ -1408,25 +1479,32 @@ const API = {
                         token,
 
                     id:
-                        userData.id || "",
+                        userData.id ||
+                        "",
 
                     username:
-                        userData.username || "",
+                        userData.username ||
+                        "",
 
                     password:
-                        userData.password || "",
+                        userData.password ||
+                        "",
 
                     nama:
-                        userData.nama || "",
+                        userData.nama ||
+                        "",
 
                     email:
-                        userData.email || "",
+                        userData.email ||
+                        "",
 
                     role:
-                        userData.role || "",
+                        userData.role ||
+                        "",
 
                     status:
-                        userData.status || ""
+                        userData.status ||
+                        ""
 
                 }
             );
@@ -1446,6 +1524,10 @@ const API = {
 
     },
 
+
+    /**************************************************************************
+     * UPDATE USER
+     **************************************************************************/
 
     async updateUser(
         userData
@@ -1501,22 +1583,28 @@ const API = {
                         userData.id,
 
                     username:
-                        userData.username || "",
+                        userData.username ||
+                        "",
 
                     password:
-                        userData.password || "",
+                        userData.password ||
+                        "",
 
                     nama:
-                        userData.nama || "",
+                        userData.nama ||
+                        "",
 
                     email:
-                        userData.email || "",
+                        userData.email ||
+                        "",
 
                     role:
-                        userData.role || "",
+                        userData.role ||
+                        "",
 
                     status:
-                        userData.status || ""
+                        userData.status ||
+                        ""
 
                 }
             );
@@ -1536,6 +1624,10 @@ const API = {
 
     },
 
+
+    /**************************************************************************
+     * UPDATE USER STATUS
+     **************************************************************************/
 
     async updateUserStatus(
         userData
@@ -1623,6 +1715,10 @@ const API = {
     },
 
 
+    /**************************************************************************
+     * DELETE USER
+     **************************************************************************/
+
     async deleteUser(
         id
     ) {
@@ -1683,12 +1779,15 @@ const API = {
 
     },
 
-
     /******************************************************************************
      * MASTER DATA
      ******************************************************************************/
 
-    async getCabangList() {
+    /**************************************************************************
+     * GET CABANG
+     **************************************************************************/
+
+    async getCabang() {
 
         try {
 
@@ -1699,6 +1798,34 @@ const API = {
                         this.getToken()
                 }
             );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getCabang ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * GET CABANG LIST
+     *
+     * Alias agar kompatibel dengan halaman lama.
+     **************************************************************************/
+
+    async getCabangList() {
+
+        try {
+
+            return await this.getCabang();
 
         }
         catch (err) {
@@ -1716,7 +1843,11 @@ const API = {
     },
 
 
-    async getNotarisList() {
+    /**************************************************************************
+     * GET NOTARIS
+     **************************************************************************/
+
+    async getNotaris() {
 
         try {
 
@@ -1727,6 +1858,34 @@ const API = {
                         this.getToken()
                 }
             );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getNotaris ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * GET NOTARIS LIST
+     *
+     * Alias kompatibilitas.
+     **************************************************************************/
+
+    async getNotarisList() {
+
+        try {
+
+            return await this.getNotaris();
 
         }
         catch (err) {
@@ -1748,35 +1907,112 @@ const API = {
      * DATA AGUNAN
      ******************************************************************************/
 
+    /**************************************************************************
+     * GET DATA AGUNAN
+     **************************************************************************/
+
+    async getAgunan(
+        params = {}
+    ) {
+
+        try {
+
+            return await this.get(
+                "getAgunan",
+                {
+
+                    ...params,
+
+                    token:
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getAgunan ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * GET DATA AGUNAN BY ID
+     **************************************************************************/
+
+    async getAgunanById(
+        id
+    ) {
+
+        try {
+
+            if (
+                !id
+            ) {
+
+                throw new Error(
+                    "ID agunan wajib diisi."
+                );
+
+            }
+
+
+            return await this.get(
+                "getAgunanById",
+                {
+
+                    id:
+                        id,
+
+                    token:
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getAgunanById ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * CREATE / INSERT DATA AGUNAN
+     **************************************************************************/
+
     async createAgunan(
         data = {}
     ) {
 
         try {
 
-            const token =
-                this.getToken();
-
-
-            if (
-                !token
-            ) {
-
-                throw new Error(
-                    "Session tidak tersedia."
-                );
-
-            }
-
-
             return await this.post(
-                "createAgunan",
+                "insertAgunan",
                 {
 
                     ...data,
 
                     token:
-                        token
+                        this.getToken()
 
                 }
             );
@@ -1797,6 +2033,42 @@ const API = {
     },
 
 
+    /**************************************************************************
+     * INSERT AGUNAN
+     *
+     * Alias kompatibilitas.
+     **************************************************************************/
+
+    async insertAgunan(
+        data = {}
+    ) {
+
+        try {
+
+            return await this.createAgunan(
+                data
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API insertAgunan ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * UPDATE DATA AGUNAN
+     **************************************************************************/
+
     async updateAgunan(
         data = {}
     ) {
@@ -1804,26 +2076,12 @@ const API = {
         try {
 
             if (
-                !data.id
+                !data.id &&
+                !data.no_agunan
             ) {
 
                 throw new Error(
-                    "ID agunan wajib diisi."
-                );
-
-            }
-
-
-            const token =
-                this.getToken();
-
-
-            if (
-                !token
-            ) {
-
-                throw new Error(
-                    "Session tidak tersedia."
+                    "ID atau NO AGUNAN wajib diisi."
                 );
 
             }
@@ -1836,7 +2094,7 @@ const API = {
                     ...data,
 
                     token:
-                        token
+                        this.getToken()
 
                 }
             );
@@ -1857,33 +2115,28 @@ const API = {
     },
 
 
+    /**************************************************************************
+     * DELETE DATA AGUNAN
+     **************************************************************************/
+
     async deleteAgunan(
-        id
+        noAgunan
     ) {
 
         try {
 
-            if (
-                !id
-            ) {
-
-                throw new Error(
-                    "ID agunan wajib diisi."
-                );
-
-            }
-
-
-            const token =
-                this.getToken();
+            noAgunan =
+                String(
+                    noAgunan || ""
+                ).trim();
 
 
             if (
-                !token
+                !noAgunan
             ) {
 
                 throw new Error(
-                    "Session tidak tersedia."
+                    "NO AGUNAN wajib diisi."
                 );
 
             }
@@ -1893,11 +2146,11 @@ const API = {
                 "deleteAgunan",
                 {
 
-                    token:
-                        token,
+                    no_agunan:
+                        noAgunan,
 
-                    id:
-                        id
+                    token:
+                        this.getToken()
 
                 }
             );
@@ -1918,6 +2171,232 @@ const API = {
     },
 
 
+    /**************************************************************************
+     * CHECK DUPLICATE AGUNAN
+     **************************************************************************/
+
+    async checkDuplicateAgunan(
+        noAgunan
+    ) {
+
+        try {
+
+            noAgunan =
+                String(
+                    noAgunan || ""
+                ).trim();
+
+
+            if (
+                !noAgunan
+            ) {
+
+                throw new Error(
+                    "NO AGUNAN wajib diisi."
+                );
+
+            }
+
+
+            return await this.get(
+                "checkDuplicateAgunan",
+                {
+
+                    no_agunan:
+                        noAgunan,
+
+                    token:
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API checkDuplicateAgunan ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * CHECK DUPLICATE CIF
+     **************************************************************************/
+
+    async checkDuplicateCIF(
+        cif
+    ) {
+
+        try {
+
+            cif =
+                String(
+                    cif || ""
+                ).trim();
+
+
+            if (
+                !cif
+            ) {
+
+                throw new Error(
+                    "CIF wajib diisi."
+                );
+
+            }
+
+
+            return await this.get(
+                "checkDuplicateCIF",
+                {
+
+                    cif_debitur:
+                        cif,
+
+                    token:
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API checkDuplicateCIF ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * MONITORING
+     ******************************************************************************/
+
+    async getMonitoring(
+        params = {}
+    ) {
+
+        try {
+
+            return await this.get(
+                "getMonitoring",
+                {
+
+                    ...params,
+
+                    token:
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getMonitoring ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * LAPORAN
+     ******************************************************************************/
+
+    async getLaporan(
+        params = {}
+    ) {
+
+        try {
+
+            return await this.get(
+                "getLaporan",
+                {
+
+                    ...params,
+
+                    token:
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getLaporan ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * DASHBOARD
+     ******************************************************************************/
+
+    async getDashboard(
+        params = {}
+    ) {
+
+        try {
+
+            return await this.get(
+                "getDashboard",
+                {
+
+                    ...params,
+
+                    token:
+                        this.getToken()
+
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getDashboard ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
     /******************************************************************************
      * GENERIC ACTION
      ******************************************************************************/
@@ -1925,7 +2404,7 @@ const API = {
     async call(
         action,
         data = {},
-        method = "POST"
+        method = "GET"
     ) {
 
         try {
@@ -1941,8 +2420,14 @@ const API = {
             }
 
 
+            const normalizedMethod =
+                String(
+                    method || "GET"
+                ).toUpperCase();
+
+
             if (
-                method.toUpperCase() ===
+                normalizedMethod ===
                 "GET"
             ) {
 
@@ -1986,17 +2471,310 @@ const API = {
 
 
             throw err;
+
         }
+
+    },
+
+    /******************************************************************************
+ * TOKEN
+ ******************************************************************************/
+
+    getToken() {
+
+        try {
+
+            /*
+             * =========================================================
+             * PRIORITAS 1
+             * Auth.getToken()
+             * =========================================================
+             */
+
+            if (
+                typeof Auth !==
+                "undefined" &&
+                typeof Auth.getToken ===
+                "function"
+            ) {
+
+                const authToken =
+                    Auth.getToken();
+
+
+                if (
+                    authToken
+                ) {
+
+                    return authToken;
+
+                }
+
+            }
+
+
+            /*
+             * =========================================================
+             * PRIORITAS 2
+             * localStorage
+             * =========================================================
+             */
+
+            const session =
+                localStorage.getItem(
+                    "user"
+                );
+
+
+            if (
+                !session
+            ) {
+
+                return "";
+
+            }
+
+
+            const parsed =
+                JSON.parse(
+                    session
+                );
+
+
+            if (
+                !parsed
+            ) {
+
+                return "";
+
+            }
+
+
+            return (
+                parsed.token ||
+                ""
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getToken ERROR:",
+                err
+            );
+
+
+            return "";
+
+        }
+
+    },
+
+
+    /******************************************************************************
+     * UTILITY
+     ******************************************************************************/
+
+    /**************************************************************************
+     * SLEEP
+     **************************************************************************/
+
+    sleep(
+        milliseconds
+    ) {
+
+        return new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    milliseconds
+                )
+        );
+
+    },
+
+
+    /**************************************************************************
+     * GET CURRENT USER
+     *
+     * Alias helper untuk kompatibilitas.
+     **************************************************************************/
+
+    async getCurrentUser() {
+
+        try {
+
+            return await this.getUser();
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getCurrentUser ERROR:",
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * CHECK SESSION
+     **************************************************************************/
+
+    async checkSession() {
+
+        try {
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                return {
+
+                    success:
+                        false,
+
+                    message:
+                        "SESSION_EXPIRED",
+
+                    data:
+                        null
+
+                };
+
+            }
+
+
+            return await this.getSession();
+
+        }
+        catch (err) {
+
+            console.error(
+                "API checkSession ERROR:",
+                err
+            );
+
+
+            return {
+
+                success:
+                    false,
+
+                message:
+                    err.message ||
+                    "Gagal memeriksa session.",
+
+                data:
+                    null
+
+            };
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * GENERIC REQUEST
+     *
+     * Compatibility wrapper.
+     *
+     * GET  -> this.get()
+     * POST -> this.post()
+     **************************************************************************/
+
+    async request(
+        action,
+        data = {},
+        method = "GET"
+    ) {
+
+        try {
+
+            const normalizedMethod =
+                String(
+                    method || "GET"
+                )
+                    .toUpperCase();
+
+
+            if (
+                normalizedMethod ===
+                "GET"
+            ) {
+
+                return await this.get(
+                    action,
+                    data
+                );
+
+            }
+
+
+            return await this.post(
+                action,
+                data
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API request ERROR:",
+                action,
+                err
+            );
+
+
+            throw err;
+
+        }
+
+    },
+
+
+    /**************************************************************************
+     * GENERIC CALL
+     *
+     * Alias tambahan agar kompatibel dengan
+     * script halaman lain.
+     **************************************************************************/
+
+    async execute(
+        action,
+        data = {},
+        method = "GET"
+    ) {
+
+        return await this.request(
+            action,
+            data,
+            method
+        );
+
     }
+
 
 };
 
+
 /******************************************************************************
-* API READY
-******************************************************************************/
+ * GLOBAL EXPORT
+ ******************************************************************************/
 
 if (
-    typeof window !== "undefined"
+    typeof window !==
+    "undefined"
 ) {
 
     window.API =
@@ -2010,5 +2788,5 @@ if (
  ******************************************************************************/
 
 console.log(
-    "API.JS SECURITY HARDENED 1.1 (MOBILE OPTIMIZED) LOADED"
+    "API.JS SECURITY HARDENED 1.0 CLEANED LOADED"
 );
