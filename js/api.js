@@ -1780,8 +1780,58 @@ const API = {
     },
 
     /******************************************************************************
-     * MASTER DATA
+     * USER
      ******************************************************************************/
+
+    async getUser() {
+
+        try {
+
+            const token =
+                this.getToken();
+
+
+            if (!token) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            console.log(
+                "API GET USER: Memanggil endpoint getUser..."
+            );
+
+
+            console.log(
+                "API GET USER: Token tersedia:",
+                Boolean(token)
+            );
+
+
+            return await this.get(
+                "getUser",
+                {
+                    token:
+                        token
+                }
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "API getUser ERROR:",
+                err
+            );
+
+            throw err;
+
+        }
+
+    },
 
     /**************************************************************************
      * GET CABANG
@@ -1813,7 +1863,6 @@ const API = {
         }
 
     },
-
 
     /**************************************************************************
      * GET CABANG LIST
@@ -1948,52 +1997,35 @@ const API = {
     /**************************************************************************
      * GET DATA AGUNAN BY ID
      **************************************************************************/
-
     async getAgunanById(
-        id
+        noAgunan
     ) {
 
-        try {
+        const target =
+            String(
+                noAgunan || ""
+            ).trim();
 
-            if (
-                !id
-            ) {
+        if (!target) {
 
-                throw new Error(
-                    "ID agunan wajib diisi."
-                );
+            throw new Error(
+                "NO AGUNAN wajib diisi."
+            );
 
+        }
+
+        return await this.get(
+            "getAgunanById",
+            {
+                no_agunan:
+                    target,
+
+                token:
+                    this.getToken()
             }
-
-
-            return await this.get(
-                "getAgunanById",
-                {
-
-                    id:
-                        id,
-
-                    token:
-                        this.getToken()
-
-                }
-            );
-
-        }
-        catch (err) {
-
-            console.error(
-                "API getAgunanById ERROR:",
-                err
-            );
-
-
-            throw err;
-
-        }
+        );
 
     },
-
 
     /**************************************************************************
      * CREATE / INSERT DATA AGUNAN
@@ -2068,35 +2100,107 @@ const API = {
     /**************************************************************************
      * UPDATE DATA AGUNAN
      **************************************************************************/
-
     async updateAgunan(
+        id,
         data = {}
     ) {
 
         try {
 
+            /*
+             * =========================================================
+             * NORMALIZE NO AGUNAN
+             * =========================================================
+             */
+
+            const noAgunan =
+                String(
+                    data.no_agunan ||
+                    id ||
+                    ""
+                ).trim();
+
+
+            /*
+             * =========================================================
+             * VALIDATION
+             * =========================================================
+             */
+
             if (
-                !data.id &&
-                !data.no_agunan
+                !noAgunan
             ) {
 
                 throw new Error(
-                    "ID atau NO AGUNAN wajib diisi."
+                    "NO AGUNAN wajib diisi."
                 );
 
             }
 
 
+            /*
+             * =========================================================
+             * TOKEN
+             * =========================================================
+             */
+
+            const token =
+                this.getToken();
+
+
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            /*
+             * =========================================================
+             * PAYLOAD
+             * =========================================================
+             *
+             * Backend membutuhkan:
+             *
+             * no_agunan
+             *
+             * Bukan:
+             *
+             * id
+             */
+
+            const payload = {
+
+                ...data,
+
+                no_agunan:
+                    noAgunan,
+
+                token:
+                    token
+
+            };
+
+
+            /*
+             * =========================================================
+             * REQUEST
+             * =========================================================
+             */
+
+            console.log(
+                "API UPDATE AGUNAN:",
+                payload
+            );
+
+
             return await this.post(
                 "updateAgunan",
-                {
-
-                    ...data,
-
-                    token:
-                        this.getToken()
-
-                }
+                payload
             );
 
         }
@@ -2114,10 +2218,9 @@ const API = {
 
     },
 
-
     /**************************************************************************
-     * DELETE DATA AGUNAN
-     **************************************************************************/
+ * DELETE DATA AGUNAN
+ **************************************************************************/
 
     async deleteAgunan(
         noAgunan
@@ -2125,11 +2228,23 @@ const API = {
 
         try {
 
+            /*
+             * =========================================================
+             * NORMALIZE NO AGUNAN
+             * =========================================================
+             */
+
             noAgunan =
                 String(
                     noAgunan || ""
                 ).trim();
 
+
+            /*
+             * =========================================================
+             * VALIDATION
+             * =========================================================
+             */
 
             if (
                 !noAgunan
@@ -2142,18 +2257,84 @@ const API = {
             }
 
 
-            return await this.post(
-                "deleteAgunan",
-                {
+            /*
+             * =========================================================
+             * TOKEN
+             * =========================================================
+             */
 
-                    no_agunan:
-                        noAgunan,
+            const token =
+                this.getToken();
 
-                    token:
-                        this.getToken()
 
-                }
+            if (
+                !token
+            ) {
+
+                throw new Error(
+                    "Session tidak tersedia."
+                );
+
+            }
+
+
+            /*
+             * =========================================================
+             * PAYLOAD
+             * =========================================================
+             */
+
+            const payload = {
+
+                token:
+                    token,
+
+                no_agunan:
+                    noAgunan
+
+            };
+
+
+            /*
+             * =========================================================
+             * DEBUG
+             * =========================================================
+             */
+
+            console.log(
+                "API DELETE AGUNAN:",
+                payload
             );
+
+
+            /*
+             * =========================================================
+             * REQUEST KE APPS SCRIPT
+             * =========================================================
+             *
+             * POST menggunakan no-cors.
+             *
+             * Artinya browser tidak dapat membaca
+             * response dari Apps Script.
+             *
+             * Tetapi request tetap dikirim ke server.
+             * =========================================================
+             */
+
+            const result =
+                await this.post(
+                    "deleteAgunan",
+                    payload
+                );
+
+
+            /*
+             * =========================================================
+             * RESULT
+             * =========================================================
+             */
+
+            return result;
 
         }
         catch (err) {
@@ -2169,7 +2350,6 @@ const API = {
         }
 
     },
-
 
     /**************************************************************************
      * CHECK DUPLICATE AGUNAN
@@ -2477,8 +2657,9 @@ const API = {
     },
 
     /******************************************************************************
- * TOKEN
- ******************************************************************************/
+    * TOKEN / SESSION
+    * FINAL SESSION STORAGE FIX
+    ******************************************************************************/
 
     getToken() {
 
@@ -2486,27 +2667,42 @@ const API = {
 
             /*
              * =========================================================
-             * PRIORITAS 1
-             * Auth.getToken()
+             * 1. PRIORITAS AUTH.JS
              * =========================================================
              */
 
             if (
-                typeof Auth !==
-                "undefined" &&
-                typeof Auth.getToken ===
-                "function"
+                typeof Auth !== "undefined" &&
+                typeof Auth.getToken === "function"
             ) {
 
-                const authToken =
-                    Auth.getToken();
+                try {
+
+                    const authToken =
+                        String(
+                            Auth.getToken() || ""
+                        ).trim();
 
 
-                if (
-                    authToken
-                ) {
+                    if (
+                        authToken
+                    ) {
 
-                    return authToken;
+                        console.log(
+                            "API getToken: token dari Auth."
+                        );
+
+                        return authToken;
+
+                    }
+
+                }
+                catch (authError) {
+
+                    console.warn(
+                        "API getToken: Auth.getToken gagal:",
+                        authError
+                    );
 
                 }
 
@@ -2515,45 +2711,148 @@ const API = {
 
             /*
              * =========================================================
-             * PRIORITAS 2
-             * localStorage
+             * 2. SESSION STORAGE
+             *
+             * auth.js menyimpan session di:
+             *
+             * sessionStorage["user"]
              * =========================================================
              */
 
-            const session =
-                localStorage.getItem(
-                    "user"
+            try {
+
+                const sessionRaw =
+                    sessionStorage.getItem(
+                        "user"
+                    );
+
+
+                if (
+                    sessionRaw
+                ) {
+
+                    const session =
+                        JSON.parse(
+                            sessionRaw
+                        );
+
+
+                    if (
+                        session &&
+                        session.token
+                    ) {
+
+                        const token =
+                            String(
+                                session.token
+                            ).trim();
+
+
+                        if (
+                            token
+                        ) {
+
+                            console.log(
+                                "API getToken: token dari sessionStorage."
+                            );
+
+
+                            return token;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            catch (sessionError) {
+
+                console.warn(
+                    "API getToken: sessionStorage error:",
+                    sessionError
                 );
-
-
-            if (
-                !session
-            ) {
-
-                return "";
 
             }
 
 
-            const parsed =
-                JSON.parse(
-                    session
+            /*
+             * =========================================================
+             * 3. FALLBACK LOCAL STORAGE
+             *
+             * Untuk kompatibilitas dengan versi lama.
+             * =========================================================
+             */
+
+            try {
+
+                const localRaw =
+                    localStorage.getItem(
+                        "user"
+                    );
+
+
+                if (
+                    localRaw
+                ) {
+
+                    const session =
+                        JSON.parse(
+                            localRaw
+                        );
+
+
+                    if (
+                        session &&
+                        session.token
+                    ) {
+
+                        const token =
+                            String(
+                                session.token
+                            ).trim();
+
+
+                        if (
+                            token
+                        ) {
+
+                            console.log(
+                                "API getToken: token dari localStorage."
+                            );
+
+
+                            return token;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            catch (localError) {
+
+                console.warn(
+                    "API getToken: localStorage error:",
+                    localError
                 );
-
-
-            if (
-                !parsed
-            ) {
-
-                return "";
 
             }
 
 
-            return (
-                parsed.token ||
-                ""
+            /*
+             * =========================================================
+             * 4. SESSION TIDAK DITEMUKAN
+             * =========================================================
+             */
+
+            console.warn(
+                "API getToken: SESSION TIDAK DITEMUKAN."
             );
+
+
+            return "";
 
         }
         catch (err) {
@@ -2569,11 +2868,6 @@ const API = {
         }
 
     },
-
-
-    /******************************************************************************
-     * UTILITY
-     ******************************************************************************/
 
     /**************************************************************************
      * SLEEP
