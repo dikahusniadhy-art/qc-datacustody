@@ -71,132 +71,71 @@ const EDIT_AGUNAN = {
 
             this.showLoading();
 
-
-            /*
-             * ID NO AGUNAN DARI URL
-             */
-
-            const noAgunan =
-                String(
-                    this.id || ""
-                ).trim();
-
-
-            /*
-             * VALIDASI ID
-             */
-
-            if (!noAgunan) {
-
-                alert(
-                    "Nomor Agunan tidak ditemukan."
-                );
-
-                window.location.href =
-                    "data_agunan.html";
-
-                return;
-
-            }
-
-
             console.log(
                 "EDIT AGUNAN ID:",
-                noAgunan
+                this.id
             );
 
-
-            /*
-             * AMBIL 1 DATA SAJA
-             *
-             * Tidak lagi menggunakan:
-             *
-             * API.getAgunan()
-             *
-             * karena itu mengambil seluruh data.
-             */
+            if (!this.id) {
+                throw new Error(
+                    "Nomor Agunan tidak ditemukan."
+                );
+            }
 
             const result =
                 await API.getAgunanById(
-                    noAgunan
+                    this.id
                 );
-
 
             console.log(
                 "EDIT AGUNAN RESPONSE:",
                 result
             );
 
-
-            /*
-             * RESPONSE ERROR
-             */
-
             if (
                 !result ||
-                !result.success
+                result.success !== true
             ) {
 
-                alert(
+                throw new Error(
                     result?.message ||
                     "Data Agunan tidak ditemukan."
                 );
 
-                window.location.href =
-                    "data_agunan.html";
-
-                return;
-
             }
-
-
-            /*
-             * SIMPAN DATA
-             */
 
             this.data =
                 result.data;
 
-
-            /*
-             * VALIDASI DATA
-             */
-
             if (
-                !this.data
+                !this.data ||
+                !this.data.no_agunan
             ) {
 
-                alert(
+                throw new Error(
                     "Data Agunan tidak ditemukan."
                 );
 
-                window.location.href =
-                    "data_agunan.html";
-
-                return;
-
             }
 
-
-            /*
-             * ISI FORM
-             */
-
+            // BARU setelah data berhasil diterima
             this.fillForm();
 
         }
         catch (err) {
 
             console.error(
-                "EDIT AGUNAN LOAD ERROR:",
+                "LOAD EDIT AGUNAN ERROR:",
                 err
             );
 
-
             alert(
                 err.message ||
-                "Gagal mengambil data agunan."
+                "Gagal mengambil data Agunan."
             );
+
+            window.location.href =
+                "data_agunan.html";
 
         }
         finally {
@@ -204,7 +143,6 @@ const EDIT_AGUNAN = {
             this.hideLoading();
 
         }
-
     },
 
     /**********************************************************************
