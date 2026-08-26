@@ -623,7 +623,6 @@ const API = {
 
     },
 
-
     /******************************************************************************
      * LOGIN
      ******************************************************************************/
@@ -701,6 +700,70 @@ const API = {
                 }
             );
 
+            /*
+             * =========================================================
+             * DEVICE INFORMATION
+             * =========================================================
+             */
+
+            let deviceId = "";
+            let deviceName = "";
+            let userAgent = "";
+
+
+            try {
+
+                /*
+                 * DEVICE ID
+                 */
+
+                if (
+                    typeof Auth !== "undefined" &&
+                    typeof Auth.getDeviceId === "function"
+                ) {
+
+                    deviceId =
+                        Auth.getDeviceId();
+
+                }
+
+
+                /*
+                 * DEVICE NAME + USER AGENT
+                 */
+
+                if (
+                    typeof Auth !== "undefined" &&
+                    typeof Auth.getDeviceInfo === "function"
+                ) {
+
+                    const deviceInfo =
+                        Auth.getDeviceInfo();
+
+
+                    deviceName =
+                        deviceInfo.deviceName ||
+                        "";
+
+
+                    userAgent =
+                        deviceInfo.userAgent ||
+                        "";
+
+                }
+
+            }
+            catch (
+            deviceError
+            ) {
+
+                console.warn(
+                    "API LOGIN DEVICE INFO ERROR:",
+                    deviceError
+                );
+
+            }
+
 
             /*
              * =========================================================
@@ -712,6 +775,7 @@ const API = {
                 await this.post(
                     "loginAsync",
                     {
+
                         username:
                             username,
 
@@ -719,10 +783,19 @@ const API = {
                             password,
 
                         request_id:
-                            requestId
+                            requestId,
+
+                        device_id:
+                            deviceId,
+
+                        device_name:
+                            deviceName,
+
+                        user_agent:
+                            userAgent
+
                     }
                 );
-
 
             if (
                 !loginResult ||
@@ -735,7 +808,6 @@ const API = {
                 );
 
             }
-
 
             /*
              * =========================================================
@@ -750,7 +822,6 @@ const API = {
                         1500
                     )
             );
-
 
             /*
              * =========================================================
@@ -908,7 +979,6 @@ const API = {
         }
 
     },
-
 
     /******************************************************************************
  * GET LOGIN STATUS - JSONP
