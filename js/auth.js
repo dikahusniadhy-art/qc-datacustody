@@ -161,6 +161,176 @@ const Auth = {
 
     },
 
+    /******************************************************************************
+ * DEVICE ID
+ ******************************************************************************/
+
+    getDeviceId() {
+
+        const KEY =
+            "CUSTODY_DEVICE_ID";
+
+        try {
+
+            let deviceId =
+                localStorage.getItem(
+                    KEY
+                );
+
+            /*
+             * Jika belum ada,
+             * buat ID unik untuk device/browser.
+             */
+
+            if (
+                !deviceId
+            ) {
+
+                deviceId =
+                    "DEV-" +
+                    crypto.randomUUID();
+
+                localStorage.setItem(
+                    KEY,
+                    deviceId
+                );
+
+            }
+
+            return deviceId;
+
+        }
+        catch (err) {
+
+            console.error(
+                "Auth.getDeviceId:",
+                err
+            );
+
+            /*
+             * Fallback jika crypto.randomUUID
+             * tidak tersedia.
+             */
+
+            return (
+                "DEV-" +
+                Date.now() +
+                "-" +
+                Math.random()
+                    .toString(36)
+                    .substring(2, 10)
+            );
+
+        }
+
+    },
+
+    /******************************************************************************
+ * DEVICE INFORMATION
+ ******************************************************************************/
+
+    getDeviceInfo() {
+
+        const ua =
+            navigator.userAgent || "";
+
+        let os =
+            "Unknown OS";
+
+        if (
+            /Windows/i.test(ua)
+        ) {
+
+            os =
+                "Windows";
+
+        }
+        else if (
+            /Android/i.test(ua)
+        ) {
+
+            os =
+                "Android";
+
+        }
+        else if (
+            /iPhone|iPad|iPod/i.test(ua)
+        ) {
+
+            os =
+                "iOS";
+
+        }
+        else if (
+            /Mac OS X/i.test(ua)
+        ) {
+
+            os =
+                "macOS";
+
+        }
+        else if (
+            /Linux/i.test(ua)
+        ) {
+
+            os =
+                "Linux";
+
+        }
+
+
+        let browser =
+            "Unknown Browser";
+
+        if (
+            /Edg\//i.test(ua)
+        ) {
+
+            browser =
+                "Microsoft Edge";
+
+        }
+        else if (
+            /Firefox\//i.test(ua)
+        ) {
+
+            browser =
+                "Firefox";
+
+        }
+        else if (
+            /Chrome\//i.test(ua)
+        ) {
+
+            browser =
+                "Chrome";
+
+        }
+        else if (
+            /Safari\//i.test(ua) &&
+            !/Chrome\//i.test(ua)
+        ) {
+
+            browser =
+                "Safari";
+
+        }
+
+
+        return {
+
+            deviceName:
+                os +
+                " / " +
+                browser,
+
+            userAgent:
+                ua
+
+        };
+
+    },
+
 
     /**************************************************************************
      * CHECK LOGIN
