@@ -816,7 +816,7 @@ const Auth = {
                 ? Number(
                     CONFIG.SESSION_TIMEOUT
                 )
-                : 30;
+                : 10;
 
 
         if (
