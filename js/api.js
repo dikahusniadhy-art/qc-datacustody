@@ -911,8 +911,9 @@ const API = {
 
 
     /******************************************************************************
-     * GET LOGIN STATUS - JSONP
-     ******************************************************************************/
+ * GET LOGIN STATUS - JSONP
+ * MOBILE SAFE VERSION
+ ******************************************************************************/
 
     getLoginStatusJsonp(
         requestId
@@ -939,6 +940,36 @@ const API = {
                 }
 
 
+                /*
+                 * =====================================================
+                 * CONFIG
+                 * =====================================================
+                 */
+
+                const MAX_RETRY = 3;
+
+                const TIMEOUT_MS = 15000;
+
+                const RETRY_DELAY = 800;
+
+
+                let attempt = 0;
+
+                let completed = false;
+
+                let currentScript = null;
+
+                let timeoutId = null;
+
+                let retryTimer = null;
+
+
+                /*
+                 * =====================================================
+                 * SAFE REQUEST ID
+                 * =====================================================
+                 */
+
                 const safeRequestId =
                     String(
                         requestId
@@ -952,25 +983,6 @@ const API = {
                 const callbackName =
                     "__custodyLoginCallback_" +
                     safeRequestId;
-
-
-                /*
-                 * =====================================================
-                 * SCRIPT
-                 * =====================================================
-                 */
-
-                const script =
-                    document.createElement(
-                        "script"
-                    );
-
-
-                let finished =
-                    false;
-
-
-                let timeoutId;
 
 
                 /*
@@ -992,6 +1004,9 @@ const API = {
                                     timeoutId
                                 );
 
+                                timeoutId =
+                                    null;
+
                             }
 
                         }
@@ -1000,11 +1015,84 @@ const API = {
                         ) {
 
                             console.warn(
-                                "Timeout cleanup error:",
+                                "Login JSONP timeout cleanup error:",
                                 timeoutError
                             );
 
                         }
+
+
+                        try {
+
+                            if (
+                                retryTimer
+                            ) {
+
+                                clearTimeout(
+                                    retryTimer
+                                );
+
+                                retryTimer =
+                                    null;
+
+                            }
+
+                        }
+                        catch (
+                        retryError
+                        ) {
+
+                            console.warn(
+                                "Login JSONP retry cleanup error:",
+                                retryError
+                            );
+
+                        }
+
+
+                        try {
+
+                            if (
+                                currentScript &&
+                                currentScript.parentNode
+                            ) {
+
+                                currentScript
+                                    .parentNode
+                                    .removeChild(
+                                        currentScript
+                                    );
+
+                            }
+
+                        }
+                        catch (
+                        scriptError
+                        ) {
+
+                            console.warn(
+                                "Login JSONP script cleanup error:",
+                                scriptError
+                            );
+
+                        }
+
+
+                        currentScript =
+                            null;
+
+                    };
+
+
+                /*
+                 * =====================================================
+                 * FINAL CLEANUP
+                 * ===================================================== */
+
+                const finalCleanup =
+                    () => {
+
+                        cleanup();
 
 
                         try {
@@ -1025,32 +1113,79 @@ const API = {
 
                         }
 
+                    };
 
-                        try {
 
-                            if (
-                                script &&
-                                script.parentNode
-                            ) {
+                /*
+                 * =====================================================
+                 * SUCCESS
+                 * ===================================================== */
 
-                                script.parentNode
-                                    .removeChild(
-                                        script
-                                    );
+                const finishSuccess =
+                    (
+                        result
+                    ) => {
 
-                            }
-
-                        }
-                        catch (
-                        scriptError
+                        if (
+                            completed
                         ) {
 
-                            console.warn(
-                                "Script cleanup error:",
-                                scriptError
-                            );
+                            return;
 
                         }
+
+
+                        completed =
+                            true;
+
+
+                        console.log(
+                            "API LOGIN JSONP RESPONSE:",
+                            result
+                        );
+
+
+                        finalCleanup();
+
+
+                        resolve(
+                            result
+                        );
+
+                    };
+
+
+                /*
+                 * =====================================================
+                 * FINAL ERROR
+                 * ===================================================== */
+
+                const finishError =
+                    (
+                        message
+                    ) => {
+
+                        if (
+                            completed
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        completed =
+                            true;
+
+
+                        finalCleanup();
+
+
+                        reject(
+                            new Error(
+                                message
+                            )
+                        );
 
                     };
 
@@ -1068,29 +1203,7 @@ const API = {
                         result
                     ) => {
 
-                        if (
-                            finished
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        finished =
-                            true;
-
-
-                        console.log(
-                            "API LOGIN JSONP RESPONSE:",
-                            result
-                        );
-
-
-                        cleanup();
-
-
-                        resolve(
+                        finishSuccess(
                             result
                         );
 
@@ -1099,99 +1212,15 @@ const API = {
 
                 /*
                  * =====================================================
-                 * URL
+                 * LOAD ATTEMPT
                  * =====================================================
                  */
 
-                let url;
-
-
-                try {
-
-                    url =
-                        new URL(
-                            this.getUrl()
-                        );
-
-                }
-                catch (
-                urlError
-                ) {
-
-                    finished =
-                        true;
-
-
-                    cleanup();
-
-
-                    reject(
-                        new Error(
-                            "API URL tidak valid."
-                        )
-                    );
-
-
-                    return;
-
-                }
-
-
-                url.searchParams.set(
-                    "action",
-                    "getLoginStatus"
-                );
-
-
-                url.searchParams.set(
-                    "request_id",
-                    requestId
-                );
-
-
-                url.searchParams.set(
-                    "callback",
-                    callbackName
-                );
-
-
-                url.searchParams.set(
-                    "_ts",
-                    Date.now()
-                );
-
-
-                console.log(
-                    "API LOGIN STATUS URL:",
-                    url.toString()
-                );
-
-
-                /*
-                 * =====================================================
-                 * SCRIPT ATTRIBUTES
-                 * =====================================================
-                 */
-
-                script.src =
-                    url.toString();
-
-
-                script.async =
-                    true;
-
-
-                /*
-                 * =====================================================
-                 * LOAD ERROR
-                 * =====================================================
-                 */
-
-                script.onerror =
+                const loadAttempt =
                     () => {
 
                         if (
-                            finished
+                            completed
                         ) {
 
                             return;
@@ -1199,68 +1228,334 @@ const API = {
                         }
 
 
-                        finished =
-                            true;
+                        attempt++;
+
+
+                        console.log(
+                            "API LOGIN STATUS ATTEMPT:",
+                            attempt,
+                            "/",
+                            MAX_RETRY
+                        );
 
 
                         cleanup();
 
 
-                        reject(
-                            new Error(
-                                "Gagal mengambil status login."
-                            )
+                        /*
+                         * =================================================
+                         * CREATE SCRIPT
+                         * =================================================
+                         */
+
+                        const script =
+                            document.createElement(
+                                "script"
+                            );
+
+
+                        currentScript =
+                            script;
+
+
+                        /*
+                         * =================================================
+                         * BUILD URL
+                         * =================================================
+                         */
+
+                        let url;
+
+
+                        try {
+
+                            url =
+                                new URL(
+                                    this.getUrl()
+                                );
+
+                        }
+                        catch (
+                        urlError
+                        ) {
+
+                            finishError(
+                                "API URL tidak valid."
+                            );
+
+                            return;
+
+                        }
+
+
+                        url.searchParams.set(
+                            "action",
+                            "getLoginStatus"
                         );
 
-                    };
+
+                        url.searchParams.set(
+                            "request_id",
+                            requestId
+                        );
 
 
-                /*
-                 * =====================================================
-                 * TIMEOUT JSONP
-                 * =====================================================
-                 */
-
-                timeoutId =
-                    setTimeout(
-                        () => {
-
-                            if (
-                                finished
-                            ) {
-
-                                return;
-
-                            }
+                        url.searchParams.set(
+                            "callback",
+                            callbackName
+                        );
 
 
-                            finished =
-                                true;
+                        /*
+                         * Cache buster.
+                         *
+                         * Sangat penting untuk mobile/browser
+                         * agar response tidak menggunakan cache lama.
+                         */
+
+                        url.searchParams.set(
+                            "_ts",
+                            Date.now()
+                        );
+
+
+                        console.log(
+                            "API LOGIN STATUS URL:",
+                            url.toString()
+                        );
+
+
+                        /*
+                         * =================================================
+                         * SCRIPT ATTRIBUTES
+                         * =================================================
+                         */
+
+                        script.src =
+                            url.toString();
+
+
+                        script.async =
+                            true;
+
+
+                        script.type =
+                            "text/javascript";
+
+
+                        /*
+                         * =================================================
+                         * SUCCESS LOAD
+                         *
+                         * JSONP callback tetap menjadi sumber
+                         * keberhasilan utama.
+                         * =================================================
+                         */
+
+                        script.onload =
+                            () => {
+
+                                console.log(
+                                    "API LOGIN JSONP SCRIPT LOADED:",
+                                    attempt
+                                );
+
+                            };
+
+
+                        /*
+                         * =================================================
+                         * LOAD ERROR
+                         * =================================================
+                         */
+
+                        script.onerror =
+                            () => {
+
+                                if (
+                                    completed
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                console.warn(
+                                    "API LOGIN JSONP NETWORK ERROR:",
+                                    attempt,
+                                    "/",
+                                    MAX_RETRY
+                                );
+
+
+                                cleanup();
+
+
+                                /*
+                                 * Masih ada kesempatan retry.
+                                 */
+
+                                if (
+                                    attempt <
+                                    MAX_RETRY
+                                ) {
+
+                                    retryTimer =
+                                        setTimeout(
+                                            () => {
+
+                                                loadAttempt();
+
+                                            },
+                                            RETRY_DELAY
+                                        );
+
+                                    return;
+
+                                }
+
+
+                                /*
+                                 * Semua retry gagal.
+                                 */
+
+                                finishError(
+                                    "Gagal mengambil status login. Periksa koneksi internet."
+                                );
+
+                            };
+
+
+                        /*
+                         * =================================================
+                         * TIMEOUT
+                         * =================================================
+                         */
+
+                        timeoutId =
+                            setTimeout(
+                                () => {
+
+                                    if (
+                                        completed
+                                    ) {
+
+                                        return;
+
+                                    }
+
+
+                                    console.warn(
+                                        "API LOGIN JSONP TIMEOUT:",
+                                        attempt,
+                                        "/",
+                                        MAX_RETRY
+                                    );
+
+
+                                    cleanup();
+
+
+                                    /*
+                                     * Retry jika masih tersedia.
+                                     */
+
+                                    if (
+                                        attempt <
+                                        MAX_RETRY
+                                    ) {
+
+                                        retryTimer =
+                                            setTimeout(
+                                                () => {
+
+                                                    loadAttempt();
+
+                                                },
+                                                RETRY_DELAY
+                                            );
+
+                                        return;
+
+                                    }
+
+
+                                    /*
+                                     * Semua percobaan timeout.
+                                     */
+
+                                    finishError(
+                                        "Timeout saat mengambil status login. Periksa koneksi internet."
+                                    );
+
+                                },
+                                TIMEOUT_MS
+                            );
+
+
+                        /*
+                         * =================================================
+                         * APPEND SCRIPT
+                         * =================================================
+                         */
+
+                        try {
+
+                            document.body.appendChild(
+                                script
+                            );
+
+                        }
+                        catch (
+                        appendError
+                        ) {
+
+                            console.error(
+                                "API LOGIN JSONP APPEND ERROR:",
+                                appendError
+                            );
 
 
                             cleanup();
 
 
-                            reject(
-                                new Error(
-                                    "Timeout saat mengambil status login."
-                                )
-                            );
+                            if (
+                                attempt <
+                                MAX_RETRY
+                            ) {
 
-                        },
-                        15000
-                    );
+                                retryTimer =
+                                    setTimeout(
+                                        () => {
+
+                                            loadAttempt();
+
+                                        },
+                                        RETRY_DELAY
+                                    );
+
+                            }
+                            else {
+
+                                finishError(
+                                    "Gagal memulai pemeriksaan status login."
+                                );
+
+                            }
+
+                        }
+
+                    };
 
 
                 /*
                  * =====================================================
-                 * APPEND SCRIPT
+                 * START
                  * =====================================================
                  */
 
-                document.body.appendChild(
-                    script
-                );
+                loadAttempt();
 
             }
         );
