@@ -203,17 +203,19 @@
 
             <section class="report-header">
 
-                <div>
+                <div class="report-header-copy">
 
-                    <span class="report-tag">
-
-                        ENTERPRISE REPORTING
-
-                    </span>
+                    <div class="report-eyebrow">
+                        <span class="report-tag">BOARD REPORTING</span>
+                        <span class="report-classification">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            INTERNAL • MANAGEMENT USE
+                        </span>
+                    </div>
 
                     <h2>
 
-                        Bavi Custody Reporting Dashboard
+                        Enterprise Custody Reporting
 
                         <div class="report-info">
 
@@ -237,10 +239,17 @@
 
                     <p>
 
-                        Generate, Preview, Export dan Monitoring
-                        seluruh laporan Data Agunan Custody.
+                        Executive reporting untuk memberikan
+                        ringkasan posisi, kontrol, dan status
+                        Data Agunan Custody secara terukur.
 
                     </p>
+
+                    <div class="report-meta-strip">
+                        <span><i class="fa-solid fa-database"></i> Data Agunan Custody</span>
+                        <span><i class="fa-solid fa-rotate"></i> Live from source</span>
+                        <span><i class="fa-solid fa-file-shield"></i> Board-ready reporting</span>
+                    </div>
 
                 </div>
 
@@ -256,15 +265,24 @@
             <!-- KPI REPORT -->
             <!-- ===================================================== -->
 
+            <section class="executive-section-head">
+                <div>
+                    <span class="section-kicker">EXECUTIVE OVERVIEW</span>
+                    <h2>Custody Position</h2>
+                </div>
+                <span class="section-context" id="executiveContext">Current filtered position</span>
+            </section>
+
             <section class="cards report-kpi">
 
                 <div class="card primary">
 
                     <div>
 
-                        <div>Total Data</div>
+                        <div>Total Portfolio</div>
 
                         <h2 id="kpiTotal">0</h2>
+                        <small>Records in current scope</small>
 
                     </div>
 
@@ -280,9 +298,10 @@
 
                     <div>
 
-                        <div>Dokumen Aktif</div>
+                        <div>Active Position</div>
 
                         <h2 id="kpiAktif">0</h2>
+                        <small id="kpiAktifRate">0% of portfolio</small>
 
                     </div>
 
@@ -298,9 +317,10 @@
 
                     <div>
 
-                        <div>Expired</div>
+                        <div>Expired Exposure</div>
 
                         <h2 id="kpiExpired">0</h2>
+                        <small id="kpiExpiredRate">0% of portfolio</small>
 
                     </div>
 
@@ -316,9 +336,10 @@
 
                     <div>
 
-                        <div>Belum Lengkap</div>
+                        <div>Incomplete Records</div>
 
                         <h2 id="kpiBL">0</h2>
+                        <small id="kpiBLRate">0% of portfolio</small>
 
                     </div>
 
@@ -338,7 +359,17 @@
 
             <section class="section report-filter">
 
-                <h3>
+                <div class="control-panel-head">
+                    <div>
+                        <span class="section-kicker">REPORT CONTROL</span>
+                        <h3>Reporting Scope</h3>
+                    </div>
+                    <span class="control-status" id="filterStatusText">
+                        <i class="fa-solid fa-circle-check"></i> All records
+                    </span>
+                </div>
+
+                <h3 class="legacy-filter-title">
 
                     <i class="fa-solid fa-filter"></i>
 
@@ -501,6 +532,59 @@
             </section>
 
             <!-- ===================================================== -->
+            <!-- EXECUTIVE CONTROL SUMMARY -->
+            <!-- ===================================================== -->
+
+            <section class="executive-summary">
+
+                <div class="summary-main">
+                    <div class="summary-main-top">
+                        <div>
+                            <span class="section-kicker">CONTROL POSITION</span>
+                            <h3>Current Custody Health</h3>
+                        </div>
+                        <div class="health-ring" id="healthRing">
+                            <strong id="healthPercent">0%</strong>
+                            <span>active</span>
+                        </div>
+                    </div>
+
+                    <div class="health-progress">
+                        <span id="healthProgress"></span>
+                    </div>
+
+                    <p id="executiveNarrative">
+                        Menunggu data untuk membentuk ringkasan posisi custody.
+                    </p>
+                </div>
+
+                <div class="summary-risk">
+                    <div class="risk-row">
+                        <div class="risk-icon risk-expired"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div>
+                            <span>Expired Exposure</span>
+                            <strong id="summaryExpiredExec">0</strong>
+                        </div>
+                    </div>
+                    <div class="risk-row">
+                        <div class="risk-icon risk-incomplete"><i class="fa-solid fa-file-circle-xmark"></i></div>
+                        <div>
+                            <span>Incomplete Records</span>
+                            <strong id="summaryBLExec">0</strong>
+                        </div>
+                    </div>
+                    <div class="risk-row">
+                        <div class="risk-icon risk-active"><i class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <span>Active Records</span>
+                            <strong id="summaryAktifExec">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ===================================================== -->
             <!-- REPORT SUMMARY -->
             <!-- ===================================================== -->
 
@@ -582,15 +666,16 @@
 
                     <div>
 
+                        <span class="section-kicker">BOARD DETAIL</span>
                         <h3>
 
-                            Operational Report
+                            Enterprise Custody Report
 
                         </h3>
 
                         <small>
 
-                            Enterprise Custody Management System
+                            Detailed custody position within the selected reporting scope
 
                         </small>
 
@@ -694,11 +779,20 @@
 
     </div>
 
-    <script src="../js/config.js"></script>
-    <script src="js/roles.js"></script>
-    <script src="../js/helper.js"></script>
-    <script src="../js/api.js"></script>
-    <script src="../js/auth.js"></script>
+
+    <div class="loading" id="loading" aria-hidden="true">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <strong>Loading enterprise report</strong>
+            <span>Retrieving current custody position...</span>
+        </div>
+    </div>
+
+    <script src="../js/config.js?v=1.0.0"></script>
+    <script src="../js/helper.js?v=1.0.0"></script>
+    <script src="../js/api.js?v=1.0.0"></script>
+    <script src="../js/auth.js?v=1.0.0"></script>
+    <script src="../js/roles.js?v=1.0.0"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
