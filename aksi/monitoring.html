@@ -2,300 +2,1774 @@
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>MONITORING DATA AGUNAN</title>
 
-    <!-- GLOBAL STYLE -->
+
+    <!-- =========================================================
+         GLOBAL STYLE
+         ========================================================= -->
+
     <link rel="stylesheet" href="../css/style.css">
+
     <link rel="icon" href="../foto/krom1.png">
 
-    <!-- MONITORING -->
+
+    <!-- =========================================================
+         MONITORING STYLE
+         ========================================================= -->
+
     <link rel="stylesheet" href="../css/monitoring.css">
 
-    <!-- FONT AWESOME -->
+
+    <!-- =========================================================
+         FONT AWESOME
+         ========================================================= -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 </head>
 
+
 <body>
-    <!-- ========================================================= -->
-    <!-- PAGE CONTAINER -->
-    <!-- ========================================================= -->
+
+
+    <!-- =========================================================
+         PAGE CONTAINER
+         ========================================================= -->
+
     <div class="page-container">
 
-        <!-- ========================================================= -->
-        <!-- HEADER -->
-        <!-- ========================================================= -->
+
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
+
         <header class="page-header">
+
             <div class="header-left">
+
                 <div class="header-icon">
+
                     <i class="fa-solid fa-chart-line"></i>
+
                 </div>
+
+
                 <div class="header-text">
-                    <h1>Monitoring Data Agunan</h1>
-                    <p>Enterprise Custody Monitoring System</p>
-                    <span id="lastUpdate">Last Update : -</span>
+
+                    <h1>
+                        Monitoring Data Agunan
+                    </h1>
+
+                    <p>
+                        Enterprise Custody Monitoring System
+                    </p>
+
+                    <span id="lastUpdate">
+                        Last Update : -
+                    </span>
+
                 </div>
+
             </div>
+
+
             <div class="header-right">
+
                 <div class="monitor-date">
+
                     <i class="fa-solid fa-calendar-days"></i>
-                    <span id="todayDate">-</span>
+
+                    <span id="todayDate">
+                        -
+                    </span>
+
                 </div>
+
             </div>
+
         </header>
 
-        <!-- ========================================================= -->
-        <!-- SUMMARY -->
-        <!-- ========================================================= -->
+
+
+        <!-- =====================================================
+             SUMMARY
+             ===================================================== -->
+
         <section class="summary-grid">
-            <!-- PROGRESS -->
+
+
+            <!-- =================================================
+                 PROGRESS SUMMARY
+                 ================================================= -->
+
             <div class="summary-card progress-summary">
+
                 <div class="summary-header">
-                    <h3>Progress Kelengkapan Dokumen</h3>
-                    <span>Overall</span>
+
+                    <h3>
+                        Progress Kelengkapan Dokumen
+                    </h3>
+
+                    <span>
+                        Overall
+                    </span>
+
                 </div>
+
+
                 <div class="progress-circle">
-                    <h1 id="progressPercent">0%</h1>
+
+                    <h1 id="progressPercent">
+                        0%
+                    </h1>
+
                 </div>
+
+
                 <div class="progress-bar-big">
+
                     <div id="progressValue" class="progress-value"></div>
+
                 </div>
+
+
                 <div class="progress-footer">
+
                     Target Operasional
-                    <strong>100%</strong>
+
+                    <strong>
+                        100%
+                    </strong>
+
                 </div>
+
             </div>
 
-            <!-- PRIORITY -->
+
+
+            <!-- =================================================
+                 PRIORITY SUMMARY
+                 ================================================= -->
+
             <div class="summary-card priority-summary">
+
                 <div class="summary-header">
-                    <h3>Prioritas Hari Ini</h3>
+
+                    <h3>
+                        Prioritas Hari Ini
+                    </h3>
+
                 </div>
+
+
                 <div class="priority-list">
+
+
                     <div class="priority-item success">
-                        <div>🟢 Lengkap / Aktif</div>
-                        <strong id="totalLengkap">0</strong>
+
+                        <div>
+                            🟢 Lengkap / Aktif
+                        </div>
+
+                        <strong id="totalLengkap">
+                            0
+                        </strong>
+
                     </div>
+
 
                     <div class="priority-item pending">
-                        <div>🟣 Belum Lengkap</div>
-                        <strong id="totalBL">0</strong>
+
+                        <div>
+                            🟣 Belum Lengkap
+                        </div>
+
+                        <strong id="totalBL">
+                            0
+                        </strong>
+
                     </div>
+
 
                     <div class="priority-item medium">
-                        <div>🟡 Akan Expired</div>
-                        <strong id="totalSoon">0</strong>
+
+                        <div>
+                            🟡 Akan Expired
+                        </div>
+
+                        <strong id="totalSoon">
+                            0
+                        </strong>
+
                     </div>
+
 
                     <div class="priority-item high">
-                        <div>🔴 Expired</div>
-                        <strong id="totalExpired">0</strong>
+
+                        <div>
+                            🔴 Expired
+                        </div>
+
+                        <strong id="totalExpired">
+                            0
+                        </strong>
+
                     </div>
+
 
                     <div class="priority-item nonaktif">
-                        <div>⚫ Nonaktif</div>
-                        <strong id="totalNonaktif">0</strong>
+
+                        <div>
+                            ⚫ Nonaktif
+                        </div>
+
+                        <strong id="totalNonaktif">
+                            0
+                        </strong>
+
                     </div>
 
                 </div>
+
             </div>
+
         </section>
 
-        <!-- ========================================================= -->
-        <!-- KPI -->
-        <!-- ========================================================= -->
+
+
+        <!-- =====================================================
+             KPI
+             ===================================================== -->
+
         <section class="kpi-grid">
+
+
+            <!-- TOTAL -->
+
             <div class="kpi-card total">
+
                 <div class="kpi-icon">
+
                     <i class="fa-solid fa-folder-open"></i>
+
                 </div>
+
                 <div class="kpi-content">
-                    <span>Total Agunan</span>
-                    <h2 id="kpiTotal">0</h2>
-                    <small>Total Dokumen Custody</small>
+
+                    <span>
+                        Total Agunan
+                    </span>
+
+                    <h2 id="kpiTotal">
+                        0
+                    </h2>
+
+                    <small>
+                        Total Dokumen Custody
+                    </small>
+
                 </div>
+
             </div>
+
+
+
+            <!-- LENGKAP -->
 
             <div class="kpi-card success">
+
                 <div class="kpi-icon">
+
                     <i class="fa-solid fa-circle-check"></i>
+
                 </div>
+
                 <div class="kpi-content">
-                    <span>Dokumen Lengkap</span>
-                    <h2 id="kpiLengkap">0</h2>
-                    <small>Status Aman</small>
+
+                    <span>
+                        Dokumen Lengkap
+                    </span>
+
+                    <h2 id="kpiLengkap">
+                        0
+                    </h2>
+
+                    <small>
+                        Status Aman
+                    </small>
+
                 </div>
+
             </div>
+
+
+
+            <!-- BELUM LENGKAP -->
 
             <div class="kpi-card pending">
+
                 <div class="kpi-icon">
+
                     <i class="fa-solid fa-file-circle-exclamation"></i>
+
                 </div>
+
                 <div class="kpi-content">
-                    <span>Belum Lengkap</span>
-                    <h2 id="kpiBelum">0</h2>
-                    <small>Perlu Dilengkapi</small>
+
+                    <span>
+                        Belum Lengkap
+                    </span>
+
+                    <h2 id="kpiBelum">
+                        0
+                    </h2>
+
+                    <small>
+                        Perlu Dilengkapi
+                    </small>
+
                 </div>
+
             </div>
+
+
+
+            <!-- AKAN EXPIRED -->
 
             <div class="kpi-card warning">
+
                 <div class="kpi-icon">
+
                     <i class="fa-solid fa-clock"></i>
+
                 </div>
+
                 <div class="kpi-content">
-                    <span>Akan Expired</span>
-                    <h2 id="kpiSoon">0</h2>
-                    <small>≤ 30 Hari</small>
+
+                    <span>
+                        Akan Expired
+                    </span>
+
+                    <h2 id="kpiSoon">
+                        0
+                    </h2>
+
+                    <small>
+                        ≤ 30 Hari
+                    </small>
+
                 </div>
+
             </div>
+
+
+
+            <!-- EXPIRED -->
 
             <div class="kpi-card danger">
+
                 <div class="kpi-icon">
+
                     <i class="fa-solid fa-triangle-exclamation"></i>
+
                 </div>
+
                 <div class="kpi-content">
-                    <span>Sudah Expired</span>
-                    <h2 id="kpiExpired">0</h2>
-                    <small>Perlu Tindakan</small>
+
+                    <span>
+                        Sudah Expired
+                    </span>
+
+                    <h2 id="kpiExpired">
+                        0
+                    </h2>
+
+                    <small>
+                        Perlu Tindakan
+                    </small>
+
                 </div>
+
             </div>
+
+
+
+            <!-- NONAKTIF -->
 
             <div class="kpi-card nonaktif">
+
                 <div class="kpi-icon">
+
                     <i class="fa-solid fa-toggle-off"></i>
+
                 </div>
 
                 <div class="kpi-content">
-                    <span>Nonaktif</span>
-                    <h2 id="kpinonaktif">0</h2>
-                    <small>Status Tidak Aktif</small>
+
+                    <span>
+                        Nonaktif
+                    </span>
+
+                    <h2 id="kpinonaktif">
+                        0
+                    </h2>
+
+                    <small>
+                        Status Tidak Aktif
+                    </small>
+
                 </div>
+
             </div>
 
         </section>
 
-        <!-- ========================================================= -->
-        <!-- TOOLBAR -->
-        <!-- ========================================================= -->
-        <section class="toolbar-card">
-            <div class="toolbar-left">
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="txtSearch" placeholder="Cari No Agunan, CIF atau Nama Debitur">
-                </div>
-                <select id="filterDokumen">
-                    <option value="">Semua Jenis Dokumen</option>
-                    <option value="DOKUMEN">DOKUMEN</option>
-                    <option value="PENGIKATAN">PENGIKATAN</option>
-                    <option value="JAMINAN">JAMINAN</option>
-                </select>
-                <select id="filterCabang">
-                    <option value="">Semua Cabang</option>
-                </select>
-                <select id="filterStatus">
-                    <option value="">Semua Status</option>
-                    <option value="A">AKTIF</option>
-                    <option value="BL">BELUM LENGKAP</option>
-                    <option value="E">EXPIRED</option>
-                    <!-- DISESUAIKAN DENGAN CODE.GS -->
-                    <option value="D">NON AKTIF</option>
-                </select>
-            </div>
-            <div class="toolbar-right">
-                <span class="toolbar-total">
-                    Total :
-                    <strong id="toolbarTotal">0</strong>
-                    Data
-                </span>
-                <button id="btnBack" class="btn btn-secondary">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    Dashboard
-                </button>
-                <button id="btnRefresh" class="btn btn-light">
-                    <i class="fa-solid fa-rotate-right"></i>
-                    Refresh
-                </button>
-            </div>
-        </section>
 
-        <!-- ========================================================= -->
-        <!-- TABLE -->
-        <!-- ========================================================= -->
-        <section class="table-card">
-            <div class="table-header">
+
+        <!-- =====================================================
+             QC CONTROL TOWER
+             STEP 7C
+             
+             NOTE:
+             QC SEKARANG BERDIRI SENDIRI.
+             TIDAK LAGI BERADA DI DALAM TOOLBAR.
+             ===================================================== -->
+
+        <section class="qc-control-tower">
+
+
+            <!-- =================================================
+                 QC HEADER
+                 ================================================= -->
+
+            <div class="qc-section-header">
+
                 <div>
-                    <h3>
-                        <i class="fa-solid fa-chart-line"></i>
-                        Monitoring Operasional Custody
-                    </h3>
-                    <small>Monitoring Status Dokumen Agunan</small>
+
+                    <div class="qc-title-row">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <h2>
+                            QC Control Tower
+                        </h2>
+
+                    </div>
+
+
+                    <p>
+                        Quality Control & Audit Findings
+                    </p>
+
                 </div>
+
+
+                <div class="qc-finding-total">
+
+                    <span>
+                        Total Findings
+                    </span>
+
+                    <strong id="qcTotalFindings">
+                        0
+                    </strong>
+
+                </div>
+
             </div>
+
+
+
+            <!-- =================================================
+                 SEVERITY CARDS
+                 ================================================= -->
+
+            <div class="qc-severity-grid">
+
+
+                <!-- CRITICAL -->
+
+                <button type="button" class="qc-severity-card critical" id="qcCriticalCard" data-severity="CRITICAL">
+
+                    <div class="qc-card-icon">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                    </div>
+
+
+                    <div class="qc-card-content">
+
+                        <span class="qc-card-label">
+                            CRITICAL
+                        </span>
+
+                        <strong id="qcCritical">
+                            0
+                        </strong>
+
+                        <small>
+                            Immediate Action
+                        </small>
+
+                    </div>
+
+                </button>
+
+
+
+                <!-- HIGH -->
+
+                <button type="button" class="qc-severity-card high" id="qcHighCard" data-severity="HIGH">
+
+                    <div class="qc-card-icon">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    </div>
+
+
+                    <div class="qc-card-content">
+
+                        <span class="qc-card-label">
+                            HIGH
+                        </span>
+
+                        <strong id="qcHigh">
+                            0
+                        </strong>
+
+                        <small>
+                            Requires Review
+                        </small>
+
+                    </div>
+
+                </button>
+
+
+
+                <!-- MEDIUM -->
+
+                <button type="button" class="qc-severity-card medium" id="qcMediumCard" data-severity="MEDIUM">
+
+                    <div class="qc-card-icon">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                    </div>
+
+
+                    <div class="qc-card-content">
+
+                        <span class="qc-card-label">
+                            MEDIUM
+                        </span>
+
+                        <strong id="qcMedium">
+                            0
+                        </strong>
+
+                        <small>
+                            Monitor
+                        </small>
+
+                    </div>
+
+                </button>
+
+
+
+                <!-- LOW -->
+
+                <button type="button" class="qc-severity-card low" id="qcLowCard" data-severity="LOW">
+
+                    <div class="qc-card-icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+
+                    <div class="qc-card-content">
+
+                        <span class="qc-card-label">
+                            LOW
+                        </span>
+
+                        <strong id="qcLow">
+                            0
+                        </strong>
+
+                        <small>
+                            Low Priority
+                        </small>
+
+                    </div>
+
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FINDING BY AREA
+                 ================================================= -->
+
+            <div class="qc-area-section">
+
+
+                <div class="qc-sub-header">
+
+                    <div>
+
+                        <h3>
+
+                            <i class="fa-solid fa-layer-group"></i>
+
+                            Finding by Area
+
+                        </h3>
+
+
+                        <span>
+                            Klik area untuk melihat finding terkait
+                        </span>
+
+                    </div>
+
+
+                    <button type="button" id="qcResetFilter" class="qc-reset-btn">
+
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+
+                        Semua Finding
+
+                    </button>
+
+                </div>
+
+
+                <div id="qcAreaGrid" class="qc-area-grid">
+
+                    <!-- Generated by JavaScript -->
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACTIVE FILTER
+                 ================================================= -->
+
+            <div id="qcActiveFilter" class="qc-active-filter" style="display:none;">
+
+                <div>
+
+                    <i class="fa-solid fa-filter"></i>
+
+                    <span>
+                        Filter aktif:
+                    </span>
+
+                    <strong id="qcActiveFilterText">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <button type="button" id="qcClearFilter">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 AUDIT FINDINGS
+                 ================================================= -->
+
+            <div class="qc-findings-card">
+
+
+                <div class="qc-findings-header">
+
+                    <div>
+
+                        <h3>
+
+                            <i class="fa-solid fa-list-check"></i>
+
+                            Audit Findings
+
+                        </h3>
+
+
+                        <span id="qcFindingDescription">
+                            Semua temuan QC
+                        </span>
+
+                    </div>
+
+
+                    <strong id="qcVisibleCount">
+                        0 Findings
+                    </strong>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     FINDINGS TABLE
+                     ================================================= -->
+
+                <div class="qc-findings-container">
+
+                    <table id="qcFindingsTable">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Priority
+                                </th>
+
+                                <th>
+                                    Jenis Dokumen
+                                </th>
+
+                                <th>
+                                    No Agunan
+                                </th>
+
+                                <th>
+                                    CIF
+                                </th>
+
+                                <th>
+                                    Cabang
+                                </th>
+
+                                <th>
+                                    Area
+                                </th>
+
+                                <th>
+                                    Field
+                                </th>
+
+                                <th>
+                                    Finding
+                                </th>
+
+                                <th>
+                                    Detail
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="qcFindingsBody">
+
+                            <!-- Generated by JavaScript -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     EMPTY STATE
+                     ================================================= -->
+
+                <div id="qcEmptyState" class="qc-empty-state" style="display:none;">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+
+                    <strong>
+                        Tidak ada finding
+                    </strong>
+
+
+                    <span>
+                        Tidak ditemukan masalah berdasarkan filter yang dipilih.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             TOOLBAR / FILTER
+             ===================================================== -->
+
+        <section class="toolbar-card">
+
+
+            <!-- =================================================
+                 TOOLBAR LEFT
+                 ================================================= -->
+
+            <div class="toolbar-left">
+
+
+                <!-- SEARCH -->
+
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" id="txtSearch" placeholder="Cari No Agunan, CIF atau Nama Debitur">
+
+                </div>
+
+
+
+                <!-- JENIS DOKUMEN -->
+
+                <select id="filterDokumen">
+
+                    <option value="">
+                        Semua Jenis Dokumen
+                    </option>
+
+                    <option value="DOKUMEN">
+                        DOKUMEN
+                    </option>
+
+                    <option value="PENGIKATAN">
+                        PENGIKATAN
+                    </option>
+
+                    <option value="JAMINAN">
+                        JAMINAN
+                    </option>
+
+                </select>
+
+
+
+                <!-- CABANG -->
+
+                <select id="filterCabang">
+
+                    <option value="">
+                        Semua Cabang
+                    </option>
+
+                </select>
+
+
+
+                <!-- STATUS -->
+
+                <select id="filterStatus">
+
+                    <option value="">
+                        Semua Status
+                    </option>
+
+                    <option value="A">
+                        AKTIF
+                    </option>
+
+                    <option value="BL">
+                        BELUM LENGKAP
+                    </option>
+
+                    <option value="E">
+                        EXPIRED
+                    </option>
+
+                    <option value="D">
+                        NON AKTIF
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 TOOLBAR RIGHT
+                 ================================================= -->
+
+            <div class="toolbar-right">
+
+
+                <span class="toolbar-total">
+
+                    Total :
+
+                    <strong id="toolbarTotal">
+                        0
+                    </strong>
+
+                    Data
+
+                </span>
+
+
+                <!-- BACK -->
+
+                <button id="btnBack" class="btn btn-secondary">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Dashboard
+
+                </button>
+
+
+                <!-- REFRESH -->
+
+                <button id="btnRefresh" class="btn btn-light">
+
+                    <i class="fa-solid fa-rotate-right"></i>
+
+                    Refresh
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             MONITORING TABLE
+             ===================================================== -->
+
+        <section class="table-card">
+
+
+            <div class="table-header">
+
+                <div>
+
+                    <h3>
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        Monitoring Operasional Custody
+
+                    </h3>
+
+
+                    <small>
+                        Monitoring Status Dokumen Agunan
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
             <div class="table-container">
+
                 <table id="tblMonitoring">
+
                     <thead>
+
                         <tr>
-                            <th width="60">No</th>
-                            <th>Jenis Dokumen</th>
-                            <th>No Agunan</th>
-                            <th>CIF</th>
-                            <th>Nama Debitur</th>
-                            <th>Cabang</th>
-                            <th>Status</th>
-                            <th>Tanggal Expired</th>
-                            <th>Sisa Hari</th>
-                            <th>Priority</th>
-                            <th width="170">Progress</th>
+
+                            <th width="60">
+                                No
+                            </th>
+
+                            <th>
+                                Jenis Dokumen
+                            </th>
+
+                            <th>
+                                No Agunan
+                            </th>
+
+                            <th>
+                                CIF
+                            </th>
+
+                            <th>
+                                Nama Debitur
+                            </th>
+
+                            <th>
+                                Cabang
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Tanggal Expired
+                            </th>
+
+                            <th>
+                                Sisa Hari
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th width="170">
+                                Progress
+                            </th>
+
                         </tr>
+
                     </thead>
+
+
                     <tbody>
-                        <!-- Generate Javascript -->
+
+                        <!-- Generated by JavaScript -->
+
                     </tbody>
+
                 </table>
+
             </div>
+
         </section>
 
-        <!-- ========================================================= -->
-        <!-- PAGINATION -->
-        <!-- ========================================================= -->
+
+
+        <!-- =====================================================
+             PAGINATION
+             ===================================================== -->
+
         <section class="pagination">
+
+
             <button id="btnPrev" class="btn-page">
+
                 <i class="fa-solid fa-angle-left"></i>
+
             </button>
-            <span id="pageInfo">Page 1 of 1</span>
+
+
+            <span id="pageInfo">
+                Page 1 of 1
+            </span>
+
+
             <button id="btnNext" class="btn-page">
+
                 <i class="fa-solid fa-angle-right"></i>
+
             </button>
+
         </section>
 
-        <!-- ========================================================= -->
-        <!-- FOOTER -->
-        <!-- ========================================================= -->
+
+
+        <!-- =====================================================
+             FOOTER
+             ===================================================== -->
+
         <footer class="footer">
-            <strong>MONITORING DATA AGUNAN CUSTODY</strong><br>
-            <span id="appVersion"></span><br>
+
+            <strong>
+                MONITORING DATA AGUNAN CUSTODY
+            </strong>
+
+            <br>
+
+            <span id="appVersion"></span>
+
+            <br>
+
             © 2026 PT KROM BANK INDONESIA Tbk
+
         </footer>
 
-        <!-- ========================================================= -->
-        <!-- LOADING -->
-        <!-- ========================================================= -->
+
+
+        <!-- =====================================================
+             LOADING OVERLAY
+             ===================================================== -->
+
         <div id="loading" class="loading-overlay">
+
             <div class="loading-box">
+
                 <div class="spinner"></div>
-                <p>Memuat Data Monitoring...</p>
+
+                <p>
+                    Memuat Data Monitoring...
+                </p>
+
             </div>
+
         </div>
 
-        <!-- ========================================================= -->
-        <!-- JAVASCRIPT -->
-        <!-- ========================================================= -->
+        <!-- =====================================================
+             QC AUDIT FINDING DETAIL MODAL
+             STEP 7D.1
+             ===================================================== -->
+
+        <div id="qcFindingModal" class="qc-finding-modal" aria-hidden="true">
+
+            <div class="qc-finding-modal-overlay"></div>
+
+
+            <div class="qc-finding-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="qcFindingModalTitle">
+
+
+                <!-- =================================================
+                     MODAL HEADER
+                     ================================================= -->
+
+                <div class="qc-finding-modal-header">
+
+                    <div class="qc-finding-modal-title">
+
+                        <div class="qc-modal-icon">
+
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                QUALITY CONTROL
+                            </span>
+
+                            <h2 id="qcFindingModalTitle">
+                                Audit Finding Detail
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="button" id="qcFindingModalClose" class="qc-finding-modal-close" aria-label="Tutup">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     MODAL BODY
+                     ================================================= -->
+
+                <div class="qc-finding-modal-body">
+
+
+                    <!-- =================================================
+                         FINDING SUMMARY
+                         ================================================= -->
+
+                    <div class="qc-detail-summary">
+
+                        <div class="qc-detail-priority">
+
+                            <span>
+                                PRIORITY
+                            </span>
+
+                            <strong id="qcDetailSeverity">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="qc-detail-area">
+
+                            <span>
+                                AREA
+                            </span>
+
+                            <strong id="qcDetailArea">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="qc-detail-status">
+
+                            <span>
+                                STATUS
+                            </span>
+
+                            <strong id="qcDetailStatus">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         IDENTITAS AGUNAN
+                         ================================================= -->
+
+                    <div class="qc-detail-section">
+
+                        <div class="qc-detail-section-title">
+
+                            <i class="fa-solid fa-folder-open"></i>
+
+                            <h3>
+                                Identitas Agunan
+                            </h3>
+
+                        </div>
+
+
+                        <div class="qc-detail-grid">
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    No Agunan
+                                </span>
+
+                                <strong id="qcDetailNoAgunan">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    CIF Debitur
+                                </span>
+
+                                <strong id="qcDetailCif">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    Nama Pemilik Agunan
+                                </span>
+
+                                <strong id="qcDetailNama">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    Kode Cabang
+                                </span>
+
+                                <strong id="qcDetailCabang">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    No Rekening Fasilitas
+                                </span>
+
+                                <strong id="qcDetailRekening">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    Produk
+                                </span>
+
+                                <strong id="qcDetailProduk">
+                                    -
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =================================================
+                         FINDING DETAIL
+                         ================================================= -->
+
+                    <div class="qc-detail-section">
+
+                        <div class="qc-detail-section-title">
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                            <h3>
+                                Finding
+                            </h3>
+
+                        </div>
+
+                        <!-- =========================================================
+     DOKUMEN & CUSTODY
+     ========================================================= -->
+
+                        <div class="qc-detail-section">
+
+                            <div class="qc-detail-section-title">
+
+                                <i class="fa-solid fa-file-shield"></i>
+
+                                <h3>
+                                    Dokumen & Custody
+                                </h3>
+
+                            </div>
+
+
+                            <div class="qc-detail-grid">
+
+                                <div class="qc-detail-field">
+                                    <span>Jenis Dokumen</span>
+                                    <strong id="qcDetailJenisDokumen">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Bukti Kepemilikan</span>
+                                    <strong id="qcDetailBuktiKepemilikan">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Penyimpanan Agunan</span>
+                                    <strong id="qcDetailPenyimpanan">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Asli / Copy</span>
+                                    <strong id="qcDetailAsliCopy">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Lokasi Document</span>
+                                    <strong id="qcDetailLokasiDocument">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Deskripsi Document</span>
+                                    <strong id="qcDetailDocumentDescription">-</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =========================================================
+     PENILAIAN & PENGIKATAN
+     ========================================================= -->
+
+                        <div class="qc-detail-section">
+
+                            <div class="qc-detail-section-title">
+
+                                <i class="fa-solid fa-file-signature"></i>
+
+                                <h3>
+                                    Penilaian & Pengikatan
+                                </h3>
+
+                            </div>
+
+
+                            <div class="qc-detail-grid">
+
+                                <div class="qc-detail-field">
+                                    <span>Nilai NJOP</span>
+                                    <strong id="qcDetailNjop">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Tanggal Penilaian</span>
+                                    <strong id="qcDetailTanggalPenilaian">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Jenis Penilaian</span>
+                                    <strong id="qcDetailJenisPenilaian">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Jatuh Tempo Penilaian</span>
+                                    <strong id="qcDetailPenilaianJatuhTempo">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Tanggal Pengikatan</span>
+                                    <strong id="qcDetailTanggalPengikatan">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Status Agunan</span>
+                                    <strong id="qcDetailStatusAgunan">-</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =========================================================
+     ASURANSI & PARIPASU
+     ========================================================= -->
+
+                        <div class="qc-detail-section">
+
+                            <div class="qc-detail-section-title">
+
+                                <i class="fa-solid fa-shield-halved"></i>
+
+                                <h3>
+                                    Asuransi & Paripasu
+                                </h3>
+
+                            </div>
+
+
+                            <div class="qc-detail-grid">
+
+                                <div class="qc-detail-field">
+                                    <span>Agunan Asuransi</span>
+                                    <strong id="qcDetailAgunanAsuransi">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Tanggal Awal Asuransi</span>
+                                    <strong id="qcDetailAwalAsuransi">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Jatuh Tempo Asuransi</span>
+                                    <strong id="qcDetailJatuhTempoAsuransi">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Status Paripasu</span>
+                                    <strong id="qcDetailStatusParipasu">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Persentase Paripasu</span>
+                                    <strong id="qcDetailPersentaseParipasu">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Joint Account</span>
+                                    <strong id="qcDetailJointAccount">-</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =========================================================
+     ALAMAT AGUNAN
+     ========================================================= -->
+
+                        <div class="qc-detail-section">
+
+                            <div class="qc-detail-section-title">
+
+                                <i class="fa-solid fa-location-dot"></i>
+
+                                <h3>
+                                    Lokasi Agunan
+                                </h3>
+
+                            </div>
+
+
+                            <div class="qc-detail-grid">
+
+                                <div class="qc-detail-field">
+                                    <span>Alamat</span>
+                                    <strong id="qcDetailAlamat">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>RT</span>
+                                    <strong id="qcDetailRt">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>RW</span>
+                                    <strong id="qcDetailRw">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Kelurahan</span>
+                                    <strong id="qcDetailKelurahan">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Kecamatan</span>
+                                    <strong id="qcDetailKecamatan">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Kota / Kabupaten</span>
+                                    <strong id="qcDetailKota">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Provinsi</span>
+                                    <strong id="qcDetailProvinsi">-</strong>
+                                </div>
+
+                                <div class="qc-detail-field">
+                                    <span>Kode Pos</span>
+                                    <strong id="qcDetailKodepos">-</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =========================================================
+     CATATAN & DIGITAL FILE
+     ========================================================= -->
+
+                        <div class="qc-detail-section">
+
+                            <div class="qc-detail-section-title">
+
+                                <i class="fa-solid fa-note-sticky"></i>
+
+                                <h3>
+                                    Catatan & Digital Custody
+                                </h3>
+
+                            </div>
+
+
+                            <div class="qc-detail-field qc-digital-file-field">
+
+                                <span>
+                                    Digital Evidence
+                                </span>
+
+                                <div id="qcDetailDigitalFile" class="qc-digital-file">
+                                    <span class="qc-evidence-empty">
+                                        Evidence tidak tersedia
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="qc-detail-description">
+
+                                <span>
+                                    Catatan Tambahan
+                                </span>
+
+                                <p id="qcDetailCatatan">
+                                    -
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="qc-detail-finding-box">
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    Field Bermasalah
+                                </span>
+
+                                <strong id="qcDetailField">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="qc-detail-field">
+
+                                <span>
+                                    Nilai NJOP
+                                </span>
+
+                                <strong id="qcDetailValue">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="qc-detail-description">
+
+                                <span>
+                                    Deskripsi Finding
+                                </span>
+
+                                <p id="qcDetailFinding">
+                                    -
+                                </p>
+
+                            </div>
+
+
+                            <div class="qc-detail-description">
+
+                                <span>
+                                    Detail / Keterangan
+                                </span>
+
+                                <p id="qcDetailDescription">
+                                    -
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         REKOMENDASI
+                         ================================================= -->
+
+                    <div class="qc-detail-section">
+
+                        <div class="qc-detail-section-title">
+
+                            <i class="fa-solid fa-clipboard-check"></i>
+
+                            <h3>
+                                Rekomendasi Tindakan
+                            </h3>
+
+                        </div>
+
+
+                        <div class="qc-detail-action-box">
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                            <p id="qcDetailRecommendation">
+                                -
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     MODAL FOOTER
+                     ================================================= -->
+
+                <div class="qc-finding-modal-footer">
+
+
+                    <button type="button" id="qcFindingModalCancel" class="btn btn-light">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                        Tutup
+
+                    </button>
+
+
+                    <button type="button" id="qcFindingModalViewData" class="btn btn-secondary">
+                        <i class="fa-solid fa-eye"></i>
+                        Lihat Profil Agunan
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             JAVASCRIPT
+             ===================================================== -->
+
         <script src="../js/config.js"></script>
+
         <script src="../js/api.js"></script>
+
         <script src="../js/helper.js"></script>
+
         <script src="../js/monitoring.js"></script>
+
+
     </div>
+
 </body>
 
 </html>
