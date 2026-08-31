@@ -7,15 +7,10 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-
-        Laporan Data Agunan
-
-    </title>
+    <title>Enterprise Custody Reporting | KROM</title>
 
     <!-- CSS -->
 
-    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/laporan.css">
     <link rel="icon" href="../foto/krom1.png">
 
@@ -30,162 +25,60 @@
     <div class="wrapper">
 
         <!-- ===================================================== -->
-        <!-- SIDEBAR -->
-        <!-- ===================================================== -->
-
-        <aside class="sidebar">
-
-            <div class="brand">
-
-                <img src="../foto/bavi.png" alt="KROM">
-
-                <h2>
-
-                    DATA AGUNAN
-
-                </h2>
-
-            </div>
-
-            <ul class="menu">
-
-                <li>
-
-                    <a href="../dashboard.html">
-
-                        <i class="fa-solid fa-house"></i>
-
-                        Dashboard
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="input.html">
-
-                        <i class="fa-solid fa-file-circle-plus"></i>
-
-                        Input Agunan
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="data_agunan.html">
-
-                        <i class="fa-solid fa-folder-open"></i>
-
-                        Data Agunan
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="monitoring.html">
-
-                        <i class="fa-solid fa-chart-line"></i>
-
-                        Monitoring
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="laporan.html" class="active">
-
-                        <i class="fa-solid fa-file-lines"></i>
-
-                        Laporan
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="user.html">
-
-                        <i class="fa-solid fa-users"></i>
-
-                        User
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="pengaturan.html">
-
-                        <i class="fa-solid fa-gears"></i>
-
-                        Pengaturan
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </aside>
-
-        <!-- ===================================================== -->
         <!-- CONTENT -->
         <!-- ===================================================== -->
 
-        <main class="content">
+        <main class="content report-only-page">
 
-            <!-- HEADER -->
+            <!-- ===================================================== -->
+            <!-- STANDALONE REPORT TOPBAR -->
+            <!-- ===================================================== -->
 
-            <div class="header">
+            <header class="report-topbar">
 
-                <div>
-
-                    <h1>
-
-                        Enterprise Reporting Center
-
-                    </h1>
-
-                    <p>
-
-                        Operations Division
-
-                    </p>
-
-                </div>
-
-                <!-- USER -->
-                <div class="user">
-                    <div class="avatar">
-                        A
+                <div class="report-brand">
+                    <div class="report-brand-mark">
+                        <img src="../foto/krom1.png" alt="KROM">
                     </div>
 
-                    <div>
-                        <div id="username">
-                            Administrator
+                    <div class="report-brand-copy">
+                        <span class="report-brand-overline">KROM • OPERATIONS DIVISION</span>
+                        <strong>Enterprise Reporting Center</strong>
+                    </div>
+                </div>
+
+                <div class="report-topbar-actions">
+
+                    <!-- BACK TO DASHBOARD -->
+                    <a href="../dashboard.html" class="report-back-btn" aria-label="Kembali ke Dashboard">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Kembali</span>
+                    </a>
+
+                    <!-- USER -->
+                    <div class="user">
+                        <div class="avatar" id="avatar">
+                            A
                         </div>
-                        <small id="role">
-                            ADMIN
-                        </small>
+
+                        <div>
+                            <div id="username">
+                                Administrator
+                            </div>
+
+                            <small id="role">
+                                ADMIN
+                            </small>
+                        </div>
+
+                        <button type="button" class="logout" id="btnLogout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Logout
+                        </button>
                     </div>
-
-                    <button class="logout" id="btnLogout">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Logout
-                    </button>
-
                 </div>
 
-            </div>
+            </header>
 
             <!-- ===================================================== -->
             <!-- PAGE TITLE -->
