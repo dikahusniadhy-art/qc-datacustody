@@ -402,22 +402,47 @@ async function saveData(
     try {
 
         /*
+         * ==========================================================
          * VALIDASI NO AGUNAN
+         * ==========================================================
          */
 
         const noAgunan =
             String(
-                data.no_agunan || ""
+                data?.no_agunan || ""
             ).trim();
 
 
-        if (!noAgunan) {
+        if (
+            !noAgunan
+        ) {
 
             throw new Error(
                 "NO AGUNAN tidak ditemukan."
             );
 
         }
+
+
+        /*
+         * ==========================================================
+         * DEBUG
+         * ==========================================================
+         */
+
+        console.log(
+            "========== INSERT AGUNAN =========="
+        );
+
+        console.log(
+            "NO AGUNAN:",
+            noAgunan
+        );
+
+        console.log(
+            "INSERT DATA:",
+            data
+        );
 
 
         /*
@@ -432,16 +457,217 @@ async function saveData(
             );
 
 
+        console.log(
+            "INSERT RESPONSE:",
+            result
+        );
+
+
         /*
-         * Karena insertAgunan() menggunakan
-         * mode no-cors, response server tidak
-         * dapat dibaca browser.
+         * ==========================================================
+         * VALIDASI REQUEST
+         * ==========================================================
          *
-         * Tetapi request sudah dikirim ke Apps Script.
+         * API POST menggunakan no-cors.
          *
-         * Data akan diproses oleh endpoint
-         * insertAgunan().
+         * Jadi response success dari POST hanya berarti
+         * request sudah dikirim.
+         *
+         * Kita belum menganggap data berhasil sebelum
+         * dilakukan VERIFY ke backend.
+         *
+         * ==========================================================
          */
+
+        if (
+            !result ||
+            result.success !== true
+        ) {
+
+            throw new Error(
+                result?.message ||
+                "Data gagal dikirim ke server."
+            );
+
+        }
+
+
+        /*
+         * ==========================================================
+         * TUNGGU BACKEND
+         * ==========================================================
+         *
+         * Beri waktu Apps Script menyelesaikan appendRow().
+         *
+         * ==========================================================
+         */
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    1500
+                )
+        );
+
+
+        /*
+         * ==========================================================
+         * VERIFY INSERT
+         * ==========================================================
+         */
+
+        console.log(
+            "VERIFY INSERT:",
+            noAgunan
+        );
+
+
+        let verify =
+            null;
+
+
+        let verified =
+            false;
+
+
+        /*
+         * ==========================================================
+         * RETRY VERIFY
+         * ==========================================================
+         *
+         * Maksimal 5 kali.
+         *
+         * Ini untuk mengantisipasi Apps Script masih memproses
+         * appendRow ketika GET pertama dilakukan.
+         *
+         * ==========================================================
+         */
+
+        for (
+            let attempt = 1;
+            attempt <= 5;
+            attempt++
+        ) {
+
+            try {
+
+                console.log(
+                    "INSERT VERIFY ATTEMPT:",
+                    attempt,
+                    noAgunan
+                );
+
+
+                verify =
+                    await API.getAgunanById(
+                        noAgunan
+                    );
+
+
+                console.log(
+                    "INSERT VERIFY RESPONSE:",
+                    verify
+                );
+
+
+                /*
+                 * ====================================================
+                 * DATA DITEMUKAN
+                 * ====================================================
+                 */
+
+                if (
+                    verify &&
+                    verify.success === true &&
+                    verify.data
+                ) {
+
+                    const verifiedNoAgunan =
+                        String(
+                            verify.data.no_agunan ||
+                            ""
+                        ).trim();
+
+
+                    if (
+                        verifiedNoAgunan ===
+                        noAgunan
+                    ) {
+
+                        verified =
+                            true;
+
+                        break;
+
+                    }
+
+                }
+
+            }
+            catch (
+            verifyError
+            ) {
+
+                console.warn(
+                    "INSERT VERIFY ERROR:",
+                    attempt,
+                    verifyError
+                );
+
+            }
+
+
+            /*
+             * ========================================================
+             * TUNGGU SEBELUM RETRY
+             * ========================================================
+             */
+
+            if (
+                attempt < 5
+            ) {
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            1000
+                        )
+                );
+
+            }
+
+        }
+
+
+        /*
+         * ==========================================================
+         * VERIFY GAGAL
+         * ==========================================================
+         */
+
+        if (
+            !verified
+        ) {
+
+            throw new Error(
+                `Data sudah dikirim tetapi belum dapat diverifikasi di Spreadsheet. No Agunan: ${noAgunan}`
+            );
+
+        }
+
+
+        /*
+         * ==========================================================
+         * INSERT VERIFIED
+         * ==========================================================
+         */
+
+        console.log(
+            "INSERT VERIFIED:",
+            noAgunan
+        );
 
 
         /*
@@ -459,21 +685,26 @@ async function saveData(
 
 
         /*
+         * ==========================================================
          * RESET FORM
+         * ==========================================================
          */
 
         resetForm();
 
 
         /*
+         * ==========================================================
          * GENERATE NO AGUNAN BARU
+         * ==========================================================
          */
 
         generateNoAgunan();
 
-
     }
-    catch (err) {
+    catch (
+    err
+    ) {
 
         Helper.hideLoading();
 
@@ -905,6 +1136,6 @@ async function logout() {
 
 console.log(
 
-    "INPUT.JS VERSION 2.0 FINAL LOADED"
+    "INPUT.JS VERSION 1.0 FINAL LOADED"
 
 );

@@ -391,64 +391,317 @@ const EDIT_AGUNAN = {
         }
     },
 
-    /**********************************************************************
-     * UPDATE DATA
-     **********************************************************************/
+    /**************************************************************************
+ * UPDATE DATA
+ **************************************************************************/
+
     async updateData() {
+
         try {
 
-            let data = this.collectFormData();
+            /*
+             * ================================================================
+             * COLLECT FORM
+             * ================================================================
+             */
 
-            data = this.formatData(data);
+            let data =
+                this.collectFormData();
 
-            if (!this.validate(data)) {
+
+            /*
+             * ================================================================
+             * FORMAT DATA
+             * ================================================================
+             */
+
+            data =
+                this.formatData(
+                    data
+                );
+
+
+            /*
+             * ================================================================
+             * VALIDASI
+             * ================================================================
+             */
+
+            if (
+                !this.validate(
+                    data
+                )
+            ) {
+
                 return;
+
             }
 
-            if (!this.confirmUpdate()) {
+
+            /*
+             * ================================================================
+             * NO AGUNAN
+             * ================================================================
+             *
+             * Identifier utama EDIT adalah no_agunan.
+             *
+             * Jangan gunakan row ID.
+             *
+             * ================================================================
+             */
+
+            const noAgunan =
+                String(
+                    data.no_agunan ||
+                    this.id ||
+                    ""
+                ).trim();
+
+
+            if (
+                !noAgunan
+            ) {
+
+                alert(
+                    "No Agunan tidak ditemukan."
+                );
+
                 return;
+
             }
+
+
+            /*
+             * ================================================================
+             * PAKSA IDENTIFIER
+             * ================================================================
+             */
+
+            data.no_agunan =
+                noAgunan;
+
+
+            /*
+             * ================================================================
+             * KONFIRMASI
+             * ================================================================
+             */
+
+            if (
+                !this.confirmUpdate()
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+             * ================================================================
+             * LOADING
+             * ================================================================
+             */
 
             this.showLoading();
-            this.setButtonLoading(true);
 
-            // FIX:
-            // Kirim ID asli + data form
-            const result = await API.updateAgunan(
-                this.id,
+            this.setButtonLoading(
+                true
+            );
+
+
+            /*
+             * ================================================================
+             * DEBUG
+             * ================================================================
+             */
+
+            console.log(
+                "========== UPDATE AGUNAN =========="
+            );
+
+            console.log(
+                "NO AGUNAN:",
+                noAgunan
+            );
+
+            console.log(
+                "UPDATE DATA:",
                 data
             );
 
-            if (!result.success) {
-                alert(
-                    result.message ||
-                    "Update data gagal."
+
+            /*
+             * ================================================================
+             * UPDATE
+             * ================================================================
+             */
+
+            const result =
+                await API.updateAgunan(
+                    noAgunan,
+                    data
                 );
-                return;
+
+
+            console.log(
+                "UPDATE RESPONSE:",
+                result
+            );
+
+
+            /*
+             * ================================================================
+             * POST RESPONSE
+             * ================================================================
+             *
+             * Karena API POST menggunakan no-cors,
+             * response success dari frontend belum cukup
+             * untuk membuktikan Spreadsheet berubah.
+             *
+             * ================================================================
+             */
+
+            if (
+                !result ||
+                result.success !== true
+            ) {
+
+                throw new Error(
+                    result?.message ||
+                    "Update data gagal dikirim."
+                );
+
             }
+
+
+            /*
+             * ================================================================
+             * VERIFY UPDATE
+             * ================================================================
+             *
+             * Ambil kembali data dari backend.
+             *
+             * Jika data masih ada dan no_agunan
+             * cocok, berarti record masih tersedia.
+             *
+             * ================================================================
+             */
+
+            console.log(
+                "VERIFY UPDATE:",
+                noAgunan
+            );
+
+
+            const verify =
+                await API.getAgunanById(
+                    noAgunan
+                );
+
+
+            console.log(
+                "UPDATE VERIFY RESPONSE:",
+                verify
+            );
+
+
+            /*
+             * ================================================================
+             * VALIDASI VERIFY
+             * ================================================================
+             */
+
+            if (
+                !verify ||
+                verify.success !== true ||
+                !verify.data
+            ) {
+
+                throw new Error(
+                    "Update dikirim tetapi data tidak dapat diverifikasi dari backend."
+                );
+
+            }
+
+
+            /*
+             * ================================================================
+             * VERIFY NO AGUNAN
+             * ================================================================
+             */
+
+            const verifiedNoAgunan =
+                String(
+                    verify.data.no_agunan ||
+                    ""
+                ).trim();
+
+
+            if (
+                verifiedNoAgunan !==
+                noAgunan
+            ) {
+
+                throw new Error(
+                    "Verifikasi gagal: No Agunan tidak sesuai."
+                );
+
+            }
+
+
+            /*
+             * ================================================================
+             * SUCCESS
+             * ================================================================
+             */
+
+            console.log(
+                "UPDATE VERIFIED:",
+                noAgunan
+            );
+
 
             alert(
                 "Data Agunan berhasil diperbarui."
             );
 
+
+            /*
+             * ================================================================
+             * KEMBALI
+             * ================================================================
+             */
+
             window.location.href =
                 "data_agunan.html";
 
-        } catch (err) {
+        }
+        catch (
+        err
+        ) {
 
-            console.error(err);
+            console.error(
+                "UPDATE AGUNAN ERROR:",
+                err
+            );
+
 
             alert(
                 err.message ||
                 "Terjadi kesalahan saat update data."
             );
 
-        } finally {
+        }
+        finally {
 
             this.hideLoading();
 
-            this.setButtonLoading(false);
+            this.setButtonLoading(
+                false
+            );
+
         }
+
     },
 
     /**********************************************************************

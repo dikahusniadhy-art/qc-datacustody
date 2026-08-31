@@ -19,6 +19,7 @@ const ROLES = {
 
             "dashboard",
             "data",
+            "input",
             "approval",
             "monitoring",
             "laporan",
@@ -30,17 +31,11 @@ const ROLES = {
         permission: {
 
             create: true,
-
             read: true,
-
             update: true,
-
             delete: true,
-
             approve: true,
-
             export: true,
-
             user_management: true
 
         }
@@ -52,31 +47,21 @@ const ROLES = {
      * MAKER
      **********************************************************************/
     MAKER: {
-
         menu: [
-
             "dashboard",
-
             "data",
-
-            "monitoring"
-
+            "input",
+            "monitoring",
+            "laporan"
         ],
 
         permission: {
-
             create: true,
-
             read: true,
-
             update: true,
-
             delete: false,
-
             approve: false,
-
             export: false,
-
             user_management: false
 
         }
@@ -90,15 +75,10 @@ const ROLES = {
     CHECKER: {
 
         menu: [
-
             "dashboard",
-
             "data",
-
             "approval",
-
             "monitoring",
-
             "laporan"
 
         ],
@@ -106,17 +86,11 @@ const ROLES = {
         permission: {
 
             create: false,
-
             read: true,
-
             update: false,
-
             delete: false,
-
             approve: true,
-
             export: true,
-
             user_management: false
 
         }
@@ -132,9 +106,8 @@ const ROLES = {
         menu: [
 
             "dashboard",
-
+            "data",
             "monitoring",
-
             "laporan"
 
         ],
@@ -142,17 +115,11 @@ const ROLES = {
         permission: {
 
             create: false,
-
             read: true,
-
             update: false,
-
             delete: false,
-
             approve: false,
-
             export: true,
-
             user_management: false
 
         }
@@ -632,5 +599,5 @@ window.Role = Role;
  ******************************************************************************/
 
 console.log(
-    "ROLES.JS SECURITY HARDENED 3.0 LOADED"
+    "ROLES.JS SECURITY HARDENED 1.0 LOADED"
 );
