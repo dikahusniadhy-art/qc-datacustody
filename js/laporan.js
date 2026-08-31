@@ -556,6 +556,7 @@ const LAPORAN = {
             "Nama Debitur": this.getValue(item, "nama_pemilik_agunan"),
             "Cabang": this.getValue(item, "kode_cabang"),
             "Jenis Dokumen": this.getValue(item, "jenis_dokumen"),
+            "Produk": this.getValue(item, "produk"),
             "Kode Dokumen": this.getValue(item, "kode_jenis_agunan"),
             "Deskripsi Dokumen": this.getValue(item, "document_description"),
             "Status": this.getValue(item, "status_agunan"),
@@ -586,24 +587,26 @@ const LAPORAN = {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('landscape');
 
-        doc.setFontSize(16);
+        doc.setFontSize(12);
         doc.text("Laporan Data Agunan Custody", 14, 15);
-        doc.setFontSize(10);
+        doc.setFontSize(12);
         doc.setTextColor(100);
         doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 22);
 
-        const head = [["No", "No Agunan", "CIF", "Nama Debitur", "Cabang", "Jenis Dokumen", "Status", "Tgl Expired", "Kode Dokumen", "Deskripsi Dokumen"]];
+        const head = [["No", "No Agunan", "CIF", "Nama Debitur", "Cabang", "Produk", "Jenis Dokumen", "Jenis Agunan", "Deskripsi Dokumen", "Status", "Expired Appraisal"]];
         const body = this.state.filtered.map((item, index) => [
             index + 1,
             this.getValue(item, "no_agunan"),
             this.getValue(item, "cif_debitur"),
             this.getValue(item, "nama_pemilik_agunan"),
             this.getValue(item, "kode_cabang"),
+            this.getValue(item, "produk"),
             this.getValue(item, "jenis_dokumen"),
             this.getValue(item, "kode_jenis_agunan"),
             this.getValue(item, "document_description"),
             this.getValue(item, "status_agunan"),
-            this.formatDate(this.getValue(item, "tanggal_expired_appraisal"))
+            this.formatDate(this.getValue(item, "tanggal_expired_appraisal")
+            )
         ]);
 
         doc.autoTable({
@@ -611,8 +614,19 @@ const LAPORAN = {
             body: body,
             startY: 28,
             theme: 'grid',
-            styles: { fontSize: 9 },
-            headStyles: { fillColor: [27, 85, 226] }
+
+            styles: {
+                fontSize: 7,
+                cellPadding: 2,
+                valign: 'middle'
+            },
+
+            headStyles: {
+                fontSize: 8,
+                fillColor: [27, 85, 226],
+                textColor: 255,
+                fontStyle: 'bold'
+            }
         });
 
         const dateStr = new Date().toISOString().split('T')[0];
@@ -656,10 +670,11 @@ const LAPORAN = {
                             <th>Nama Debitur</th>
                             <th>Cabang</th>
                             <th>Jenis Dokumen</th>
+                            <th>Produk</th>
                             <th>Jenis Agunan</th>
                             <th>Deskripsi Dokumen</th>
                             <th>Status</th>
-                            <th>Tanggal Expired Appraisal</th>
+                            <th>Expired Appraisal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -674,6 +689,7 @@ const LAPORAN = {
                     <td>${this.getValue(item, "nama_pemilik_agunan")}</td>
                     <td>${this.getValue(item, "kode_cabang")}</td>
                     <td>${this.getValue(item, "jenis_dokumen")}</td>
+                    <td>${this.getValue(item, "produk")}</td>
                     <td>${this.getValue(item, "kode_jenis_agunan")}</td>
                     <td>${this.getValue(item, "document_description")}</td>
                     <td>${this.getValue(item, "status_agunan")}</td>
@@ -787,9 +803,26 @@ const LAPORAN = {
             }
         });
 
-        // Logout
+        // ========================================================
+        // LOGOUT CONFIRMATION
+        // ========================================================
+
         document.getElementById("btnLogout")?.addEventListener("click", () => {
-            if (typeof Auth !== "undefined") Auth.logout();
+
+            const confirmed = window.confirm(
+                "Apakah Anda ingin logout dari Enterprise Reporting Center?"
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            if (
+                typeof Auth !== "undefined" &&
+                typeof Auth.logout === "function"
+            ) {
+                Auth.logout();
+            }
         });
     }
 };
