@@ -107,24 +107,325 @@ const LAPORAN = {
     },
 
     updateKPI() {
-        const data = this.state.filtered;
+
+        const data = this.state.filtered || [];
+
         const total = data.length;
-        const aktif = data.filter(x => String(this.getValue(x, "status_agunan")).trim().toUpperCase() === "A").length;
-        const belum = data.filter(x => String(this.getValue(x, "status_agunan")).trim().toUpperCase() === "BL").length;
-        const expired = data.filter(x => String(this.getValue(x, "status_agunan")).trim().toUpperCase() === "E").length;
 
-        if (document.getElementById("kpiTotal")) document.getElementById("kpiTotal").textContent = total;
-        if (document.getElementById("kpiAktif")) document.getElementById("kpiAktif").textContent = aktif;
-        if (document.getElementById("kpiExpired")) document.getElementById("kpiExpired").textContent = expired;
-        if (document.getElementById("kpiBL")) document.getElementById("kpiBL").textContent = belum;
+        const aktif =
+            data.filter(x =>
+                String(
+                    this.getValue(x, "status_agunan")
+                )
+                    .trim()
+                    .toUpperCase() === "A"
+            ).length;
 
-        if (document.getElementById("summaryTotal")) document.getElementById("summaryTotal").textContent = total;
-        if (document.getElementById("summaryAktif")) document.getElementById("summaryAktif").textContent = aktif;
-        if (document.getElementById("summaryExpired")) document.getElementById("summaryExpired").textContent = expired;
-        if (document.getElementById("summaryBL")) document.getElementById("summaryBL").textContent = belum;
+        const belum =
+            data.filter(x =>
+                String(
+                    this.getValue(x, "status_agunan")
+                )
+                    .trim()
+                    .toUpperCase() === "BL"
+            ).length;
 
-        if (document.getElementById("toolbarTotal")) document.getElementById("toolbarTotal").textContent = total;
+        const expired =
+            data.filter(x =>
+                String(
+                    this.getValue(x, "status_agunan")
+                )
+                    .trim()
+                    .toUpperCase() === "E"
+            ).length;
+
+        const nonaktif =
+            data.filter(x =>
+                String(
+                    this.getValue(x, "status_agunan")
+                )
+                    .trim()
+                    .toUpperCase() === "D"
+            ).length;
+
+
+        // EXECUTIVE HEALTH
+        // A / (A + BL + E) × 100
+        // D / NON AKTIF TIDAK DIHITUNG
+
+        const relevantTotal =
+            aktif + belum + expired;
+
+        const health =
+            relevantTotal === 0
+                ? 0
+                : Math.round(
+                    (aktif / relevantTotal) * 100
+                );
+
+        const pct = value =>
+            relevantTotal
+                ? Math.round(
+                    (value / relevantTotal) * 100
+                )
+                : 0;
+
+        const aktifPct = pct(aktif);
+        const expiredPct = pct(expired);
+        const belumPct = pct(belum);
+
+        // =====================================================
+        // UPDATE KPI KE HTML
+        // =====================================================
+
+        const setText = (id, value) => {
+            const el = document.getElementById(id);
+
+            if (el) {
+                el.textContent = value;
+            }
+        };
+
+
+        // KPI UTAMA
+        setText(
+            "kpiTotal",
+            total.toLocaleString("id-ID")
+        );
+
+        setText(
+            "kpiAktif",
+            aktif.toLocaleString("id-ID")
+        );
+
+        setText(
+            "kpiExpired",
+            expired.toLocaleString("id-ID")
+        );
+
+        setText(
+            "kpiBL",
+            belum.toLocaleString("id-ID")
+        );
+
+
+        // SUMMARY
+        setText(
+            "summaryTotal",
+            total.toLocaleString("id-ID")
+        );
+
+        setText(
+            "summaryAktif",
+            aktif.toLocaleString("id-ID")
+        );
+
+        setText(
+            "summaryExpired",
+            expired.toLocaleString("id-ID")
+        );
+
+        setText(
+            "summaryBL",
+            belum.toLocaleString("id-ID")
+        );
+
+        setText(
+            "toolbarTotal",
+            total.toLocaleString("id-ID")
+        );
+
+
+        // =====================================================
+        // EXECUTIVE RATE
+        // =====================================================
+
+        setText(
+            "kpiAktifRate",
+            `${aktifPct}% of relevant portfolio`
+        );
+
+        setText(
+            "kpiExpiredRate",
+            `${expiredPct}% of relevant portfolio`
+        );
+
+        setText(
+            "kpiBLRate",
+            `${belumPct}% of relevant portfolio`
+        );
+
+
+        // =====================================================
+        // CURRENT CUSTODY HEALTH
+        // =====================================================
+
+        setText(
+            "healthPercent",
+            `${health}%`
+        );
+
+        setText(
+            "summaryAktifExec",
+            aktif.toLocaleString("id-ID")
+        );
+
+        setText(
+            "summaryExpiredExec",
+            expired.toLocaleString("id-ID")
+        );
+
+        setText(
+            "summaryBLExec",
+            belum.toLocaleString("id-ID")
+        );
+
+
+        // =====================================================
+        // PROGRESS BAR
+        // =====================================================
+
+        const progress =
+            document.getElementById(
+                "healthProgress"
+            );
+
+        if (progress) {
+            progress.style.width =
+                `${health}%`;
+        }
+
+
+        // =====================================================
+        // HEALTH RING
+        // =====================================================
+
+        const ring =
+            document.getElementById(
+                "healthRing"
+            );
+
+        if (ring) {
+
+            const ringColor =
+                health >= 95
+                    ? "#16805C"
+                    : health >= 85
+                        ? "#B7791F"
+                        : health > 0
+                            ? "#C2413B"
+                            : "#D8E1EA";
+
+            ring.style.borderTopColor =
+                ringColor;
+
+            ring.style.borderRightColor =
+                health > 0
+                    ? ringColor
+                    : "#D8E1EA";
+
+            ring.style.borderBottomColor =
+                "#E8EEF5";
+
+            ring.style.borderLeftColor =
+                "#E8EEF5";
+        }
+
+
+        // =====================================================
+        // EXECUTIVE NARRATIVE
+        // =====================================================
+
+        const narrative =
+            document.getElementById(
+                "executiveNarrative"
+            );
+
+        if (narrative) {
+
+            if (!relevantTotal) {
+
+                narrative.textContent =
+                    "Belum terdapat data aktif yang relevan pada scope laporan yang dipilih.";
+
+            } else if (health >= 95) {
+
+                narrative.textContent =
+                    `Posisi custody berada pada kondisi terkendali. ${aktif.toLocaleString("id-ID")} record aktif dari ${relevantTotal.toLocaleString("id-ID")} record relevan (${health}%).`;
+
+            } else if (health >= 85) {
+
+                narrative.textContent =
+                    `Posisi custody memerlukan perhatian terbatas. ${aktif.toLocaleString("id-ID")} record aktif (${health}%), dengan ${belum.toLocaleString("id-ID")} record belum lengkap dan ${expired.toLocaleString("id-ID")} expired.`;
+
+            } else {
+
+                narrative.textContent =
+                    `Posisi custody memerlukan perhatian manajemen. Active position berada di ${health}%, dengan ${expired.toLocaleString("id-ID")} expired dan ${belum.toLocaleString("id-ID")} record belum lengkap.`;
+
+            }
+        }
+
+
+        // =====================================================
+        // FILTER STATUS
+        // =====================================================
+
+        const statusText =
+            document.getElementById(
+                "filterStatusText"
+            );
+
+        if (statusText) {
+
+            const filter =
+                this.state.filter || {};
+
+            const scope = [
+                filter.tglAwal
+                    ? `From ${filter.tglAwal}`
+                    : "",
+
+                filter.tglAkhir
+                    ? `To ${filter.tglAkhir}`
+                    : "",
+
+                filter.cabang
+                    ? `Branch ${filter.cabang}`
+                    : "",
+
+                filter.status
+                    ? `Status ${filter.status}`
+                    : ""
+            ].filter(Boolean);
+
+            statusText.innerHTML =
+                `<i class="fa-solid fa-circle-check"></i> ${scope.length
+                    ? scope.join(" • ")
+                    : "All records"
+                }`;
+        }
+
+
+        // =====================================================
+        // EXECUTIVE CONTEXT
+        // =====================================================
+
+        const context =
+            document.getElementById(
+                "executiveContext"
+            );
+
+        if (context) {
+
+            context.textContent =
+                relevantTotal
+                    ? `${relevantTotal.toLocaleString("id-ID")} relevant records in current scope`
+                    : "No relevant records in current scope";
+        }
     },
+
+
 
     getBadge(status) {
         switch (String(status).trim().toUpperCase()) {
@@ -213,6 +514,14 @@ const LAPORAN = {
 
             return matchKeyword && matchCabang && matchStatus && matchDate;
         });
+
+        this.state.filter = {
+            keyword,
+            cabang,
+            status,
+            tglAwal,
+            tglAkhir
+        };
 
         this.state.page = 1;
         this.updateKPI();
