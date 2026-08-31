@@ -471,6 +471,8 @@ const LAPORAN = {
                 <td>${this.getValue(item, "nama_pemilik_agunan")}</td>
                 <td>${this.getValue(item, "kode_cabang")}</td>
                 <td>${this.getValue(item, "jenis_dokumen")}</td>
+                <td>${this.getValue(item, "kode_jenis_agunan")}</td>
+                <td>${this.getValue(item, "document_description")}</td>
                 <td>${this.getBadge(this.getValue(item, "status_agunan"))}</td>
                 <td>${this.formatDate(this.getValue(item, "tanggal_expired_appraisal"))}</td>
             </tr>`;
@@ -554,6 +556,8 @@ const LAPORAN = {
             "Nama Debitur": this.getValue(item, "nama_pemilik_agunan"),
             "Cabang": this.getValue(item, "kode_cabang"),
             "Jenis Dokumen": this.getValue(item, "jenis_dokumen"),
+            "Kode Dokumen": this.getValue(item, "kode_jenis_agunan"),
+            "Deskripsi Dokumen": this.getValue(item, "document_description"),
             "Status": this.getValue(item, "status_agunan"),
             "Tanggal Expired": this.formatDate(this.getValue(item, "tanggal_expired_appraisal"))
         }));
@@ -588,7 +592,7 @@ const LAPORAN = {
         doc.setTextColor(100);
         doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 22);
 
-        const head = [["No", "No Agunan", "CIF", "Nama Debitur", "Cabang", "Jenis Dokumen", "Status", "Tgl Expired"]];
+        const head = [["No", "No Agunan", "CIF", "Nama Debitur", "Cabang", "Jenis Dokumen", "Status", "Tgl Expired", "Kode Dokumen", "Deskripsi Dokumen"]];
         const body = this.state.filtered.map((item, index) => [
             index + 1,
             this.getValue(item, "no_agunan"),
@@ -596,6 +600,8 @@ const LAPORAN = {
             this.getValue(item, "nama_pemilik_agunan"),
             this.getValue(item, "kode_cabang"),
             this.getValue(item, "jenis_dokumen"),
+            this.getValue(item, "kode_jenis_agunan"),
+            this.getValue(item, "document_description"),
             this.getValue(item, "status_agunan"),
             this.formatDate(this.getValue(item, "tanggal_expired_appraisal"))
         ]);
@@ -650,8 +656,10 @@ const LAPORAN = {
                             <th>Nama Debitur</th>
                             <th>Cabang</th>
                             <th>Jenis Dokumen</th>
+                            <th>Jenis Agunan</th>
+                            <th>Deskripsi Dokumen</th>
                             <th>Status</th>
-                            <th>Tanggal Expired</th>
+                            <th>Tanggal Expired Appraisal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -666,6 +674,8 @@ const LAPORAN = {
                     <td>${this.getValue(item, "nama_pemilik_agunan")}</td>
                     <td>${this.getValue(item, "kode_cabang")}</td>
                     <td>${this.getValue(item, "jenis_dokumen")}</td>
+                    <td>${this.getValue(item, "kode_jenis_agunan")}</td>
+                    <td>${this.getValue(item, "document_description")}</td>
                     <td>${this.getValue(item, "status_agunan")}</td>
                     <td>${this.formatDate(this.getValue(item, "tanggal_expired_appraisal"))}</td>
                 </tr>
