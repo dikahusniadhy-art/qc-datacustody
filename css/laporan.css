@@ -908,3 +908,476 @@ body {
         width: 100%;
     }
 }
+
+
+/* ==========================================================================
+   MOBILE / RESPONSIVE ENTERPRISE LAYER
+   Existing HTML/JS IDs preserved.
+   ========================================================================== */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+}
+
+.content,
+.report-header,
+.section.report-filter,
+.executive-summary,
+.report-summary,
+.report-table,
+.report-kpi {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    .content {
+        width: 100%;
+        min-width: 0;
+        padding-left: 12px;
+        padding-right: 12px;
+        box-sizing: border-box;
+    }
+
+    .report-header {
+        width: 100%;
+        min-height: auto;
+        margin-bottom: 16px;
+        padding: 22px 18px;
+        border-radius: 14px;
+        gap: 14px;
+    }
+
+    .report-header-copy {
+        width: 100%;
+        max-width: none;
+    }
+
+    .report-eyebrow {
+        gap: 7px;
+        margin-bottom: 11px;
+    }
+
+    .report-tag {
+        padding: 5px 8px;
+        font-size: 9px;
+    }
+
+    .report-classification {
+        font-size: 9px;
+    }
+
+    .report-header h2 {
+        margin-bottom: 9px;
+        font-size: clamp(23px, 7vw, 29px);
+        line-height: 1.15;
+        letter-spacing: -.4px;
+    }
+
+    .report-header p {
+        max-width: none;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .report-info {
+        margin-top: 12px;
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .report-meta-strip {
+        gap: 6px;
+        margin-top: 14px;
+    }
+
+    .report-meta-strip span {
+        max-width: 100%;
+        padding: 6px 8px;
+        font-size: 9px;
+    }
+
+    .executive-section-head,
+    .control-panel-head {
+        width: 100%;
+        gap: 7px;
+        margin: 2px 0 11px;
+    }
+
+    .executive-section-head h2,
+    .control-panel-head h3 {
+        font-size: 17px;
+        line-height: 1.25;
+    }
+
+    .section-context,
+    .control-status {
+        font-size: 10px;
+    }
+
+    .report-kpi {
+        width: 100%;
+        gap: 9px;
+        margin-bottom: 16px;
+    }
+
+    .report-kpi .card {
+        min-height: 92px;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .report-kpi .card h2 {
+        font-size: 25px;
+    }
+
+    .report-kpi .card small {
+        margin-top: 6px;
+        font-size: 9px;
+    }
+
+    .report-kpi .icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+
+    .section.report-filter {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+    }
+
+    .form-row {
+        width: 100%;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .form-group {
+        min-width: 0;
+    }
+
+    .form-group label {
+        margin-bottom: 6px;
+        font-size: 9px;
+    }
+
+    .form-control,
+    .search-box input {
+        width: 100%;
+        min-width: 0;
+        height: 44px;
+        box-sizing: border-box;
+        font-size: 12px;
+    }
+
+    .button-group {
+        width: 100%;
+        gap: 7px;
+        margin-bottom: 16px;
+    }
+
+    .button-group .btn {
+        width: 100%;
+        min-height: 42px;
+        height: 42px;
+        padding: 0 12px;
+        border-radius: 8px;
+        font-size: 10px;
+        touch-action: manipulation;
+    }
+
+    .executive-summary {
+        width: 100%;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .summary-main,
+    .summary-risk {
+        width: 100%;
+        min-width: 0;
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+
+    .summary-main {
+        padding: 16px;
+    }
+
+    .summary-risk {
+        padding: 7px 14px;
+    }
+
+    .summary-main-top {
+        gap: 12px;
+    }
+
+    .summary-main h3 {
+        font-size: 15px;
+    }
+
+    .health-ring {
+        width: 58px;
+        height: 58px;
+        flex: 0 0 58px;
+        border-width: 4px;
+    }
+
+    .health-ring strong {
+        font-size: 14px;
+    }
+
+    .health-ring span {
+        font-size: 7px;
+    }
+
+    .health-progress {
+        height: 6px;
+        margin: 14px 0 11px;
+    }
+
+    #executiveNarrative {
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    .risk-row {
+        min-height: 54px;
+        gap: 10px;
+    }
+
+    .risk-icon {
+        width: 31px;
+        height: 31px;
+        flex: 0 0 31px;
+        font-size: 12px;
+    }
+
+    .risk-row span {
+        font-size: 9px;
+    }
+
+    .risk-row strong {
+        font-size: 15px;
+    }
+
+    .report-summary {
+        width: 100%;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    .summary-card {
+        min-width: 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+    }
+
+    .summary-card span {
+        font-size: 9px;
+    }
+
+    .summary-card h3 {
+        font-size: 20px;
+    }
+
+    .report-table {
+        width: 100%;
+        min-width: 0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .table-header {
+        min-height: auto;
+        padding: 14px 15px;
+        gap: 8px;
+    }
+
+    .table-header h3 {
+        font-size: 15px;
+    }
+
+    .table-header small {
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .table-total {
+        padding: 6px 9px;
+        font-size: 9px;
+    }
+
+    .table-responsive {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+    }
+
+    #tblReport {
+        min-width: 920px;
+        width: max-content;
+    }
+
+    #tblReport thead th {
+        padding: 10px 11px;
+        font-size: 8px;
+        white-space: nowrap;
+    }
+
+    #tblReport tbody td {
+        padding: 10px 11px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .badge {
+        min-width: 72px;
+        padding: 5px 7px !important;
+        font-size: 8px !important;
+    }
+
+    .empty-data {
+        padding: 42px 18px !important;
+        white-space: normal !important;
+    }
+
+    .pagination-area {
+        width: 100%;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 8px 0 18px;
+    }
+
+    .pagination-area .btn {
+        min-width: 0;
+        width: 100%;
+        height: 40px;
+        font-size: 10px;
+        touch-action: manipulation;
+    }
+
+    #pageInfo {
+        font-size: 9px;
+        text-align: center;
+    }
+
+    .loading-card {
+        width: calc(100vw - 40px);
+        min-width: 0;
+        max-width: 330px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .sidebar {
+        max-width: 88vw;
+    }
+
+    .header {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 420px) {
+    .content {
+        padding-left: 9px;
+        padding-right: 9px;
+    }
+
+    .report-header {
+        padding: 19px 15px;
+        border-radius: 12px;
+    }
+
+    .report-header h2 {
+        font-size: 23px;
+    }
+
+    .report-header p {
+        font-size: 11px;
+    }
+
+    .report-kpi .card {
+        padding: 13px;
+    }
+
+    .report-kpi .card h2 {
+        font-size: 23px;
+    }
+
+    .section.report-filter,
+    .summary-main {
+        padding: 13px;
+    }
+
+    .summary-risk {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    #tblReport {
+        min-width: 880px;
+    }
+}
+
+@media (max-width: 360px) {
+    .report-header h2 {
+        font-size: 21px;
+    }
+
+    .report-header p {
+        font-size: 10px;
+    }
+
+    .report-kpi .card h2 {
+        font-size: 21px;
+    }
+
+    .executive-section-head h2,
+    .control-panel-head h3 {
+        font-size: 16px;
+    }
+
+    #tblReport {
+        min-width: 840px;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .report-kpi .card:hover,
+    .button-group .btn:hover {
+        transform: none;
+    }
+
+    .button-group .btn,
+    .pagination-area .btn,
+    .form-control,
+    .search-box input {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
