@@ -77,6 +77,7 @@ const LAPORAN = {
             this.state.page = 1;
 
             this.loadCabang();
+            this.loadJenisDokumen();
             this.updateKPI();
             this.renderTable();
 
@@ -101,6 +102,60 @@ const LAPORAN = {
         cabang.sort();
         cabang.forEach(item => {
             select.innerHTML += `<option value="${item}">${item}</option>`;
+        });
+
+        select.value = currentValue;
+    },
+
+    loadJenisDokumen() {
+
+        const select =
+            document.getElementById("filterDokumen");
+
+        if (!select) return;
+
+        const currentValue =
+            select.value;
+
+        select.innerHTML =
+            '<option value="">Semua Jenis Dokumen</option>';
+
+        const dokumen = [
+            ...new Set(
+                this.state.data
+                    .map(item =>
+                        this.getValue(
+                            item,
+                            "jenis_dokumen"
+                        )
+                    )
+                    .map(value =>
+                        String(value).trim()
+                    )
+                    .filter(Boolean)
+            )
+        ];
+
+        dokumen.sort((a, b) =>
+            a.localeCompare(
+                b,
+                "id-ID",
+                {
+                    sensitivity: "base"
+                }
+            )
+        );
+
+        dokumen.forEach(item => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = item;
+            option.textContent = item;
+
+            select.appendChild(option);
+
         });
 
         select.value = currentValue;
@@ -488,12 +543,14 @@ const LAPORAN = {
         const statusEl = document.getElementById("filterStatus");
         const tglAwalEl = document.getElementById("tanggalAwal");
         const tglAkhirEl = document.getElementById("tanggalAkhir");
+        const dokumenEl = document.getElementById("filterDokumen");
 
         const keyword = keywordEl ? keywordEl.value.toLowerCase() : "";
         const cabang = cabangEl ? cabangEl.value : "";
         const status = statusEl ? statusEl.value : "";
         const tglAwal = tglAwalEl ? tglAwalEl.value : "";
         const tglAkhir = tglAkhirEl ? tglAkhirEl.value : "";
+        const dokumen = dokumenEl ? dokumenEl.value : "";
 
         this.state.filtered = this.state.data.filter(item => {
             const itemNo = String(this.getValue(item, "no_agunan")).toLowerCase();
@@ -502,10 +559,12 @@ const LAPORAN = {
             const itemCabang = String(this.getValue(item, "kode_cabang"));
             const itemStatus = String(this.getValue(item, "status_agunan")).trim().toUpperCase();
             const itemTgl = String(this.getValue(item, "tanggal_expired_appraisal"));
+            const itemJenisDokumen = String(this.getValue(item, "jenis_dokumen")).trim();
 
             const matchKeyword = keyword === "" || itemNo.includes(keyword) || itemCif.includes(keyword) || itemNama.includes(keyword);
             const matchCabang = cabang === "" || itemCabang === cabang;
             const matchStatus = status === "" || itemStatus === status;
+            const matchDokumen = dokumen === "" || itemJenisDokumen === dokumen;
 
             let matchDate = true;
             if (tglAwal !== "" || tglAkhir !== "") {
@@ -514,7 +573,11 @@ const LAPORAN = {
                 if (tglAkhir !== "") { if (dateData > new Date(tglAkhir).setHours(0, 0, 0, 0)) matchDate = false; }
             }
 
-            return matchKeyword && matchCabang && matchStatus && matchDate;
+            return matchKeyword &&
+                matchCabang &&
+                matchStatus &&
+                matchDokumen &&
+                matchDate;
         });
 
         this.state.filter = {
@@ -755,6 +818,7 @@ const LAPORAN = {
                 const statusEl = document.getElementById("filterStatus");
                 const tglAwalEl = document.getElementById("tanggalAwal");
                 const tglAkhirEl = document.getElementById("tanggalAkhir");
+                const dokumenEl = document.getElementById("filterDokumen");
 
                 if (keywordEl) keywordEl.value = "";
                 if (cabangEl) cabangEl.value = "";
