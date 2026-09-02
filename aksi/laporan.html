@@ -262,92 +262,57 @@
 
                 <div class="form-row">
 
+                    <!-- PERIODE AWAL -->
                     <div class="form-group">
-
-                        <label>
-
-                            Periode Awal
-
-                        </label>
-
+                        <label>Periode Awal</label>
                         <input type="date" id="tanggalAwal" class="form-control">
-
                     </div>
 
+                    <!-- PERIODE AKHIR -->
                     <div class="form-group">
-
-                        <label>
-
-                            Periode Akhir
-
-                        </label>
-
+                        <label>Periode Akhir</label>
                         <input type="date" id="tanggalAkhir" class="form-control">
-
                     </div>
 
+                    <!-- CABANG -->
                     <div class="form-group">
-
-                        <label>
-
-                            Cabang
-
-                        </label>
+                        <label>Cabang</label>
 
                         <select id="filterCabang" class="form-control">
-
-                            <option value="">
-
-                                Semua Cabang
-
-                            </option>
-
+                            <option value="">Semua Cabang</option>
                         </select>
-
                     </div>
 
+                    <!-- STATUS -->
                     <div class="form-group">
-
-                        <label>
-
-                            Status
-
-                        </label>
+                        <label>Status</label>
 
                         <select id="filterStatus" class="form-control">
 
+                            <option value="">Semua Status</option>
+
+                            <option value="A">Aktif</option>
+
+                            <option value="BL">Belum Lengkap</option>
+
+                            <option value="E">Expired</option>
+
+                            <option value="D">Non Aktif</option>
+
+                        </select>
+                    </div>
+
+                    <!-- JENIS DOKUMEN -->
+                    <div class="form-group">
+                        <label>Jenis Dokumen</label>
+
+                        <select id="filterDokumen" class="form-control">
+
                             <option value="">
-
-                                Semua Status
-
-                            </option>
-
-                            <option value="A">
-
-                                Aktif
-
-                            </option>
-
-                            <option value="BL">
-
-                                Belum Lengkap
-
-                            </option>
-
-                            <option value="E">
-
-                                Expired
-
-                            </option>
-
-                            <option value="D">
-
-                                Non Aktif
-
+                                Semua Jenis Dokumen
                             </option>
 
                         </select>
-
                     </div>
 
                 </div>
